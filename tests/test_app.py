@@ -242,3 +242,37 @@ def test_places(env):
     assert c.delete(f"/api/places/{cafe}").status_code == 200
     assert c.delete(f"/api/places/{cafe}").status_code == 404
     assert cafe not in {x["id"] for x in c.get("/api/places").json()}
+
+
+def test_pending_plans_and_in_app_accept(env):
+    c = env["client"]
+    c.cookies.clear()
+    c.post("/api/login", json={"username": "ada", "password": "yeni-parola-1"})
+    eid = c.post("/api/events", json={"title": "Sinema", "date": "2031-02-14", "proposed_by": "Ada"}).json()["id"]
+    d = c.get("/api/dashboard").json()
+    assert eid in [e["id"] for e in d["pending_out"]] and not any(e["id"] == eid for e in d["pending_in"])
+    # Kendi önerine cevap verilemez
+    assert c.post(f"/api/events/{eid}/accept").status_code == 403
+    assert c.get(f"/api/events/{eid}/respond").status_code == 403
+
+    c.cookies.clear()
+    c.post("/api/login", json={"username": "deniz", "password": "parola-deniz"})
+    d = c.get("/api/dashboard").json()
+    assert eid in [e["id"] for e in d["pending_in"]]
+    link = c.get(f"/api/events/{eid}/respond").json()["url"]
+    assert link.startswith("/r/") and "Kabul ediyorum" in c.get(link).text
+    assert c.post(f"/api/events/{eid}/accept").status_code == 200
+    assert c.post(f"/api/events/{eid}/accept").status_code == 404  # ikinci kez olmaz
+    assert c.get(link).text.count("geçerli değil") == 1
+
+    c.cookies.clear()
+    c.post("/api/login", json={"username": "ada", "password": "yeni-parola-1"})
+    notes = c.get("/api/notifications").json()
+    assert any(n["type"] == "accepted" and n["target"] == f"calendar:{eid}" for n in notes)
+    assert c.get("/api/dashboard").json()["pending_out"] == [] or all(
+        e["id"] != eid for e in c.get("/api/dashboard").json()["pending_out"])
+
+
+def test_ares_icon_served(env):
+    r = env["client"].get("/icons/ares.svg")
+    assert r.status_code == 200 and "<svg" in r.text

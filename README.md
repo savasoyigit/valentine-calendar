@@ -20,7 +20,9 @@ Buluşma planlarını öner, karşı taraf tek tıkla kabul etsin ya da başka g
 - 🎉 **Özel günler ve anılar:** Anılara isteğe bağlı olarak [Immich](https://immich.app) fotoğrafları eklenebilir.
 - 📸 **Anlık fotoğraf:** Immich üzerinden birbirinize fotoğraf gönderme.
 - 🔔 **Bildirimler:** Telefona uygulama gibi kurulabilir (PWA), anlık bildirim ve e-posta bildirimi gönderir.
-- ⏳ **Sayaç:** “Birlikte geçen zamanımız” sayacı.
+- ⏳ **Sayaç:** “Birlikte geçen zamanımız” sayacı. Yıldönümlerini, her 100. günü ve aylık dönümleri kutlar, yaklaşanları da önceden haber verir.
+- 💌 **Bekleyen planlar:** Ana sayfada uygulama içinden “Evet 🥰” ya da “Başka gün öner” denebilir. Kabul edilince ekranda kalpler uçuşur.
+- 🐾 **Ares:** Boş ekranlarda sizi Blue Point maskotumuz Ares karşılar.
 - ⚙️ **İlk açılış sihirbazı ve Ayarlar sayfası:** Hiçbir dosyayı elle düzenlemen gerekmez.
 
 > **English:** Self-hosted shared calendar for couples. Run it with Docker (`docker compose up -d`) or Python (`pip install -r requirements.txt && uvicorn app:app`). Open it in your browser and follow the first-run setup wizard. The setup code is printed in the server log. The UI is in Turkish.

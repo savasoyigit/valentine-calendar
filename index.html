@@ -3,7 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#6b2143">
+<meta name="theme-color" content="#1a0f15">
+<meta name="color-scheme" content="dark">
 <link rel="manifest" href="/manifest.json">
 <link rel="icon" href="/icon.svg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -19,7 +20,7 @@
 <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png">
 <style>
 :root{--bg:#fbf3f1;--card:#fff;--ink:#3a1a2a;--mute:#8f6f7c;--line:#efdde0;--wine:#6b2143;--rose:#d9466f;--apricot:#ffb38a;--ok:#3f8f68;--wait:#b7791f;--tint:#fdeaee;--shadow:0 8px 30px rgba(107,33,67,.07);--serif:"Montserrat", "Avenir Next", Avenir, system-ui, -apple-system, "Segoe UI", sans-serif;--sans:"Montserrat", "Avenir Next", Avenir, system-ui, -apple-system, "Segoe UI", sans-serif}
-@media(prefers-color-scheme:dark){:root{--bg:#1a0f15;--card:#261620;--ink:#f6e3e8;--mute:#b592a0;--line:#3a2431;--wine:#4a1830;--rose:#e0507a;--tint:#3a2230;--ok:#6cc39a;--wait:#e0b060;--shadow:none}}
+:root{--bg:#1a0f15;--card:#261620;--ink:#f6e3e8;--mute:#b592a0;--line:#3a2431;--wine:#4a1830;--rose:#e0507a;--tint:#3a2230;--ok:#6cc39a;--wait:#e0b060;--shadow:none}
 *{box-sizing:border-box}
 html{padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom)}
 body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.45 var(--sans)}
@@ -242,6 +243,10 @@ button{cursor:pointer}
 .legend .dot{vertical-align:middle;margin-right:4px}
 
 .empty{color:var(--mute);margin:10px 0}
+.empty.ares{text-align:center;padding:18px 16px 8px;line-height:1.5;max-width:340px;margin:6px auto}
+.empty.ares::before{content:"";display:block;width:112px;height:105px;margin:0 auto 10px;background:url(/icons/ares.svg) center/contain no-repeat;animation:aresBob 3.2s ease-in-out infinite}
+@keyframes aresBob{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
+@media(prefers-reduced-motion:reduce){.empty.ares::before{animation:none}}
 
 .ev{display:flex;gap:10px;padding:12px 0;border-top:1px solid var(--line)}
 .ev:first-of-type{border-top:0}
@@ -1735,7 +1740,7 @@ button[onclick*="showTab("].active,
 .set-msg{display:none;margin-top:10px;padding:9px 12px;border-radius:10px;font-size:.85rem}
 .set-msg.ok{display:block;background:rgba(63,143,104,.12);color:var(--ok)}
 .set-msg.err{display:block;background:rgba(192,57,43,.1);color:#c0392b}
-@media(prefers-color-scheme:dark){.set-msg.err{color:#ff8a7a}}
+.set-msg.err{color:#ff8a7a}
 .set-badge{font-size:.7rem;font-weight:700;padding:3px 8px;border-radius:999px;background:var(--line);color:var(--mute)}
 .set-badge.on{background:rgba(63,143,104,.15);color:var(--ok)}
 .set-photo{display:flex;align-items:center;gap:14px;margin-top:6px}
@@ -1796,6 +1801,32 @@ a.pl-line:hover{color:var(--rose)}
 .pl-pick .pl-actions button{border-color:rgba(255,207,183,.35);color:#fff1ec}
 .pl-pick .pl-actions button.primary{background:var(--rose);border-color:var(--rose)}
 @media(prefers-reduced-motion:reduce){.pl-card.flash{animation:none}}
+
+/* Bekleyen planlar */
+.pending-plans{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:16px;margin:0 0 14px;box-shadow:var(--shadow)}
+.pending-plans h2{margin:0 0 10px;font-size:1rem;display:flex;align-items:center;gap:8px}
+.pending-plans h2 .n{background:var(--rose);color:#fff;border-radius:999px;font-size:.72rem;padding:2px 8px}
+.pp-item{padding:12px;border-radius:14px;background:var(--bg);border:1px solid var(--line)}
+.pp-item+.pp-item{margin-top:8px}
+.pp-kicker{font-size:.76rem;color:var(--apricot);font-weight:700}
+.pp-title{font-weight:700;margin-top:3px;word-break:break-word}
+.pp-sub{font-size:.84rem;color:var(--mute);margin-top:2px}
+.pp-actions{display:flex;gap:8px;margin-top:10px}
+.pp-actions button{flex:1;border:0;border-radius:11px;padding:10px;font-weight:700}
+.pp-yes{background:var(--rose);color:#fff}
+.pp-other{background:var(--tint);color:var(--ink)}
+.pp-out{margin-top:10px;font-size:.84rem;color:var(--mute)}
+.pp-out ul{margin:6px 0 0;padding-left:18px}
+.pp-out li{margin:2px 0;color:var(--ink)}
+.pp-out li small{color:var(--mute)}
+/* Sayaç dönüm noktası */
+.love-milestone{margin-top:12px;padding:9px 12px;border-radius:12px;background:rgba(255,179,138,.14);border:1px solid rgba(255,179,138,.35);color:#ffd9c4;font-weight:650;font-size:.9rem}
+/* Kutlama */
+.cel-heart{position:fixed;bottom:-48px;z-index:9999;font-size:28px;pointer-events:none;animation:celUp 2.6s cubic-bezier(.2,.7,.3,1) forwards}
+@keyframes celUp{to{transform:translate(var(--dx),-112vh) rotate(var(--r));opacity:0}}
+.cel-toast{position:fixed;left:50%;width:max-content;top:calc(env(safe-area-inset-top) + 18px);transform:translate(-50%,-20px);z-index:10000;background:var(--rose);color:#fff;font-weight:700;padding:12px 18px;border-radius:999px;box-shadow:0 10px 30px rgba(0,0,0,.35);opacity:0;transition:.35s;max-width:calc(100vw - 32px);text-align:center}
+.cel-toast.on{opacity:1;transform:translate(-50%,0)}
+@media(prefers-reduced-motion:reduce){.cel-heart{display:none}}
 </style>
 
 
@@ -1956,11 +1987,14 @@ a.pl-line:hover{color:var(--rose)}
 
   <section class="hero" id="hero"></section>
 
+  <section class="pending-plans" id="pending-plans" hidden></section>
+
   <section class="love-counter" id="love-counter" aria-live="polite" hidden>
     <div class="love-copy">
       <div class="love-kicker" id="love-kicker"></div>
       <h2>Birlikte geçen zamanımız</h2>
       <div id="love-duration" class="love-duration"><span>Hesaplanıyor…</span></div>
+      <div id="love-milestone" class="love-milestone" hidden></div>
     </div>
     <div class="love-heart" aria-hidden="true">❤️</div>
   </section>
@@ -3230,13 +3264,13 @@ async function loadDashboard(){
         </div>
 
         <div class="hero-num">
-          ${esc(daysUntil(u.date))}
+          ${daysUntil(u.date)===0?'Bugün':esc(daysUntil(u.date))}
         </div>
 
         <div class="hero-label">
           ${daysUntil(u.date)===0
-            ?'bugün'
-            :'gün kaldı'}
+            ?'buluşma günü 💕'
+            :daysUntil(u.date)===1?'gün kaldı · yarın!':'gün kaldı'}
         </div>
 
         <div class="hero-title">
@@ -3262,6 +3296,9 @@ async function loadDashboard(){
           Takvimden güzel bir plan yapalım.
         </div>
       `;
+
+  renderPendingPlans(d.pending_in||[],d.pending_out||[]);
+  celebrateAcceptedNotifications(d.recent_notifications||[]);
 
   $('summary').innerHTML=`
 
@@ -3312,7 +3349,7 @@ async function loadDashboard(){
         </div>
 
       `).join('')
-      :'<p class="empty">Henüz ortak not yok.</p>';
+      :'<p class="empty ares">Henüz ortak not yok… Ares de ilk notu bekliyor 🐾</p>';
 
   badge(d.unread);
   updateNotificationHeader();
@@ -3777,7 +3814,7 @@ function renderSharedNotes(){
         </article>
 
       `).join('')
-      :'<p class="empty">Henüz ortak not yok.</p>';
+      :'<p class="empty ares">Henüz ortak not yok… Ares de ilk notu bekliyor 🐾</p>';
 
 }
 
@@ -3844,7 +3881,7 @@ function renderShopping(){
   if(!lists.length){
     $('shopping-list-picker').innerHTML='';
     $('shopping-active-title').textContent='Alışveriş listesi';
-    $('shopping-list').innerHTML='<p class="empty">Henüz liste yok. Yukarıdan bir liste oluştur. 🛒</p>';
+    $('shopping-list').innerHTML='<p class="empty ares">Henüz liste yok. Ares şimdiden mama listesi kurmak istiyor 🛒</p>';
     return;
   }
   if(!lists.some(x=>Number(x.id)===Number(ACTIVE_SHOP_LIST))) ACTIVE_SHOP_LIST=lists[0].id;
@@ -3956,6 +3993,7 @@ function renderLoveDuration(){
   const mark=new Date(monthMark.getFullYear(),monthMark.getMonth(),monthMark.getDate());
   const remaining=Math.floor((today-mark)/86400000),weeks=Math.floor(remaining/7),days=remaining%7;
   $('love-duration').innerHTML=`<span><b>${years}</b> Yıl</span><span><b>${months}</b> Ay</span><span><b>${weeks}</b> Hafta</span><span><b>${days}</b> Gün</span>`;
+  renderLoveMilestone(start,today,years,months);
 }
 
 /* =========================
@@ -4090,7 +4128,7 @@ function renderWishlist(){
 
       `).join('')
 
-      : '<p class="empty">Wishlist henüz boş. Birlikte hayal kurmaya başlayın. 🎁</p>';
+      : '<p class="empty ares">Wishlist henüz boş. Ares’in dileği belli: mama 🐟 Ya sizinkiler?</p>';
 }
 
 /* =========================
@@ -4143,7 +4181,7 @@ function renderSpecialDays(){
   if(!SPECIAL.length){
 
     box.innerHTML=
-      '<p class="empty">Henüz özel bir gün eklemediniz. ❤️</p>';
+      '<p class="empty ares">Henüz özel bir gün yok. Ares’in doğum gününü eklemeye ne dersiniz? 🎂</p>';
 
     return;
   }
@@ -4391,7 +4429,7 @@ function renderWatchlist(){
   if(!WATCH.length){
 
     box.innerHTML=
-      '<p class="empty">Henüz izlenecek bir şey yok. 🍿</p>';
+      '<p class="empty ares">Henüz izlenecek bir şey yok. Ares kucağa kıvrılmaya hazır, filmi siz seçin 🍿</p>';
 
     return;
   }
@@ -4681,7 +4719,7 @@ function renderMemories(){
   if(!MEMORIES.length){
 
     box.innerHTML=
-      '<p class="empty">Henüz bir anı eklemediniz. İlk güzel anınızı kaydedin. ❤️</p>';
+      '<p class="empty ares">Henüz bir anı yok. İlk güzel anınızı kaydedin, Ares de kareye girsin 📸</p>';
 
     return;
 
@@ -5039,7 +5077,7 @@ function renderImmichGallery(){
   if(!IMMICH.length){
 
     box.innerHTML=
-      '<p class="empty">Immich albümünde henüz fotoğraf yok.</p>';
+      '<p class="empty ares">Albümde henüz fotoğraf yok. Ares poz vermeye hazır 📸</p>';
 
     return;
 
@@ -6149,7 +6187,7 @@ function renderPlaces(){
   const box=$('places-list');
   const list=visiblePlaces();
   if(!PLACES.length){
-    box.innerHTML='<p class="empty">Henüz mekan yok. İlk favori kahvecinizle başlayın ☕</p>';
+    box.innerHTML='<p class="empty ares">Henüz mekan yok. Ares evi bekler, siz ilk favori kahvecinizi ekleyin ☕</p>';
     return;
   }
   if(!list.length){
@@ -6236,6 +6274,119 @@ function pickRandomPlace(){
 }
 
 PLACE_FORM.status='visited';
+</script>
+
+<script>
+/* =========================
+   KUTLAMA · BEKLEYEN PLANLAR · DÖNÜM NOKTALARI
+========================= */
+function onceKey(key){
+  try{ if(localStorage.getItem(key)) return false; localStorage.setItem(key,'1'); }catch(e){}
+  return true;
+}
+
+function celebrate(message){
+  try{ navigator.vibrate&&navigator.vibrate([30,50,30]); }catch(e){}
+  const reduce=window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if(!reduce){
+    const icons=['❤️','💕','💖','🧡','✨','💗'];
+    for(let i=0;i<28;i++){
+      const h=document.createElement('span');
+      h.className='cel-heart';
+      h.textContent=icons[i%icons.length];
+      h.style.left=(Math.random()*92+2)+'vw';
+      h.style.fontSize=(20+Math.random()*18)+'px';
+      h.style.animationDelay=(Math.random()*.6)+'s';
+      h.style.setProperty('--dx',(Math.random()*60-30)+'px');
+      h.style.setProperty('--r',(Math.random()*90-45)+'deg');
+      document.body.appendChild(h);
+      setTimeout(()=>h.remove(),3600);
+    }
+  }
+  if(message){
+    const t=document.createElement('div');
+    t.className='cel-toast'; t.setAttribute('role','status'); t.textContent=message;
+    document.body.appendChild(t);
+    requestAnimationFrame(()=>t.classList.add('on'));
+    setTimeout(()=>{t.classList.remove('on');setTimeout(()=>t.remove(),400);},3200);
+  }
+}
+
+function planWhen(e){
+  return long(e.date)+(e.time?' · '+e.time:'')+(e.place?' · 📍'+e.place:'');
+}
+
+function renderPendingPlans(incoming,outgoing){
+  const box=$('pending-plans'); if(!box) return;
+  if(!incoming.length&&!outgoing.length){ box.hidden=true; box.innerHTML=''; return; }
+  box.hidden=false;
+  let html='';
+  if(incoming.length){
+    html+=`<h2>💌 Cevabını bekleyen planlar <span class="n">${incoming.length}</span></h2>`;
+    html+=incoming.map(e=>`
+      <div class="pp-item">
+        <div class="pp-kicker">${esc(e.proposed_by)} bir buluşma önerdi</div>
+        <div class="pp-title">${esc(e.title)}</div>
+        <div class="pp-sub">${esc(planWhen(e))}</div>
+        <div class="pp-actions">
+          <button type="button" class="pp-yes" onclick="acceptPlan(${e.id},this)">Evet 🥰</button>
+          <button type="button" class="pp-other" onclick="suggestOtherDay(${e.id})">Başka gün öner</button>
+        </div>
+      </div>`).join('');
+  }
+  if(outgoing.length){
+    html+=`<div class="pp-out">
+      ${incoming.length?`⏳ Senin önerdiğin ${outgoing.length} plan da cevap bekliyor:`:`<h2 style="color:var(--ink)">⏳ Cevap bekleyen planların <span class="n">${outgoing.length}</span></h2>`}
+      <ul>${outgoing.map(e=>`<li>${esc(e.title)} <small>· ${esc(planWhen(e))}</small></li>`).join('')}</ul></div>`;
+  }
+  box.innerHTML=html;
+}
+
+async function acceptPlan(id,btn){
+  if(btn) btn.disabled=true;
+  try{
+    await api('POST','/api/events/'+id+'/accept');
+    celebrate('Buluşma onaylandı 🎉');
+    await loadAll();
+    await loadDashboard();
+  }catch(e){
+    if(e!==0) alert(e.message||'Onaylanamadı.');
+    if(btn) btn.disabled=false;
+  }
+}
+
+async function suggestOtherDay(id){
+  try{
+    const r=await api('GET','/api/events/'+id+'/respond');
+    location.href=r.url;
+  }catch(e){ if(e!==0) alert(e.message||'Açılamadı.'); }
+}
+
+function celebrateAcceptedNotifications(list){
+  const fresh=list.find(n=>n.type==='accepted'&&!n.read&&onceKey('cel-notif-'+n.id));
+  if(fresh) setTimeout(()=>celebrate(fresh.title),400);
+}
+
+function renderLoveMilestone(start,today,years,months){
+  const box=$('love-milestone'); if(!box) return;
+  const utc=d=>Date.UTC(d.getFullYear(),d.getMonth(),d.getDate());
+  const totalDays=Math.round((utc(today)-utc(start))/86400000);
+  const totalMonths=years*12+months;
+  const isoToday=today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
+  const isAnniv=years>0&&today.getMonth()===start.getMonth()&&today.getDate()===start.getDate();
+  let next=new Date(today.getFullYear(),start.getMonth(),start.getDate());
+  if(utc(next)<=utc(today)) next=new Date(today.getFullYear()+1,start.getMonth(),start.getDate());
+  const toAnniv=Math.round((utc(next)-utc(today))/86400000);
+  const next100=Math.ceil((totalDays+1)/100)*100, to100=next100-totalDays;
+  let text='',party=false;
+  if(isAnniv){ text=`💍 Bugün ${years}. yıldönümümüz! İyi ki birlikteyiz.`; party=true; }
+  else if(totalDays>0&&totalDays%100===0){ text=`🎉 Bugün birlikteliğimizin ${totalDays.toLocaleString('tr-TR')}. günü!`; party=true; }
+  else if(totalMonths>0&&today.getDate()===start.getDate()){ text=`💕 Bugün ${totalMonths}. ayımız`; }
+  else if(toAnniv<=14){ text=toAnniv===1?`✨ ${years+1}. yıldönümümüz yarın!`:`✨ ${years+1}. yıldönümümüze ${toAnniv} gün kaldı`; }
+  else if(to100<=7){ text=to100===1?`🎯 Yarın ${next100.toLocaleString('tr-TR')}. günümüz!`:`🎯 ${next100.toLocaleString('tr-TR')}. günümüze ${to100} gün kaldı`; }
+  box.hidden=!text; box.textContent=text;
+  if(party&&onceKey('cel-day-'+isoToday)) setTimeout(()=>celebrate(text),600);
+}
 </script>
 
 </body>

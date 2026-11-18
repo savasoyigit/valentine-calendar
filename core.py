@@ -1703,7 +1703,12 @@ def dashboard(r: Request):
         wishlist_count = c.execute("select count(*) n from wishlist_items where done=0").fetchone()["n"]
         recent_notes = [dict(x) for x in c.execute("select id,title,text,author,created from shared_notes order by id desc limit 3")]
         recent_notifications = [dict(x) for x in c.execute("select id,actor,type,title,text,target,read,created from notifications where recipient=? order by id desc limit 5", (me_name,))]
+        pending_rows = [dict(x) for x in c.execute(
+            "select id,title,date,time,place,proposed_by from events "
+            "where status='pending' and done=0 and date>=? order by date,time", (today,))]
     return {"upcoming": dict(upcoming) if upcoming else None, "unread": unread,
+            "pending_in": [e for e in pending_rows if e["proposed_by"] != me_name],
+            "pending_out": [e for e in pending_rows if e["proposed_by"] == me_name],
             "notes_count": notes_count, "shopping_count": shopping_count, "wishlist_count": wishlist_count,
             "recent_notes": recent_notes, "recent_notifications": recent_notifications}
 
@@ -2003,20 +2008,24 @@ def read_notification(i: int, r: Request):
 
 
 # ---------- mail ile yanıt sayfası (PIN yok, tek kullanımlık gizli link) ----------
-CSS = ("body{margin:0;background:#fff5f7;color:#4a2c35;font:16px/1.4 system-ui,sans-serif}"
-       "main{max-width:440px;margin:0 auto;padding:20px}"
-       ".c{background:#fff;border-radius:18px;padding:18px;margin-bottom:14px;box-shadow:0 2px 10px #ff6b8b22}"
+CSS = ("body{margin:0;background:#1a0f15;color:#f6e3e8;font:16px/1.45 Montserrat,system-ui,sans-serif;color-scheme:dark}"
+       "main{max-width:440px;margin:0 auto;padding:24px 16px}"
+       ".c{background:linear-gradient(135deg,#4f1d35,#2b1220);border:1px solid #3a2431;border-radius:20px;padding:20px;margin-bottom:14px}"
        "h1{font-size:1.25rem;margin:0 0 8px}"
-       "button{width:100%;border:0;border-radius:12px;background:#ff6b8b;color:#fff;padding:12px;font:inherit;margin-top:6px}"
-       "button.g{background:#ffe1e8;color:#4a2c35}"
-       "input,textarea{width:100%;box-sizing:border-box;border:1px solid #ffe1e8;border-radius:10px;padding:10px;font:inherit;margin-bottom:6px}")
+       "button{width:100%;border:0;border-radius:12px;background:#d9466f;color:#fff;padding:13px;font:inherit;font-weight:700;margin-top:8px;cursor:pointer}"
+       "button.g{background:#3a2230;color:#f6e3e8}"
+       "input,textarea{width:100%;box-sizing:border-box;border:1px solid #3a2431;background:#1a0f15;color:#f6e3e8;"
+       "border-radius:10px;padding:10px;font:inherit;margin-bottom:6px;color-scheme:dark}"
+       "a{color:#ffb38a}")
 INVALID = "<div class=c><h1>Bu bağlantı artık geçerli değil 🙈</h1>Yanıt zaten verilmiş olabilir.</div>"
 
 
 def page(body):
     return HTMLResponse("<!DOCTYPE html><html lang=tr><meta charset=utf-8>"
                         "<meta name=viewport content='width=device-width,initial-scale=1'>"
-                        f"<title>Aşkımız 💕</title><style>{CSS}</style><main>{body}</main></html>")
+                        "<meta name=color-scheme content=dark><meta name=theme-color content='#1a0f15'>"
+                        f"<title>Aşkımız 💕</title><style>{CSS}</style><main>{body}"
+                        "<p style='text-align:center;margin-top:18px'><a href='/'>Uygulamaya dön →</a></p></main></html>")
 
 
 def pending(tok):
@@ -2032,7 +2041,7 @@ def resp_page(tok: str):
     if not e:
         return page(INVALID)
     return page(f"""<div class=c><h1>{esc(e['proposed_by'])} bir buluşma önerdi 💕</h1>
-<b>{esc(e['title'])}</b><br>{esc(when(e))}
+<b>{esc(e['title'])}</b><br>{esc(dt_txt(e['date'], e['time']))}{' · 📍' + esc(e['place']) if e['place'] else ''}
 <form method=post action=/r/{esc(tok)}/accept><button>Kabul ediyorum 🥰</button></form></div>
 <div class=c><h1>Yoksa yok mu?</h1>
 <form method=post action=/r/{esc(tok)}/decline>
@@ -2041,16 +2050,58 @@ def resp_page(tok: str):
 <button class=g>Bu günü öner</button></form></div>""")
 
 
+def accept_event(e):
+    """Öneriyi kabul eder; öneri sahibine e-posta, uygulama içi bildirim ve push gider."""
+    who = other(e["proposed_by"])
+    with db() as c:
+        c.execute("update events set status='accepted', token='' where id=?", (e["id"],))
+        add_hist(c, e["id"], who, "kabul etti")
+    notify_ok(e["id"])
+    notify_user(e["proposed_by"], who, "accepted", f"{who} evet dedi 🎉",
+                f"{e['title']} · {dt_txt(e['date'], e['time'])}", f"calendar:{e['id']}")
+
+
+CELEBRATE = """<style>.hb{position:fixed;bottom:-40px;font-size:28px;animation:hb 2.6s ease-out forwards;pointer-events:none}
+@keyframes hb{to{transform:translateY(-110vh) rotate(var(--r));opacity:0}}
+@media(prefers-reduced-motion:reduce){.hb{display:none}}</style>
+<script>navigator.vibrate&&navigator.vibrate([30,50,30]);
+for(let i=0;i<26;i++){const h=document.createElement('span');h.className='hb';
+h.textContent=['❤️','💕','💖','🧡','✨'][i%5];h.style.left=Math.random()*96+'vw';
+h.style.animationDelay=Math.random()*.7+'s';h.style.setProperty('--r',(Math.random()*80-40)+'deg');
+document.body.appendChild(h);}</script>"""
+
+
 @app.post("/r/{tok}/accept")
 def accept(tok: str):
     e = pending(tok)
     if not e:
         return page(INVALID)
-    with db() as c:
-        c.execute("update events set status='accepted', token='' where id=?", (e["id"],))
-        add_hist(c, e["id"], other(e["proposed_by"]), "kabul etti")
-    notify_ok(e["id"])
-    return page("<div class=c><h1>Harika! Buluşma onaylandı 🎉</h1>Haber verdik.</div>")
+    accept_event(e)
+    return page("<div class=c><h1>Harika! Buluşma onaylandı 🎉</h1>Haber verdik.</div>" + CELEBRATE)
+
+
+def pending_for(i, who):
+    e = get_ev(i)
+    if not e or e["status"] != "pending":
+        raise HTTPException(404, "Bekleyen bir öneri bulunamadı.")
+    if e["proposed_by"] == who:
+        raise HTTPException(403, "Kendi önerine cevap veremezsin.")
+    return e
+
+
+@app.post("/api/events/{i}/accept")
+def accept_in_app(i: int, r: Request):
+    who = auth(r)
+    accept_event(pending_for(i, who))
+    return {"ok": True}
+
+
+@app.get("/api/events/{i}/respond")
+def respond_link(i: int, r: Request):
+    """Başka gün önermek için e-postadaki cevap sayfasının adresi."""
+    who = auth(r)
+    e = pending_for(i, who)
+    return {"url": f"/r/{e['token']}"}
 
 
 @app.post("/r/{tok}/decline")
@@ -2154,7 +2205,7 @@ self.addEventListener("notificationclick", event => {
 def manifest():
     return JSONResponse({
         "name": "Aşkımız", "short_name": "Aşkımız", "start_url": "/", "display": "standalone",
-        "background_color": "#fbf3f1", "theme_color": "#6b2143",
+        "background_color": "#1a0f15", "theme_color": "#1a0f15",
         "icons": [
             {"src": "/icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable"},
             {"src": "/icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable"},
@@ -2162,7 +2213,7 @@ def manifest():
         ]})
 
 
-ICON_FILES = {"icon.svg", "icon-192.png", "icon-512.png", "apple-touch-icon.png"}
+ICON_FILES = {"icon.svg", "icon-192.png", "icon-512.png", "apple-touch-icon.png", "ares.svg"}
 
 
 @app.get("/icon.svg")
