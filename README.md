@@ -113,8 +113,79 @@ Immich'i aç ve şu yolu izle: Profil resmi → **Hesap Ayarları** → **API An
 **Gmail ile e-posta göndermek**
 Normal Gmail şifren burada çalışmaz. Önce Google hesabında 2 adımlı doğrulamayı aç. Sonra bir [uygulama şifresi](https://myaccount.google.com/apppasswords) oluştur ve onu kullan. Sunucu: `smtp.gmail.com`, port: `587`.
 
-**https (anlık bildirim ve telefona kurulum için)**
-Ev ağında `http://192.168.x.x:8000` ile giriş yapıp uygulamayı kullanabilirsin. Ama tarayıcılar anlık bildirim ve "Ana ekrana ekle" için **https** ister. En kısa yol Caddy (sertifikayı kendisi alır):
+---
+
+## https kurulumu
+
+Ev ağında `http://192.168.x.x:8000` ile giriş yapıp uygulamayı kullanabilirsin. Ama tarayıcılar iki şey için **https** ister:
+- **Anlık bildirimler**
+- **"Ana ekrana ekle"** ile telefona uygulama gibi kurmak
+
+Üç yol var:
+
+| Yöntem | Alan adı gerekir mi? | Modemde port açmak gerekir mi? | Kim erişebilir? |
+|---|---|---|---|
+| **A) Tailscale Funnel** | Hayır | Hayır | İnternetteki herkes (giriş ekranı korur) |
+| **B) Tailscale Serve** | Hayır | Hayır | Sadece Tailscale ağınızdaki cihazlar |
+| **C) Caddy** | Evet | Evet (80 ve 443) | İnternetteki herkes (giriş ekranı korur) |
+
+### A) Tailscale Funnel (en kolayı)
+
+[Tailscale](https://tailscale.com), sunucuna `https://SUNUCU-ADI.AG-ADI.ts.net` gibi geçerli sertifikalı bir adres verir. Alan adı satın alman ya da modemde port açman gerekmez. Ücretsiz kişisel plan yeterli.
+
+```bash
+curl -fsSL https://tailscale.com/install.sh | sh    # Tailscale'i kur
+sudo tailscale up                                    # çıkan linki tarayıcıda açıp giriş yap
+sudo tailscale funnel --bg 8000                      # uygulamayı https ile internete aç
+```
+
+- **İlk seferde onay isteyebilir.** Hesabında Funnel ya da HTTPS sertifikaları henüz kapalıysa komut bir link verir. Linki açıp onayla, sonra komutu tekrar çalıştır.
+- **Adresin çıktıda yazar.** "Available on the internet:" satırının altındaki `https://….ts.net` adresi senin uygulama adresindir.
+- **Kalıcıdır.** `--bg` sayesinde ayar sunucu yeniden başlasa da açık kalır.
+
+Sonra iki ayar yap:
+
+1. **Uygulama adresini güncelle.** Uygulamada **⚙️ Ayarlar → Genel → Uygulama adresi** alanına bu `https://….ts.net` adresini yaz. E-postalardaki "Cevabını ver" linkleri bu adrese gider.
+2. **Uygulamayı sadece Tailscale'den erişilebilir yap.** Böylece istekler hep Tailscale üzerinden ve https ile gelir.
+   - **Python / systemd:** uvicorn'u `--host 127.0.0.1 --port 8000 --proxy-headers` ile çalıştır.
+   - **Docker:** `docker-compose.yml` dosyasında iki satırı değiştir:
+     ```yaml
+     ports:
+       - "127.0.0.1:8000:8000"
+     environment:
+       FORWARDED_ALLOW_IPS: "*"
+     ```
+     `"*"` burada güvenli, çünkü port artık sadece sunucunun kendisinden erişilebilir.
+
+Tailscale isteği uygulamaya gerçek kullanıcı IP'si (`X-Forwarded-For`) ve https bilgisi (`X-Forwarded-Proto`) ile iletir. `--proxy-headers` bu bilgileri okur. Böylece:
+- Hatalı giriş kilidi sadece deneme yapan kişiyi kilitler, ikinizi birden değil.
+- Giriş çerezi `Secure` olarak işaretlenir.
+
+Durumu görmek ya da kapatmak için:
+
+```bash
+tailscale funnel status
+sudo tailscale funnel reset
+```
+
+### B) Tailscale Serve (sadece ikinize özel)
+
+Uygulamanın internete hiç açılmamasını istiyorsan Funnel yerine Serve kullan:
+
+```bash
+sudo tailscale serve --bg 8000
+```
+
+- **Adres:** Yine `https://….ts.net` biçiminde olur, ama sadece Tailscale ağınızdaki cihazlardan açılır.
+- **Telefonlar:** İkinizin telefonuna da Tailscale uygulamasını kurup aynı ağa eklemeniz gerekir.
+- **E-postadaki linkler:** Sadece Tailscale açıkken çalışır.
+- **Kapatmak için:** `sudo tailscale serve reset`
+
+Gizlilik açısından en güvenli yol budur.
+
+### C) Kendi alan adınla Caddy
+
+Alan adın varsa Caddy sertifikayı kendisi alır. Modemde 80 ve 443 portlarını sunucuya yönlendirmen gerekir.
 
 ```
 takvim.ornek.com {
@@ -122,9 +193,10 @@ takvim.ornek.com {
 }
 ```
 
-Ters vekil (reverse proxy) kullanıyorsan uvicorn'a gerçek kullanıcı IP'sini görmesini söyle. Bunu yapmazsan hatalı giriş kilidi herkesi birden kilitleyebilir:
-- **Python kurulumunda:** Komuta `--proxy-headers --forwarded-allow-ips=127.0.0.1` ekle.
+- **Python kurulumunda:** uvicorn'a `--proxy-headers --forwarded-allow-ips=127.0.0.1` ekle.
 - **Docker'da:** `docker-compose.yml` içindeki `FORWARDED_ALLOW_IPS` değerini vekilin IP'si yap.
+
+Bunu yapmazsan hatalı giriş kilidi ikinizi birden kilitleyebilir.
 
 ---
 
