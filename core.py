@@ -2206,3 +2206,7 @@ import sys  # noqa: E402
 import settings_api  # noqa: E402
 
 settings_api.register(app, sys.modules[__name__])
+
+import places_api  # noqa: E402
+
+places_api.register(app, sys.modules[__name__])

@@ -1743,6 +1743,59 @@ button[onclick*="showTab("].active,
 .set-photo-actions{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
 .set-photo-actions .btn{margin-top:0}
 input:disabled{opacity:.6;cursor:not-allowed}
+/* Mekanlar */
+#tab-places [hidden]{display:none!important}
+.pl-open{width:100%;border:1px dashed var(--line);background:var(--card);color:var(--rose);border-radius:16px;padding:14px;font-weight:700;margin-bottom:14px}
+.pl-form-head{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.pl-form-head h2{margin:0}
+.pl-dice{border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:999px;padding:9px 14px;font-weight:650;white-space:nowrap;box-shadow:var(--shadow)}
+.pl-dice:active{transform:scale(.97)}
+.pl-seg{display:grid;grid-template-columns:1fr 1fr;gap:4px;padding:4px;border-radius:12px;background:var(--bg);border:1px solid var(--line);margin-top:4px}
+.pl-seg button{border:0;border-radius:9px;padding:9px;background:none;color:var(--mute);font-weight:650}
+.pl-seg button.on{background:var(--rose);color:#fff}
+.pl-rating-field{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:10px;padding:8px 12px;border:1px solid var(--line);border-radius:12px;background:var(--bg)}
+.pl-label{color:var(--mute);font-size:.88rem}
+.pl-stars{display:inline-flex;gap:2px}
+.pl-stars button,.pl-stars span{border:0;background:none;padding:0 1px;font-size:1.15rem;line-height:1;color:var(--line)}
+.pl-stars button{cursor:pointer}
+.pl-stars .on{color:var(--apricot)}
+.pl-stars-lg button{font-size:1.6rem;padding:2px 3px}
+.pl-form-actions{display:flex;justify-content:flex-end;align-items:center;gap:12px}
+.pl-toolbar{display:flex;flex-direction:column;gap:8px;margin:4px 0 12px}
+.pl-filters{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none}
+.pl-filters button{border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:999px;padding:7px 13px;font-size:.84rem;white-space:nowrap}
+.pl-filters button.on{background:var(--rose);border-color:var(--rose);color:#fff}
+.pl-filters small{opacity:.75;margin-left:3px}
+.pl-tools{display:grid;grid-template-columns:1fr auto;gap:8px}
+.pl-tools input,.pl-tools select{margin-top:0}
+.pl-list{display:grid;gap:10px}
+@media(min-width:620px){.pl-list{grid-template-columns:1fr 1fr}}
+.pl-card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:14px;box-shadow:var(--shadow);display:flex;flex-direction:column;gap:8px}
+.pl-card.flash{animation:plFlash 1.4s ease}
+@keyframes plFlash{0%,100%{box-shadow:var(--shadow)}30%{box-shadow:0 0 0 3px var(--rose)}}
+.pl-head{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
+.pl-head h3{margin:0;font:650 1.02rem/1.3 var(--sans);word-break:break-word}
+.pl-pill{flex:none;font-size:.7rem;font-weight:700;padding:4px 9px;border-radius:999px;background:var(--tint);color:var(--rose)}
+.pl-pill.visited{background:rgba(63,143,104,.15);color:var(--ok)}
+.pl-ratings{display:flex;flex-direction:column;gap:4px;padding:8px 10px;border-radius:12px;background:var(--bg)}
+.pl-rate-row{display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:.84rem}
+.pl-rate-row .pl-who{color:var(--mute)}
+.pl-rate-row .none{color:var(--mute);font-size:.78rem;font-style:italic}
+.pl-avg{display:inline-flex;align-items:center;gap:4px;font-weight:700;font-size:.82rem;color:var(--apricot)}
+.pl-line{display:flex;align-items:flex-start;gap:6px;font-size:.84rem;color:var(--ink);text-decoration:none;word-break:break-word}
+a.pl-line:hover{color:var(--rose)}
+.pl-note{font-size:.84rem;color:var(--mute);white-space:pre-wrap;word-break:break-word}
+.pl-meta{font-size:.72rem;color:var(--mute)}
+.pl-actions{display:flex;gap:6px;flex-wrap:wrap;margin-top:2px}
+.pl-actions button{border:1px solid var(--line);background:none;color:var(--ink);border-radius:9px;padding:7px 10px;font-size:.8rem}
+.pl-actions .grow{flex:1}
+.pl-pick{background:linear-gradient(135deg,#843054,#3a172b);color:#fff1ec;border-radius:20px;padding:18px;margin-bottom:14px;box-shadow:var(--shadow)}
+.pl-pick small{display:block;color:var(--apricot);font-weight:700;letter-spacing:.06em;text-transform:uppercase;font-size:.7rem}
+.pl-pick h2{margin:6px 0 4px;font-size:1.35rem;word-break:break-word}
+.pl-pick p{margin:0;color:#f3d9d6;font-size:.86rem}
+.pl-pick .pl-actions button{border-color:rgba(255,207,183,.35);color:#fff1ec}
+.pl-pick .pl-actions button.primary{background:var(--rose);border-color:var(--rose)}
+@media(prefers-reduced-motion:reduce){.pl-card.flash{animation:none}}
 </style>
 
 
@@ -1882,6 +1935,10 @@ input:disabled{opacity:.6;cursor:not-allowed}
 
   <button data-tab="watchlist" onclick="showTab('watchlist')">
     🎬 <span>İzlenecekler</span>
+  </button>
+
+  <button data-tab="places" onclick="showTab('places')">
+    📍 <span>Mekanlar</span>
   </button>
 
   <button data-tab="instantphoto" onclick="showTab('instantphoto')">
@@ -2232,6 +2289,68 @@ input:disabled{opacity:.6;cursor:not-allowed}
   </section>
 
   <div id="watchlist-list"></div>
+
+</section>
+
+
+<section id="tab-places" class="tab">
+
+  <section class="section-title">
+    <div>
+      <h1>Mekanlar 📍</h1>
+      <p>Gittiğimiz ve gitmek istediğimiz yerler.</p>
+    </div>
+    <button class="pl-dice" type="button" onclick="pickRandomPlace()">🎲 Bugün nereye?</button>
+  </section>
+
+  <div id="place-pick" aria-live="polite"></div>
+
+  <button type="button" class="pl-open" id="pl-open" onclick="openPlaceForm()">＋ Mekan ekle</button>
+
+  <section class="card" id="place-form-card" hidden>
+    <div class="pl-form-head">
+      <h2 id="pl-form-title">Yeni mekan</h2>
+      <button type="button" class="link" onclick="closePlaceForm()" aria-label="Formu kapat">Kapat</button>
+    </div>
+
+    <div class="pl-seg" role="radiogroup" aria-label="Durum">
+      <button type="button" role="radio" data-status="visited" onclick="setPlaceFormStatus('visited')">✓ Gittik</button>
+      <button type="button" role="radio" data-status="wishlist" onclick="setPlaceFormStatus('wishlist')">📌 Gidilecek</button>
+    </div>
+
+    <input id="pl-name" placeholder="Mekan adı" maxlength="120" autocomplete="off">
+
+    <div id="pl-rating-wrap" class="pl-rating-field">
+      <span class="pl-label">Puanın</span>
+      <div class="pl-stars pl-stars-lg" id="pl-rating"></div>
+    </div>
+
+    <input id="pl-address" placeholder="Adres (isteğe bağlı)" maxlength="300" autocomplete="off">
+    <input id="pl-url" type="url" inputmode="url" placeholder="Link: Instagram, Google Maps, menü… (isteğe bağlı)" maxlength="500" autocomplete="off">
+    <textarea id="pl-note" rows="2" placeholder="Not (isteğe bağlı)" maxlength="2000"></textarea>
+
+    <div class="pl-form-actions">
+      <button class="btn" type="button" id="pl-save" onclick="savePlace(this)">Mekanı ekle 📍</button>
+    </div>
+  </section>
+
+  <div class="pl-toolbar">
+    <div class="pl-filters" id="pl-filters">
+      <button type="button" data-filter="all" onclick="setPlaceFilter('all')">Hepsi</button>
+      <button type="button" data-filter="visited" onclick="setPlaceFilter('visited')">Gittiklerimiz</button>
+      <button type="button" data-filter="wishlist" onclick="setPlaceFilter('wishlist')">Gidilecekler</button>
+    </div>
+    <div class="pl-tools">
+      <input id="pl-search" type="search" placeholder="Ara…" oninput="renderPlaces()" aria-label="Mekan ara">
+      <select id="pl-sort" onchange="renderPlaces()" aria-label="Sıralama">
+        <option value="new">En yeni</option>
+        <option value="rating">En yüksek puan</option>
+        <option value="name">A → Z</option>
+      </select>
+    </div>
+  </div>
+
+  <div id="places-list"></div>
 
 </section>
 
@@ -2725,6 +2844,9 @@ function notificationTarget(target){
   if(target.startsWith('memory:'))
     return 'memories';
 
+  if(target.startsWith('place:'))
+    return 'places';
+
   if(target.startsWith('instantphoto:'))
     return 'instantphoto';
 
@@ -3011,6 +3133,9 @@ function showTab(tab){
 
   if(tab === 'watchlist')
     loadWatchlist();
+
+  if(tab === 'places')
+    loadPlaces();
 
   if(tab === 'memories')
     loadMemories();
@@ -5845,6 +5970,272 @@ async function disableSmtp(btn){
   if(!confirm('E-posta bildirimleri kapatılsın mı?')) return;
   if(await settingsCall('PUT','/api/settings/smtp',{host:''},btn,'set-msg-smtp')) loadSettings().then(()=>setMsg('set-msg-smtp','✓ E-posta kapatıldı.',true));
 }
+</script>
+
+<script>
+/* =========================
+   MEKANLAR
+========================= */
+let PLACES=[],PLACE_PEOPLE=[],PLACE_FILTER='all',PLACE_FORM={status:'visited',rating:null,editId:null},PLACE_FORM_OPEN=null;
+
+function starsHtml(value,opts={}){
+  const v=Number(value)||0;
+  if(opts.readonly){
+    return `<span class="pl-stars" aria-label="${v} / 5">${[1,2,3,4,5].map(n=>`<span class="${n<=v?'on':''}">★</span>`).join('')}</span>`;
+  }
+  return `<span class="pl-stars ${opts.lg?'pl-stars-lg':''}" role="radiogroup" aria-label="Puan">${[1,2,3,4,5].map(n=>
+    `<button type="button" class="${n<=v?'on':''}" aria-label="${n} yıldız" onclick="${opts.onclick}(${opts.arg!==undefined?opts.arg+',':''}${n})">★</button>`).join('')}</span>`;
+}
+
+function placeMapUrl(address){
+  const q=encodeURIComponent(address);
+  const apple=/iPhone|iPad|iPod|Macintosh/.test(navigator.userAgent)&&'ontouchend' in document;
+  return apple?`https://maps.apple.com/?q=${q}`:`https://www.google.com/maps/search/?api=1&query=${q}`;
+}
+
+function placeHost(url){
+  try{ return new URL(url).hostname.replace(/^www\./,''); }catch(e){ return url; }
+}
+
+function partnerName(){
+  return PLACE_PEOPLE.find(n=>n!==me)||'';
+}
+
+async function loadPlaces(){
+  try{
+    const [places,people]=await Promise.all([
+      api('GET','/api/places'),
+      PLACE_PEOPLE.length?Promise.resolve(PLACE_PEOPLE):api('GET','/api/people')
+    ]);
+    PLACES=places; PLACE_PEOPLE=people;
+  }catch(e){ return; }
+  renderPlaceForm();
+  renderPlaces();
+}
+
+/* ---- form ---- */
+function setPlaceFormStatus(status){
+  PLACE_FORM.status=status;
+  renderPlaceForm();
+}
+
+function setPlaceFormRating(n){
+  PLACE_FORM.rating=PLACE_FORM.rating===n?null:n;
+  renderPlaceForm();
+}
+
+function renderPlaceForm(){
+  document.querySelectorAll('#tab-places .pl-seg button').forEach(b=>{
+    const on=b.dataset.status===PLACE_FORM.status;
+    b.classList.toggle('on',on); b.setAttribute('aria-checked',on);
+  });
+  $('pl-rating-wrap').hidden=PLACE_FORM.status!=='visited';
+  $('pl-rating').innerHTML=starsHtml(PLACE_FORM.rating,{onclick:'setPlaceFormRating',lg:true});
+  const editing=PLACE_FORM.editId!==null;
+  $('pl-form-title').textContent=editing?'Mekanı düzenle':'Yeni mekan';
+  $('pl-save').textContent=editing?'Kaydet':'Mekanı ekle 📍';
+  // Hiç mekan yokken form açık başlar; sonra kullanıcının seçimi geçerli olur.
+  const open=PLACE_FORM_OPEN===null?!PLACES.length:PLACE_FORM_OPEN;
+  $('place-form-card').hidden=!open;
+  $('pl-open').hidden=open;
+}
+
+function openPlaceForm(){
+  PLACE_FORM_OPEN=true; renderPlaceForm();
+  setTimeout(()=>$('pl-name').focus(),50);
+}
+
+function closePlaceForm(){
+  resetPlaceForm();
+  PLACE_FORM_OPEN=false; renderPlaceForm();
+}
+
+function resetPlaceForm(){
+  PLACE_FORM={status:PLACE_FORM.status,rating:null,editId:null};
+  ['pl-name','pl-address','pl-url','pl-note'].forEach(id=>$(id).value='');
+  renderPlaceForm();
+}
+
+function editPlace(id){
+  const p=PLACES.find(x=>x.id===id); if(!p) return;
+  PLACE_FORM={status:p.status,rating:p.ratings[me]||null,editId:id};
+  PLACE_FORM_OPEN=true;
+  $('pl-name').value=p.name; $('pl-address').value=p.address||'';
+  $('pl-url').value=p.url||''; $('pl-note').value=p.note||'';
+  renderPlaceForm();
+  $('place-form-card').scrollIntoView({behavior:'smooth',block:'start'});
+  setTimeout(()=>$('pl-name').focus({preventScroll:true}),300);
+}
+
+async function savePlace(btn){
+  const name=$('pl-name').value.trim();
+  if(!name){ alert('Mekan adını yaz.'); $('pl-name').focus(); return; }
+  const body={
+    name,
+    rating:PLACE_FORM.status==='visited'?PLACE_FORM.rating:null,
+    address:$('pl-address').value.trim(),
+    url:$('pl-url').value.trim(),
+    note:$('pl-note').value.trim(),
+    status:PLACE_FORM.status
+  };
+  const editId=PLACE_FORM.editId;
+  btn.disabled=true;
+  try{
+    let id=editId;
+    if(editId!==null) await api('PUT','/api/places/'+editId,body);
+    else id=(await api('POST','/api/places',body)).id;
+    resetPlaceForm();
+    PLACE_FORM_OPEN=false;
+    if(PLACE_FILTER!=='all'&&PLACE_FILTER!==body.status) PLACE_FILTER='all';
+    await loadPlaces();
+    flashPlace(id);
+  }catch(e){ if(e!==0) alert(e.message||'Kaydedilemedi.'); }
+  finally{ btn.disabled=false; }
+}
+
+/* ---- liste ---- */
+function setPlaceFilter(f){ PLACE_FILTER=f; renderPlaces(); }
+
+function visiblePlaces(){
+  const q=($('pl-search').value||'').trim().toLocaleLowerCase('tr');
+  let list=PLACES.filter(p=>PLACE_FILTER==='all'||p.status===PLACE_FILTER);
+  if(q) list=list.filter(p=>[p.name,p.address,p.note].join(' ').toLocaleLowerCase('tr').includes(q));
+  const sort=$('pl-sort').value;
+  if(sort==='rating') list.sort((a,b)=>(b.avg??-1)-(a.avg??-1)||b.id-a.id);
+  else if(sort==='name') list.sort((a,b)=>a.name.localeCompare(b.name,'tr'));
+  else list.sort((a,b)=>b.id-a.id);
+  return list;
+}
+
+function placeCard(p){
+  const partner=partnerName();
+  const mine=p.ratings[me];
+  const theirs=partner?p.ratings[partner]:undefined;
+  const visited=p.status==='visited';
+  const added=p.created_by?`${esc(p.created_by)} ekledi`:'';
+  return `
+  <article class="pl-card" id="place-${p.id}">
+    <div class="pl-head">
+      <h3>${esc(p.name)}</h3>
+      <span class="pl-pill ${visited?'visited':''}">${visited?'✓ Gittik':'📌 Gidilecek'}</span>
+    </div>
+    ${visited?`
+    <div class="pl-ratings">
+      <div class="pl-rate-row"><span class="pl-who">Sen</span>${starsHtml(mine,{onclick:'ratePlace',arg:p.id})}</div>
+      ${partner?`<div class="pl-rate-row"><span class="pl-who">${esc(partner)}</span>${theirs?starsHtml(theirs,{readonly:true}):'<span class="none">henüz puanlamadı</span>'}</div>`:''}
+      ${p.avg!==null?`<div class="pl-rate-row"><span class="pl-who">Ortalama</span><span class="pl-avg">★ ${String(p.avg).replace('.',',')}</span></div>`:''}
+    </div>`:''}
+    ${p.address?`<a class="pl-line" href="${esc(placeMapUrl(p.address))}" target="_blank" rel="noopener">📍 <span>${esc(p.address)}</span></a>`:''}
+    ${p.url?`<a class="pl-line" href="${esc(p.url)}" target="_blank" rel="noopener noreferrer">🔗 <span>${esc(placeHost(p.url))}</span></a>`:''}
+    ${p.note?`<div class="pl-note">${esc(p.note)}</div>`:''}
+    ${added?`<div class="pl-meta">${added}</div>`:''}
+    <div class="pl-actions">
+      ${visited?'':`<button type="button" class="grow" onclick="markPlaceVisited(${p.id})">✓ Gittik</button>`}
+      <button type="button" class="grow" onclick="planPlace(${p.id})">📅 Plan yap</button>
+      <button type="button" onclick="editPlace(${p.id})" aria-label="Düzenle">✏️</button>
+      <button type="button" onclick="deletePlace(${p.id})" aria-label="Sil">✕</button>
+    </div>
+  </article>`;
+}
+
+function renderPlaces(){
+  const counts={all:PLACES.length,visited:0,wishlist:0};
+  PLACES.forEach(p=>counts[p.status]++);
+  document.querySelectorAll('#pl-filters button').forEach(b=>{
+    const f=b.dataset.filter;
+    b.classList.toggle('on',f===PLACE_FILTER);
+    b.innerHTML=b.textContent.replace(/\s*\d+$/,'')+` <small>${counts[f]}</small>`;
+  });
+  const box=$('places-list');
+  const list=visiblePlaces();
+  if(!PLACES.length){
+    box.innerHTML='<p class="empty">Henüz mekan yok. İlk favori kahvecinizle başlayın ☕</p>';
+    return;
+  }
+  if(!list.length){
+    box.innerHTML='<p class="empty">Bu filtrede mekan yok.</p>';
+    return;
+  }
+  box.innerHTML=`<div class="pl-list">${list.map(placeCard).join('')}</div>`;
+}
+
+function flashPlace(id){
+  const el=$('place-'+id); if(!el) return;
+  el.scrollIntoView({behavior:'smooth',block:'center'});
+  el.classList.remove('flash'); void el.offsetWidth; el.classList.add('flash');
+}
+
+async function ratePlace(id,n){
+  const p=PLACES.find(x=>x.id===id); if(!p) return;
+  const rating=p.ratings[me]===n?null:n;
+  try{ await api('PUT',`/api/places/${id}/rating`,{rating}); await loadPlaces(); }
+  catch(e){ if(e!==0) alert(e.message||'Puan kaydedilemedi.'); }
+}
+
+async function markPlaceVisited(id){
+  const p=PLACES.find(x=>x.id===id); if(!p) return;
+  try{
+    await api('PUT','/api/places/'+id,{name:p.name,rating:null,address:p.address||'',url:p.url||'',note:p.note||'',status:'visited'});
+    await loadPlaces(); flashPlace(id);
+  }catch(e){ if(e!==0) alert(e.message||'Güncellenemedi.'); }
+}
+
+async function deletePlace(id){
+  const p=PLACES.find(x=>x.id===id); if(!p) return;
+  if(!confirm(`“${p.name}” silinsin mi? İkinizin puanları da silinir.`)) return;
+  try{ await api('DELETE','/api/places/'+id); await loadPlaces(); }
+  catch(e){ if(e!==0) alert(e.message||'Silinemedi.'); }
+}
+
+function planPlace(id){
+  const p=PLACES.find(x=>x.id===id); if(!p) return;
+  showTab('calendar');
+  const title=$('et'),place=$('epl');
+  if(title&&!title.value.trim()) title.value=p.name;
+  if(place) place.value=p.name;
+  const details=title&&title.closest('details');
+  if(details) details.open=true;
+  setTimeout(()=>{ details&&details.scrollIntoView({behavior:'smooth',block:'center'}); title&&title.focus({preventScroll:true}); },150);
+}
+
+/* ---- bugün nereye? ---- */
+function closePlacePick(){ $('place-pick').innerHTML=''; }
+
+function pickRandomPlace(){
+  const wish=PLACES.filter(p=>p.status==='wishlist');
+  const fav=PLACES.filter(p=>p.status==='visited'&&(p.avg??0)>=4);
+  const pool=wish.length?wish:(fav.length?fav:PLACES);
+  const box=$('place-pick');
+  if(!pool.length){
+    box.innerHTML=`<div class="pl-pick"><small>Bugün nereye?</small><h2>Önce birkaç mekan ekleyin 🙂</h2><p>Gidilecekler listesinden rastgele seçeceğim.</p></div>`;
+    return;
+  }
+  const reason=wish.length?'Gidilecekler listenizden':(fav.length?'Favorilerinizden (4★ ve üzeri)':'Tüm mekanlarınızdan');
+  const pick=pool[Math.floor(Math.random()*pool.length)];
+  const show=(p,final)=>{
+    box.innerHTML=`
+    <div class="pl-pick">
+      <small>🎲 ${reason}</small>
+      <h2>${esc(p.name)}</h2>
+      ${p.address?`<p>📍 ${esc(p.address)}</p>`:''}
+      ${final?`<div class="pl-actions" style="margin-top:12px">
+        <button type="button" class="grow primary" onclick="planPlace(${p.id})">📅 Plan yap</button>
+        <button type="button" class="grow" onclick="pickRandomPlace()">🎲 Bir daha</button>
+        <button type="button" onclick="closePlacePick()" aria-label="Kapat">✕</button>
+      </div>`:''}
+    </div>`;
+  };
+  const reduce=window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if(reduce||pool.length<2){ show(pick,true); return; }
+  let i=0;
+  const spin=setInterval(()=>{
+    show(pool[i++%pool.length],false);
+    if(i>=10){ clearInterval(spin); show(pick,true); }
+  },70);
+  box.scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+
+PLACE_FORM.status='visited';
 </script>
 
 </body>

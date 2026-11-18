@@ -16,6 +16,7 @@ Buluşma planlarını öner, karşı taraf tek tıkla kabul etsin ya da başka g
 - 📝 **Notlar:** Güne not bırakma ve ortak notlar.
 - 🛒 **Listeler:** Alışveriş listeleri ve dilek listesi.
 - 🎬 **İzleme listesi:** Birlikte izlenecek film ve diziler.
+- 📍 **Mekanlar:** Gittiğiniz ve gitmek istediğiniz yerler. İkiniz ayrı ayrı puanlarsınız, bir de “🎲 Bugün nereye?” butonu var.
 - 🎉 **Özel günler ve anılar:** Anılara isteğe bağlı olarak [Immich](https://immich.app) fotoğrafları eklenebilir.
 - 📸 **Anlık fotoğraf:** Immich üzerinden birbirinize fotoğraf gönderme.
 - 🔔 **Bildirimler:** Telefona uygulama gibi kurulabilir (PWA), anlık bildirim ve e-posta bildirimi gönderir.
@@ -219,6 +220,7 @@ app.py             Giriş noktası: ayarlar yoksa sihirbazı, varsa uygulamayı 
 core.py            Asıl uygulama (FastAPI)
 index.html         Arayüz
 settings_api.py    Uygulama içi Ayarlar sayfasının API'si
+places_api.py      Mekanlar sekmesinin API'si
 setup_wizard.py    İlk açılış kurulum sihirbazı (setup.html ile birlikte)
 config_store.py    Ayarların okunması ve yazılması
 icons/             Uygulama ikonları

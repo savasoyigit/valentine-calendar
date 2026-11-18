@@ -196,3 +196,49 @@ def test_change_password(env):
     assert c.post("/api/login", json={"username": "ada", "password": "yeni-parola-1"}).status_code == 200
     # Diğer kişinin şifresi etkilenmemeli
     assert c.post("/api/login", json={"username": "deniz", "password": "parola-deniz"}).status_code == 200
+
+
+def test_places(env):
+    c = env["client"]
+    c.cookies.clear()
+    assert c.post("/api/login", json={"username": "ada", "password": "yeni-parola-1"}).status_code == 200
+    assert c.post("/api/places", json={"name": " "}).status_code == 400
+    assert c.post("/api/places", json={"name": "X", "rating": 6}).status_code == 400
+    assert c.post("/api/places", json={"name": "X", "url": "javascript:alert(1)"}).status_code == 400
+
+    r = c.post("/api/places", json={
+        "name": "Moda Kahvecisi", "rating": 4, "address": "Moda, Kadıköy",
+        "url": "instagram.com/moda", "note": "Filtre kahvesi efsane", "status": "visited",
+    })
+    assert r.status_code == 200
+    cafe = r.json()["id"]
+    wish = c.post("/api/places", json={"name": "Yeni Bistro", "rating": 5, "status": "wishlist"}).json()["id"]
+
+    places = {p["id"]: p for p in c.get("/api/places").json()}
+    assert places[cafe]["url"] == "https://instagram.com/moda"
+    assert places[cafe]["ratings"] == {"Ada": 4} and places[cafe]["avg"] == 4
+    assert places[wish]["ratings"] == {}  # gidilecek mekana puan yazılmaz
+
+    # Diğer kişi puanlar; iki puan ayrı tutulur ve bildirim gider
+    c.cookies.clear()
+    c.post("/api/login", json={"username": "deniz", "password": "parola-deniz"})
+    assert c.put(f"/api/places/{cafe}/rating", json={"rating": 5}).status_code == 200
+    p = {x["id"]: x for x in c.get("/api/places").json()}[cafe]
+    assert p["ratings"] == {"Ada": 4, "Deniz": 5} and p["avg"] == 4.5
+    # Gidilecek mekana puan vermek onu "gittik" yapar
+    c.put(f"/api/places/{wish}/rating", json={"rating": 3})
+    assert {x["id"]: x for x in c.get("/api/places").json()}[wish]["status"] == "visited"
+
+    c.cookies.clear()
+    c.post("/api/login", json={"username": "ada", "password": "yeni-parola-1"})
+    notes = c.get("/api/notifications").json()
+    assert any(n["target"] == f"place:{cafe}" for n in notes)
+
+    # Düzenleme kendi puanını değiştirir, diğerininkine dokunmaz
+    assert c.put(f"/api/places/{cafe}", json={"name": "Moda Kahvecisi ☕", "rating": 2, "status": "visited"}).status_code == 200
+    p = {x["id"]: x for x in c.get("/api/places").json()}[cafe]
+    assert p["name"] == "Moda Kahvecisi ☕" and p["ratings"] == {"Ada": 2, "Deniz": 5}
+
+    assert c.delete(f"/api/places/{cafe}").status_code == 200
+    assert c.delete(f"/api/places/{cafe}").status_code == 404
+    assert cafe not in {x["id"] for x in c.get("/api/places").json()}
