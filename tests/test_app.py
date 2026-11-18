@@ -276,3 +276,87 @@ def test_pending_plans_and_in_app_accept(env):
 def test_ares_icon_served(env):
     r = env["client"].get("/icons/ares.svg")
     assert r.status_code == 200 and "<svg" in r.text
+
+
+def login_as(c, user, password):
+    c.cookies.clear()
+    assert c.post("/api/login", json={"username": user, "password": password}).status_code == 200
+
+
+def test_personal_space_mutes_push(env):
+    core = sys.modules["core"]
+    c = env["client"]
+    pushes = []
+    original_webpush = core.webpush
+    core.webpush = lambda **kw: pushes.append(kw)
+    try:
+        with core.db() as db:
+            for user, ep in (("Ada", "https://push.example/ada"), ("Deniz", "https://push.example/deniz")):
+                db.execute("insert or ignore into push_subscriptions(user,endpoint,p256dh,auth) values(?,?,?,?)",
+                           (user, ep, "k", "a"))
+
+        login_as(c, "deniz", "parola-deniz")
+        assert c.put("/api/space", json={"away": True, "until": "2000-01-01T00:00:00Z"}).status_code == 400
+        assert c.put("/api/space", json={"away": True, "note": "biraz yorgunum"}).status_code == 200
+        s = c.get("/api/space").json()
+        assert s["me"]["away"] and s["me"]["note"] == "biraz yorgunum"
+        # Ada'ya "kendi alanında" bildirimi push olarak gitti
+        assert any(p["subscription_info"]["endpoint"].endswith("/ada") for p in pushes)
+
+        login_as(c, "ada", "yeni-parola-1")
+        assert c.get("/api/space").json()["partner"]["away"] is True
+        pushes.clear()
+        c.post("/api/places", json={"name": "Sessiz test", "status": "wishlist"})
+        assert not any(p["subscription_info"]["endpoint"].endswith("/deniz") for p in pushes)  # susturuldu
+
+        login_as(c, "deniz", "parola-deniz")
+        r = c.put("/api/space", json={"away": False}).json()
+        assert r["missed"] >= 1  # uygulama içi bildirim yine kaydedildi
+        assert c.get("/api/space").json()["me"]["away"] is False
+
+        pushes.clear()
+        login_as(c, "ada", "yeni-parola-1")
+        c.post("/api/places", json={"name": "Artık sesli", "status": "wishlist"})
+        assert any(p["subscription_info"]["endpoint"].endswith("/deniz") for p in pushes)
+
+        # Süre dolunca kendiliğinden döner
+        with core.db() as db:
+            db.execute("insert or replace into personal_space(user,since,until,note) values('Ada','2020-01-01T00:00:00Z','2020-01-01T01:00:00Z','')")
+        assert c.get("/api/space").json()["me"]["away"] is False
+        core.app.state.space_expire_due()
+        with core.db() as db:
+            assert db.execute("select count(*) n from personal_space").fetchone()["n"] == 0
+    finally:
+        core.webpush = original_webpush
+
+
+def test_time_capsule_stays_sealed(env):
+    core = sys.modules["core"]
+    c = env["client"]
+    login_as(c, "ada", "yeni-parola-1")
+    assert c.post("/api/capsules", json={"body": "x", "open_at": "2001-01-01T00:00:00Z"}).status_code == 400
+    assert c.post("/api/capsules", json={"body": "  ", "open_at": "2099-01-01T00:00:00Z"}).status_code == 400
+    i = c.post("/api/capsules", json={"title": "Yıldönümü", "body": "Seni seviyorum", "open_at": "2099-11-22T06:00:00Z"}).json()["id"]
+    mine = next(x for x in c.get("/api/capsules").json() if x["id"] == i)
+    assert mine["mine"] and mine["body"] == "Seni seviyorum"
+
+    login_as(c, "deniz", "parola-deniz")
+    raw = c.get("/api/capsules").text
+    assert "Seni seviyorum" not in raw and "Yıldönümü" not in raw
+    sealed = next(x for x in c.get("/api/capsules").json() if x["id"] == i)
+    assert sealed["unlocked"] is False and "body" not in sealed
+    assert c.post(f"/api/capsules/{i}/read").status_code == 403
+    assert c.delete(f"/api/capsules/{i}").status_code == 404  # başkasının mektubu
+
+    # Zaman gelir: zamanlayıcı bir kez bildirim gönderir
+    with core.db() as db:
+        db.execute("update capsules set open_at='2020-01-01T00:00:00Z' where id=?", (i,))
+    assert core.app.state.capsules_deliver_due() >= 1
+    assert core.app.state.capsules_deliver_due() == 0
+    assert any(n["target"] == f"capsule:{i}" and "açıldı" in n["title"] for n in c.get("/api/notifications").json())
+    opened = c.post(f"/api/capsules/{i}/read").json()
+    assert opened["body"] == "Seni seviyorum"
+
+    login_as(c, "ada", "yeni-parola-1")
+    assert any("okudu" in n["title"] for n in c.get("/api/notifications").json())
+    assert c.delete(f"/api/capsules/{i}").status_code == 409  # açılmış mektup silinmez

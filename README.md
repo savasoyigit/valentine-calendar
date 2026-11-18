@@ -22,6 +22,8 @@ Buluşma planlarını öner, karşı taraf tek tıkla kabul etsin ya da başka g
 - 🔔 **Bildirimler:** Telefona uygulama gibi kurulabilir (PWA), anlık bildirim ve e-posta bildirimi gönderir.
 - ⏳ **Sayaç:** “Birlikte geçen zamanımız” sayacı. Yıldönümlerini, her 100. günü ve aylık dönümleri kutlar, yaklaşanları da önceden haber verir.
 - 💌 **Bekleyen planlar:** Ana sayfada uygulama içinden “Evet 🥰” ya da “Başka gün öner” denebilir. Kabul edilince ekranda kalpler uçuşur.
+- ✉️ **Mektuplar (zaman kapsülü):** Seçtiğin anda açılan mektuplar. O ana kadar içerik karşı tarafa hiç gönderilmez, sadece kilitli bir zarf ve geri sayım görünür. Saat gelince “Sana bir mektup açıldı 💌” bildirimi gider.
+- 🌙 **Kendi alanım modu:** Tek dokunuşla “biraz kendi alanımdayım”. Karşı taraf görür, sana gelen anlık bildirimler susar, döndüğünde neyi kaçırdığını görürsün. İstersen süre verirsin, süre dolunca kendiliğinden döner.
 - 🐾 **Ares:** Boş ekranlarda sizi Blue Point maskotumuz Ares karşılar.
 - ⚙️ **İlk açılış sihirbazı ve Ayarlar sayfası:** Hiçbir dosyayı elle düzenlemen gerekmez.
 
@@ -295,6 +297,8 @@ core.py            Asıl uygulama (FastAPI)
 index.html         Arayüz
 settings_api.py    Uygulama içi Ayarlar sayfasının API'si
 places_api.py      Mekanlar sekmesinin API'si
+capsules_api.py    Mektuplar (zaman kapsülü) ve açılma zamanlayıcısı
+space_api.py       Kendi alanım modu ve bildirim susturma
 setup_wizard.py    İlk açılış kurulum sihirbazı (setup.html ile birlikte)
 config_store.py    Ayarların okunması ve yazılması
 icons/             Uygulama ikonları

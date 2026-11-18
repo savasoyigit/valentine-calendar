@@ -2261,3 +2261,9 @@ settings_api.register(app, sys.modules[__name__])
 import places_api  # noqa: E402
 
 places_api.register(app, sys.modules[__name__])
+
+import space_api  # noqa: E402
+import capsules_api  # noqa: E402
+
+space_api.register(app, sys.modules[__name__])
+capsules_api.register(app, sys.modules[__name__])

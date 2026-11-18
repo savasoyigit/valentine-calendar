@@ -1827,6 +1827,54 @@ a.pl-line:hover{color:var(--rose)}
 .cel-toast{position:fixed;left:50%;width:max-content;top:calc(env(safe-area-inset-top) + 18px);transform:translate(-50%,-20px);z-index:10000;background:var(--rose);color:#fff;font-weight:700;padding:12px 18px;border-radius:999px;box-shadow:0 10px 30px rgba(0,0,0,.35);opacity:0;transition:.35s;max-width:calc(100vw - 32px);text-align:center}
 .cel-toast.on{opacity:1;transform:translate(-50%,0)}
 @media(prefers-reduced-motion:reduce){.cel-heart{display:none}}
+/* Kendi alanım */
+.space-card{border-radius:20px;padding:16px 18px;margin:0 0 14px;background:linear-gradient(135deg,#2a2347,#1c1630);border:1px solid #3b3463;color:#e9e4ff;box-shadow:var(--shadow)}
+.space-card h2{margin:0;font-size:1.02rem}
+.space-card p{margin:5px 0 0;color:#bdb5e6;font-size:.86rem}
+.space-card .sp-note{margin-top:8px;padding:8px 11px;border-radius:12px;background:rgba(255,255,255,.06);color:#e9e4ff;font-style:italic;word-break:break-word}
+.space-card button{margin-top:12px;border:0;border-radius:11px;padding:10px 16px;font-weight:700;background:#ffd27a;color:#2a2347}
+.avatar.is-away{position:relative;overflow:visible}
+.avatar.is-away::after{content:"🌙";position:absolute;right:-5px;bottom:-4px;font-size:15px;filter:drop-shadow(0 1px 2px rgba(0,0,0,.5))}
+.sheet-backdrop{position:fixed;inset:0;z-index:60;background:rgba(10,4,8,.6);display:flex;align-items:flex-end;justify-content:center;padding:16px}
+.sheet-backdrop[hidden]{display:none}
+.sheet{width:100%;max-width:460px;background:var(--card);border:1px solid var(--line);border-radius:22px;padding:20px;margin-bottom:env(safe-area-inset-bottom);box-shadow:0 20px 50px rgba(0,0,0,.4)}
+.sheet h2{margin:0 0 6px;font-size:1.1rem}
+.sheet p{margin:0 0 12px;color:var(--mute);font-size:.88rem}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0}
+.chip{border:1px solid var(--line);background:var(--bg);color:var(--ink);border-radius:999px;padding:8px 12px;font-size:.84rem}
+.chip.on{background:var(--rose);border-color:var(--rose);color:#fff}
+.sheet-actions{display:flex;justify-content:flex-end;gap:10px;margin-top:14px}
+.sheet-actions .btn{margin-top:0}
+.plain-toast{position:fixed;left:50%;bottom:calc(env(safe-area-inset-bottom) + 20px);transform:translate(-50%,20px);width:max-content;max-width:calc(100vw - 32px);z-index:10000;background:#2a2347;color:#f1edff;border:1px solid #3b3463;padding:12px 18px;border-radius:999px;opacity:0;transition:.35s;text-align:center;font-weight:600}
+.plain-toast.on{opacity:1;transform:translate(-50%,0)}
+/* Mektuplar */
+.letters-home{border-radius:20px;padding:16px 18px;margin:0 0 14px;background:linear-gradient(135deg,#5a2140,#2b1220);border:1px solid #5b2a43;color:#fff1ec}
+.letters-home h2{margin:0;font-size:1.02rem}
+.letters-home p{margin:5px 0 0;color:#f3d9d6;font-size:.86rem}
+.letters-home button{margin-top:12px;border:0;border-radius:11px;padding:10px 16px;font-weight:700;background:var(--apricot);color:#3a172b}
+.lt-section{margin:4px 2px 10px;font-size:.8rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--mute)}
+.lt-list{display:grid;gap:10px;margin-bottom:16px}
+.lt-env{position:relative;border-radius:18px;padding:16px;background:linear-gradient(160deg,#3a1a2a,#241019);border:1px solid var(--line);overflow:hidden}
+.lt-env::before{content:"";position:absolute;inset:0 0 auto 0;height:58px;background:linear-gradient(160deg,rgba(255,179,138,.14),transparent);clip-path:polygon(0 0,100% 0,50% 100%)}
+.lt-env.ready{border-color:var(--apricot);box-shadow:0 0 0 1px rgba(255,179,138,.4),0 10px 30px rgba(255,179,138,.12)}
+.lt-top{position:relative;display:flex;align-items:center;justify-content:space-between;gap:10px}
+.lt-seal{font-size:1.9rem;line-height:1}
+.lt-from{font-size:.78rem;color:var(--apricot);font-weight:700}
+.lt-title{font-weight:700;margin-top:2px;word-break:break-word}
+.lt-meta{position:relative;font-size:.82rem;color:var(--mute);margin-top:8px}
+.lt-count{position:relative;display:inline-block;margin-top:8px;padding:5px 10px;border-radius:999px;background:rgba(255,179,138,.12);color:var(--apricot);font-size:.78rem;font-weight:700}
+.lt-env .lt-actions{position:relative;display:flex;gap:8px;margin-top:12px}
+.lt-env .lt-actions button{border:1px solid var(--line);background:none;color:var(--ink);border-radius:10px;padding:8px 12px;font-size:.84rem}
+.lt-env .lt-actions button.primary{background:var(--apricot);border-color:var(--apricot);color:#3a172b;font-weight:700;flex:1}
+.lt-paper{position:relative;margin-top:12px;padding:16px;border-radius:14px;background:#fbf3ea;color:#3a1a2a;font:500 .98rem/1.65 Georgia,"Times New Roman",serif;white-space:pre-wrap;word-break:break-word}
+.lt-paper.reveal{animation:ltReveal .7s ease}
+@keyframes ltReveal{from{opacity:0;transform:translateY(10px) scale(.98)}to{opacity:1;transform:none}}
+.lt-compose textarea{font:500 .98rem/1.6 Georgia,"Times New Roman",serif}
+.lt-hint{color:var(--mute);font-size:.84rem;margin:-2px 0 6px}
+.lt-when{margin-top:10px;padding:10px 12px;border:1px solid var(--line);border-radius:12px;background:var(--bg)}
+.lt-label{font-size:.86rem;color:var(--mute)}
+.lt-presets{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0 2px}
+@media(prefers-reduced-motion:reduce){.lt-paper.reveal{animation:none}}
 </style>
 
 
@@ -1922,6 +1970,8 @@ a.pl-line:hover{color:var(--rose)}
         🔔 Bildirimleri aç
       </button>
 
+      <button class="ddi" id="space-menu-btn" onclick="openSpaceSheet()">🌙 Kendi alanıma çekil</button>
+
       <button class="ddi" onclick="showTab('settings')">
         ⚙️ Ayarlar
       </button>
@@ -1976,6 +2026,10 @@ a.pl-line:hover{color:var(--rose)}
     💌 <span>Anlık Foto</span>
   </button>
 
+  <button data-tab="letters" onclick="showTab('letters')">
+    ✉️ <span>Mektuplar</span>
+  </button>
+
   <button data-tab="memories" onclick="showTab('memories')">
     📸 <span>Anılarımız</span>
   </button>
@@ -1987,7 +2041,11 @@ a.pl-line:hover{color:var(--rose)}
 
   <section class="hero" id="hero"></section>
 
+  <section class="space-card" id="space-card" hidden></section>
+
   <section class="pending-plans" id="pending-plans" hidden></section>
+
+  <section class="letters-home" id="letters-home" hidden></section>
 
   <section class="love-counter" id="love-counter" aria-live="polite" hidden>
     <div class="love-copy">
@@ -2385,6 +2443,37 @@ a.pl-line:hover{color:var(--rose)}
   </div>
 
   <div id="places-list"></div>
+
+</section>
+
+
+<section id="tab-letters" class="tab">
+
+  <section class="section-title">
+    <div>
+      <h1>Mektuplar ✉️</h1>
+      <p>Zamanı gelince açılan mektuplar: sizin zaman kapsülünüz.</p>
+    </div>
+  </section>
+
+  <div id="letters-inbox"></div>
+
+  <section class="card lt-compose">
+    <h2>Yeni mektup</h2>
+    <p class="lt-hint" id="lt-for"></p>
+    <input id="lt-title" placeholder="Başlık (isteğe bağlı)" maxlength="120" autocomplete="off">
+    <textarea id="lt-body" rows="8" placeholder="Sevgili…" maxlength="20000"></textarea>
+    <div class="lt-when">
+      <span class="lt-label">Ne zaman açılsın?</span>
+      <div class="lt-presets" id="lt-presets"></div>
+      <input id="lt-open" type="datetime-local" aria-label="Açılma zamanı">
+    </div>
+    <div class="pl-form-actions">
+      <button class="btn" type="button" onclick="sealLetter(this)">Mektubu mühürle 💌</button>
+    </div>
+  </section>
+
+  <div id="letters-sent"></div>
 
 </section>
 
@@ -2881,6 +2970,12 @@ function notificationTarget(target){
   if(target.startsWith('place:'))
     return 'places';
 
+  if(target.startsWith('capsule:'))
+    return 'letters';
+
+  if(target.startsWith('space:'))
+    return 'home';
+
   if(target.startsWith('instantphoto:'))
     return 'instantphoto';
 
@@ -3171,6 +3266,9 @@ function showTab(tab){
   if(tab === 'places')
     loadPlaces();
 
+  if(tab === 'letters')
+    loadLetters();
+
   if(tab === 'memories')
     loadMemories();
 
@@ -3298,6 +3396,7 @@ async function loadDashboard(){
       `;
 
   renderPendingPlans(d.pending_in||[],d.pending_out||[]);
+  loadTogetherHome();
   celebrateAcceptedNotifications(d.recent_notifications||[]);
 
   $('summary').innerHTML=`
@@ -6386,6 +6485,283 @@ function renderLoveMilestone(start,today,years,months){
   else if(to100<=7){ text=to100===1?`🎯 Yarın ${next100.toLocaleString('tr-TR')}. günümüz!`:`🎯 ${next100.toLocaleString('tr-TR')}. günümüze ${to100} gün kaldı`; }
   box.hidden=!text; box.textContent=text;
   if(party&&onceKey('cel-day-'+isoToday)) setTimeout(()=>celebrate(text),600);
+}
+</script>
+
+<div id="space-sheet" class="sheet-backdrop" hidden onclick="if(event.target===this)closeSpaceSheet()"></div>
+<script>
+/* =========================
+   ORTAK YARDIMCILAR
+========================= */
+async function ensurePeople(){
+  if(!PLACE_PEOPLE.length){
+    try{ PLACE_PEOPLE=await api('GET','/api/people'); }catch(e){}
+  }
+  return PLACE_PEOPLE;
+}
+
+function showToast(message){
+  const t=document.createElement('div');
+  t.className='plain-toast'; t.setAttribute('role','status'); t.textContent=message;
+  document.body.appendChild(t);
+  requestAnimationFrame(()=>t.classList.add('on'));
+  setTimeout(()=>{t.classList.remove('on');setTimeout(()=>t.remove(),400);},3600);
+}
+
+function fmtMoment(isoStr){
+  const d=new Date(isoStr);
+  const today=new Date(),tomorrow=new Date(); tomorrow.setDate(today.getDate()+1);
+  const time=d.toLocaleTimeString('tr-TR',{hour:'2-digit',minute:'2-digit'});
+  if(d.toDateString()===today.toDateString()) return 'bugün '+time;
+  if(d.toDateString()===tomorrow.toDateString()) return 'yarın '+time;
+  return d.toLocaleDateString('tr-TR',{day:'numeric',month:'long',weekday:'long',year:d.getFullYear()!==today.getFullYear()?'numeric':undefined})+', '+time;
+}
+
+function fmtLeft(isoStr){
+  let ms=new Date(isoStr)-new Date();
+  if(ms<=0) return 'şimdi';
+  const d=Math.floor(ms/86400000); ms-=d*86400000;
+  const h=Math.floor(ms/3600000); ms-=h*3600000;
+  const m=Math.max(1,Math.floor(ms/60000));
+  if(d>0) return `${d} gün ${h} saat`;
+  if(h>0) return `${h} saat ${m} dakika`;
+  return `${m} dakika`;
+}
+
+/* =========================
+   KENDİ ALANIM
+========================= */
+let SPACE=null,SPACE_CHOICE='none';
+
+async function loadSpace(){
+  try{ SPACE=await api('GET','/api/space'); }catch(e){ return; }
+  renderSpace();
+}
+
+function renderSpace(){
+  const btn=$('space-menu-btn'),card=$('space-card'),av=$('avatar');
+  if(!SPACE) return;
+  const meAway=SPACE.me.away,p=SPACE.partner;
+  if(btn) btn.textContent=meAway?'☀️ Döndüm':'🌙 Kendi alanıma çekil';
+  if(av) av.classList.toggle('is-away',meAway);
+  if(!card) return;
+  if(meAway){
+    card.hidden=false;
+    card.innerHTML=`
+      <h2>🌙 Kendi alanındasın</h2>
+      <p>Anlık bildirimlerin sessizde. Uygulama içinde birikiyorlar.${SPACE.me.until?' Tahmini dönüş: '+esc(fmtMoment(SPACE.me.until))+'.':''}</p>
+      ${SPACE.me.note?`<div class="sp-note">“${esc(SPACE.me.note)}”</div>`:''}
+      <button type="button" onclick="setSpace(false)">Döndüm ☀️</button>`;
+  }else if(p&&p.away){
+    card.hidden=false;
+    card.innerHTML=`
+      <h2>🌙 ${esc(p.name)} biraz kendi alanında</h2>
+      <p>Saat ${esc(new Date(p.since).toLocaleTimeString('tr-TR',{hour:'2-digit',minute:'2-digit'}))} itibarıyla.${p.until?' Tahmini dönüş: '+esc(fmtMoment(p.until))+'.':''} Döndüğünde haber vereceğiz 💜</p>
+      ${p.note?`<div class="sp-note">“${esc(p.note)}”</div>`:''}`;
+  }else{
+    card.hidden=true; card.innerHTML='';
+  }
+}
+
+function spaceUntil(choice){
+  const now=new Date(),d=new Date(now);
+  if(choice==='1h') return new Date(now.getTime()+3600000);
+  if(choice==='evening'){ d.setHours(20,0,0,0); return d>now?d:null; }
+  if(choice==='morning'){ d.setDate(d.getDate()+1); d.setHours(9,0,0,0); return d; }
+  return null;
+}
+
+function openSpaceSheet(){
+  closeMenu&&closeMenu();
+  if(SPACE&&SPACE.me.away){ setSpace(false); return; }
+  SPACE_CHOICE='none';
+  const evening=spaceUntil('evening');
+  const partner=partnerName()||'Sevgilin';
+  const sheet=$('space-sheet');
+  sheet.innerHTML=`
+    <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="space-title">
+      <h2 id="space-title">🌙 Biraz kendi alanına mı çekiliyorsun?</h2>
+      <p>Açıklama gerekmez. ${esc(partner)} bunu görecek; sana gelen anlık bildirimler sessize alınacak. Hazır olunca “Döndüm ☀️” demen yeter.</p>
+      <div class="chips" id="space-chips">
+        <button type="button" class="chip on" data-c="none">Süresiz</button>
+        <button type="button" class="chip" data-c="1h">1 saat</button>
+        ${evening?'<button type="button" class="chip" data-c="evening">Akşama kadar</button>':''}
+        <button type="button" class="chip" data-c="morning">Yarın sabaha kadar</button>
+      </div>
+      <input id="space-note" maxlength="80" placeholder="Kısa bir not (isteğe bağlı), ör. “biraz yorgunum”">
+      <div class="sheet-actions">
+        <button type="button" class="link" onclick="closeSpaceSheet()">Vazgeç</button>
+        <button type="button" class="btn" onclick="setSpace(true,this)">Çekil 🌙</button>
+      </div>
+    </div>`;
+  sheet.hidden=false;
+  sheet.querySelectorAll('.chip').forEach(c=>c.onclick=()=>{
+    SPACE_CHOICE=c.dataset.c;
+    sheet.querySelectorAll('.chip').forEach(x=>x.classList.toggle('on',x===c));
+  });
+}
+
+function closeSpaceSheet(){ const s=$('space-sheet'); s.hidden=true; s.innerHTML=''; }
+
+async function setSpace(away,btn){
+  if(btn) btn.disabled=true;
+  try{
+    if(away){
+      const until=spaceUntil(SPACE_CHOICE);
+      await api('PUT','/api/space',{away:true,note:($('space-note')?.value||'').trim(),until:until?until.toISOString():''});
+      closeSpaceSheet();
+      showToast('🌙 Kendi alanındasın. Bildirimlerin sessizde.');
+    }else{
+      const r=await api('PUT','/api/space',{away:false});
+      showToast(r.missed?`☀️ Hoş geldin! Sen yokken ${r.missed} bildirim geldi.`:'☀️ Hoş geldin!');
+    }
+    await loadSpace();
+    if(!away&&typeof loadAll==='function') loadAll();
+  }catch(e){ if(e!==0) alert(e.message||'Olmadı, tekrar dener misin?'); }
+  finally{ if(btn) btn.disabled=false; }
+}
+
+/* =========================
+   MEKTUPLAR (ZAMAN KAPSÜLÜ)
+========================= */
+let LETTERS=[],LETTER_OPENED=new Set();
+
+async function loadLetters(){
+  await ensurePeople();
+  try{ LETTERS=await api('GET','/api/capsules'); }catch(e){ return; }
+  renderLetters();
+  renderLetterPresets();
+  const partner=partnerName();
+  const forEl=$('lt-for');
+  if(forEl) forEl.textContent=partner?`${partner} için. Açılma zamanına kadar sadece kilitli bir zarf görür 🔒`:'';
+}
+
+function nextAnniversaryMorning(){
+  const m=/^(\d{4})-(\d{2})-(\d{2})$/.exec(LOVE_START||''); if(!m) return null;
+  const now=new Date();
+  let d=new Date(now.getFullYear(),+m[2]-1,+m[3],9,0,0);
+  if(d<=now) d=new Date(now.getFullYear()+1,+m[2]-1,+m[3],9,0,0);
+  return d;
+}
+
+function toLocalInput(d){
+  const p=n=>String(n).padStart(2,'0');
+  return `${d.getFullYear()}-${p(d.getMonth()+1)}-${p(d.getDate())}T${p(d.getHours())}:${p(d.getMinutes())}`;
+}
+
+function renderLetterPresets(){
+  const box=$('lt-presets'); if(!box) return;
+  const now=new Date(),list=[];
+  const anniv=nextAnniversaryMorning();
+  if(anniv) list.push(['💍 Yıldönümümüzün sabahı',anniv]);
+  const tm=new Date(now); tm.setDate(tm.getDate()+1); tm.setHours(9,0,0,0); list.push(['Yarın sabah',tm]);
+  const wk=new Date(now); wk.setDate(wk.getDate()+7); wk.setHours(9,0,0,0); list.push(['1 hafta sonra',wk]);
+  const yr=new Date(now); yr.setFullYear(yr.getFullYear()+1); yr.setHours(9,0,0,0); list.push(['1 yıl sonra',yr]);
+  box.innerHTML=list.map(([label,d],i)=>`<button type="button" class="chip" data-i="${i}">${label}</button>`).join('');
+  box.querySelectorAll('.chip').forEach(c=>c.onclick=()=>{
+    $('lt-open').value=toLocalInput(list[+c.dataset.i][1]);
+    box.querySelectorAll('.chip').forEach(x=>x.classList.toggle('on',x===c));
+  });
+  $('lt-open').min=toLocalInput(new Date(now.getTime()+60000));
+  $('lt-open').oninput=()=>box.querySelectorAll('.chip').forEach(x=>x.classList.remove('on'));
+}
+
+function letterCard(l){
+  const when=`Açılış: ${esc(fmtMoment(l.open_at))}`;
+  if(!l.mine){
+    if(!l.unlocked){
+      return `<article class="lt-env">
+        <div class="lt-top"><div><div class="lt-from">Yazan: ${esc(l.author)}</div><div class="lt-title">Mühürlü bir mektup</div></div><span class="lt-seal">🔒</span></div>
+        <div class="lt-meta">${when}</div>
+        <span class="lt-count">⏳ ${esc(fmtLeft(l.open_at))} kaldı</span>
+      </article>`;
+    }
+    const shown=l.opened_at||LETTER_OPENED.has(l.id);
+    return `<article class="lt-env ${shown?'':'ready'}" id="letter-${l.id}">
+      <div class="lt-top"><div><div class="lt-from">Yazan: ${esc(l.author)}</div><div class="lt-title">${esc(l.title||'Sana bir mektup')}</div></div><span class="lt-seal">${shown?'💌':'✉️'}</span></div>
+      <div class="lt-meta">${when}</div>
+      ${shown?`<div class="lt-paper">${esc(l.body)}</div>`:`<div class="lt-actions"><button type="button" class="primary" onclick="openLetter(${l.id},this)">Mektubu aç 💌</button></div>`}
+    </article>`;
+  }
+  const status=!l.unlocked?`🔒 Kilitli · ${esc(fmtLeft(l.open_at))} kaldı`:(l.opened_at?`✓ Okundu · ${esc(fmtMoment(l.opened_at))}`:'💌 Açıldı, henüz okunmadı');
+  return `<article class="lt-env">
+    <div class="lt-top"><div><div class="lt-from">Alıcı: ${esc(l.recipient)}</div><div class="lt-title">${esc(l.title||'Başlıksız mektup')}</div></div><span class="lt-seal">${l.unlocked?'💌':'🔒'}</span></div>
+    <div class="lt-meta">${when}</div>
+    <span class="lt-count">${status}</span>
+    <details style="position:relative;margin-top:10px"><summary style="cursor:pointer;color:var(--mute);font-size:.84rem">Mektubu göster</summary><div class="lt-paper">${esc(l.body)}</div></details>
+    ${l.unlocked?'':`<div class="lt-actions"><button type="button" onclick="deleteLetter(${l.id})">Mektubu sil</button></div>`}
+  </article>`;
+}
+
+function renderLetters(){
+  const inbox=LETTERS.filter(l=>!l.mine),sent=LETTERS.filter(l=>l.mine);
+  // Önce açılmaya hazır olanlar, sonra kilitliler (en yakın), en sonda okunmuşlar
+  const rank=l=>!l.unlocked?1:(l.opened_at?2:0);
+  inbox.sort((a,b)=>rank(a)-rank(b)||(rank(a)===2?b.open_at.localeCompare(a.open_at):a.open_at.localeCompare(b.open_at)));
+  $('letters-inbox').innerHTML=inbox.length
+    ?`<div class="lt-section">Sana gelenler</div><div class="lt-list">${inbox.map(letterCard).join('')}</div>`
+    :'<p class="empty ares">Henüz sana yazılmış bir mektup yok. Ares mektup taşımaya hazır ✉️</p>';
+  $('letters-sent').innerHTML=sent.length
+    ?`<div class="lt-section">Yazdıkların</div><div class="lt-list">${sent.map(letterCard).join('')}</div>`:'';
+}
+
+async function sealLetter(btn){
+  const body=$('lt-body').value.trim(),openVal=$('lt-open').value;
+  if(!body){ alert('Mektup boş olamaz.'); $('lt-body').focus(); return; }
+  if(!openVal){ alert('Ne zaman açılacağını seç.'); return; }
+  const openAt=new Date(openVal);
+  if(!(openAt>new Date())){ alert('Açılma zamanı gelecekte olmalı.'); return; }
+  btn.disabled=true;
+  try{
+    await api('POST','/api/capsules',{title:$('lt-title').value.trim(),body,open_at:openAt.toISOString()});
+    $('lt-title').value=''; $('lt-body').value=''; $('lt-open').value='';
+    await loadLetters();
+    celebrate('Mektubun mühürlendi 💌');
+  }catch(e){ if(e!==0) alert(e.message||'Kaydedilemedi.'); }
+  finally{ btn.disabled=false; }
+}
+
+async function openLetter(id,btn){
+  if(btn) btn.disabled=true;
+  try{
+    await api('POST','/api/capsules/'+id+'/read');
+    LETTER_OPENED.add(id);
+    LETTERS=await api('GET','/api/capsules');
+    renderLetters();
+    const paper=document.querySelector(`#letter-${id} .lt-paper`);
+    if(paper){ paper.classList.add('reveal'); paper.scrollIntoView({behavior:'smooth',block:'center'}); }
+    celebrate('Bir mektubun var 💌');
+    renderLettersHome();
+  }catch(e){ if(e!==0) alert(e.message||'Açılamadı.'); if(btn) btn.disabled=false; }
+}
+
+async function deleteLetter(id){
+  if(!confirm('Bu mektup silinsin mi? Henüz açılmadığı için kimse okumamış olacak.')) return;
+  try{ await api('DELETE','/api/capsules/'+id); await loadLetters(); renderLettersHome(); }
+  catch(e){ if(e!==0) alert(e.message||'Silinemedi.'); }
+}
+
+function renderLettersHome(){
+  const box=$('letters-home'); if(!box) return;
+  const inbox=LETTERS.filter(l=>!l.mine);
+  const ready=inbox.filter(l=>l.unlocked&&!l.opened_at&&!LETTER_OPENED.has(l.id));
+  const locked=inbox.filter(l=>!l.unlocked).sort((a,b)=>a.open_at.localeCompare(b.open_at));
+  if(ready.length){
+    box.hidden=false;
+    box.innerHTML=`<h2>💌 Sana ${ready.length>1?ready.length+' mektup':'bir mektup'} açıldı</h2>
+      <p>Yazan: ${esc([...new Set(ready.map(l=>l.author))].join(', '))}</p>
+      <button type="button" onclick="showTab('letters')">Oku</button>`;
+  }else if(locked.length){
+    box.hidden=false;
+    box.innerHTML=`<h2>🔒 Seni bekleyen ${locked.length>1?locked.length+' mektup':'bir mektup'} var</h2>
+      <p>${locked.length>1?'İlki ':''}${esc(fmtLeft(locked[0].open_at))} sonra açılacak (${esc(fmtMoment(locked[0].open_at))}).</p>`;
+  }else{ box.hidden=true; box.innerHTML=''; }
+}
+
+async function loadTogetherHome(){
+  await ensurePeople();
+  loadSpace();
+  try{ LETTERS=await api('GET','/api/capsules'); renderLettersHome(); }catch(e){}
 }
 </script>
 
