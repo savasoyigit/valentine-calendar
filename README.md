@@ -33,8 +33,8 @@ Buluşma planlarını öner, karşı taraf tek tıkla kabul etsin ya da başka g
 ### A) Docker ile (önerilen)
 
 ```bash
-git clone https://github.com/savasoyigit/Valentine-Calendar.git
-cd Valentine-Calendar
+git clone https://github.com/savasoyigit/valentine-calendar.git
+cd valentine-calendar
 docker compose up -d
 docker compose logs askimiz        # kurulum kodunu buradan al
 ```
@@ -48,8 +48,8 @@ Veriler `askimiz-data` adlı bir Docker volume'ünde saklanır. Container silins
 Gerekenler: **Python 3.10 veya üzeri**.
 
 ```bash
-git clone https://github.com/savasoyigit/Valentine-Calendar.git
-cd Valentine-Calendar
+git clone https://github.com/savasoyigit/valentine-calendar.git
+cd valentine-calendar
 python3 -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
@@ -136,8 +136,8 @@ After=network.target
 
 [Service]
 User=KULLANICI
-WorkingDirectory=/home/KULLANICI/Valentine-Calendar
-ExecStart=/home/KULLANICI/Valentine-Calendar/.venv/bin/uvicorn app:app --host 127.0.0.1 --port 8000 --proxy-headers
+WorkingDirectory=/home/KULLANICI/valentine-calendar
+ExecStart=/home/KULLANICI/valentine-calendar/.venv/bin/uvicorn app:app --host 127.0.0.1 --port 8000 --proxy-headers
 Restart=on-failure
 
 [Install]
