@@ -1,0 +1,5597 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#6b2143">
+<link rel="manifest" href="/manifest.json">
+<link rel="icon" href="/icon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<title>Aşkımız</title>
+<link rel="manifest" href="/manifest.json">
+
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Aşkımız">
+
+<link rel="apple-touch-icon" href="/icons/apple-touch-icon.png">
+<style>
+:root{--bg:#fbf3f1;--card:#fff;--ink:#3a1a2a;--mute:#8f6f7c;--line:#efdde0;--wine:#6b2143;--rose:#d9466f;--apricot:#ffb38a;--ok:#3f8f68;--wait:#b7791f;--tint:#fdeaee;--shadow:0 8px 30px rgba(107,33,67,.07);--serif:"Montserrat", "Avenir Next", Avenir, system-ui, -apple-system, "Segoe UI", sans-serif;--sans:"Montserrat", "Avenir Next", Avenir, system-ui, -apple-system, "Segoe UI", sans-serif}
+@media(prefers-color-scheme:dark){:root{--bg:#1a0f15;--card:#261620;--ink:#f6e3e8;--mute:#b592a0;--line:#3a2431;--wine:#4a1830;--rose:#e0507a;--tint:#3a2230;--ok:#6cc39a;--wait:#e0b060;--shadow:none}}
+*{box-sizing:border-box}
+html{padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom)}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.45 var(--sans)}
+:focus-visible{outline:2px solid var(--rose);outline-offset:2px}
+main{max-width:760px;margin:0 auto;padding:0 16px 36px}
+button,input,textarea,select{font:inherit}
+button{cursor:pointer}
+
+.top{display:flex;align-items:center;justify-content:space-between;padding:16px 0 12px}
+.brand{display:flex;align-items:center;gap:10px}
+.brand-heart{font-size:30px}
+.bn{display:block;font:800 1.55rem/1 var(--sans);font-style:normal;letter-spacing:-.045em;color:#fff1ec}
+.bs{display:block;color:var(--mute);font-size:.72rem;margin-top:4px}
+
+.menu{position:relative;display:flex;align-items:center;gap:10px}
+
+.avatar{width:40px;height:40px;flex:0 0 40px;overflow:hidden;display:inline-flex;align-items:center;justify-content:center;border:1px solid rgba(255,207,183,.48);border-radius:50%;padding:0;background:linear-gradient(135deg,#843054,#3a172b);color:#fff1ec;font:700 1rem var(--sans);box-shadow:0 3px 10px rgba(25,5,16,.18)}
+.avatar img{display:block;width:100%;height:100%;object-fit:cover;border-radius:50%}
+.avatar .avatar-fallback{display:flex;align-items:center;justify-content:center;width:100%;height:100%}
+
+.dd{display:none;position:absolute;right:0;top:48px;min-width:190px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:6px;z-index:20;box-shadow:var(--shadow)}
+.dd.open{display:block}
+.who{padding:8px 10px 10px;border-bottom:1px solid var(--line);margin-bottom:4px}
+.who small{display:block;color:var(--mute);font-size:.78rem}
+.ddi{display:block;width:100%;text-align:left;border:0;background:none;color:var(--ink);padding:10px;border-radius:8px}
+.ddi:hover{background:var(--tint)}
+
+/* Bildirim ikonu ve popup */
+.notification-menu{position:relative;display:flex;align-items:center}
+
+.notification-btn{
+  position:relative;display:inline-flex;align-items:center;justify-content:center;gap:7px;
+  min-height:38px;padding:8px 12px;border:1px solid rgba(255,179,138,.28);
+  border-radius:12px;background:linear-gradient(135deg,var(--love-wine-1) 0%,var(--love-wine-2) 58%,var(--love-wine-3) 100%);
+  color:var(--love-cream);font:600 .88rem/1 var(--sans);box-shadow:0 5px 14px rgba(58,23,43,.12);
+  cursor:pointer;transition:transform .18s ease,box-shadow .18s ease,border-color .18s ease,filter .18s ease;
+}
+
+.notification-btn:hover{transform:translateY(-1px);border-color:rgba(255,179,138,.58);box-shadow:0 8px 18px rgba(58,23,43,.2);filter:brightness(1.08)}
+.notification-btn:active{transform:scale(.97)}
+
+.notification-badge{
+  position:absolute;
+  top:-3px;
+  right:-4px;
+  min-width:18px;
+  height:18px;
+  padding:0 4px;
+  border:2px solid var(--bg);
+  border-radius:999px;
+  background:var(--rose);
+  color:#fff;
+  font-size:10px;
+  font-weight:750;
+  line-height:14px;
+  text-align:center;
+  font-style:normal;
+  box-shadow:0 1px 3px rgba(58,26,42,.15);
+  display:none;
+}
+
+.notification-dropdown{
+  display:none;
+  position:absolute;
+  right:0;
+  top:46px;
+  width:330px;
+  max-width:calc(100vw - 24px);
+  background:var(--card);
+  border:1px solid var(--line);
+  border-radius:16px;
+  z-index:30;
+  box-shadow:var(--shadow);
+  overflow:hidden;
+}
+
+.notification-dropdown.open{
+  display:block;
+}
+
+.notification-head{
+  padding:13px 15px;
+  border-bottom:1px solid var(--line);
+  font:600 1rem var(--serif);
+}
+
+.notification-list{
+  max-height:360px;
+  overflow:auto;
+  padding:4px 10px;
+}
+
+.notification-item{
+  display:flex;
+  width:100%;
+  gap:9px;
+  text-align:left;
+  border:0;
+  border-bottom:1px solid var(--line);
+  background:none;
+  color:var(--ink);
+  padding:11px 5px;
+  position:relative;
+}
+
+.notification-item:last-child{
+  border-bottom:0;
+}
+
+.notification-item:hover{
+  background:var(--tint);
+}
+
+.notification-item .notification-icon{
+  font-size:18px;
+  flex:none;
+}
+
+.notification-item .notification-content{
+  flex:1;
+  min-width:0;
+}
+
+.notification-item b,
+.notification-item small{
+  display:block;
+}
+
+.notification-item small{
+  color:var(--mute);
+  margin-top:2px;
+  font-size:.78rem;
+}
+
+.notification-item em{
+  display:block;
+  font-style:normal;
+  color:var(--mute);
+  font-size:.68rem;
+  margin-top:3px;
+}
+
+.notification-item .unread-dot{
+  width:7px;
+  height:7px;
+  background:var(--rose);
+  border-radius:50%;
+  margin-top:7px;
+  flex:none;
+}
+
+.notification-empty{
+  padding:22px 15px;
+  text-align:center;
+  color:var(--mute);
+  font-size:.84rem;
+}
+
+.notification-all{
+  display:block;
+  width:100%;
+  border:0;
+  border-top:1px solid var(--line);
+  background:none;
+  color:var(--rose);
+  padding:11px;
+  font-weight:650;
+  cursor:pointer;
+}
+
+.notification-all:hover{
+  background:var(--tint);
+}
+
+.tabs{display:flex;gap:5px;overflow-x:auto;scrollbar-width:none;padding:4px 0 12px;position:sticky;top:0;background:linear-gradient(var(--bg) 82%,transparent);z-index:10}
+.tabs::-webkit-scrollbar{display:none}
+.tabs button{white-space:nowrap;border:1px solid var(--line);background:var(--card);color:var(--mute);border-radius:12px;padding:8px 10px;position:relative}
+.tabs button.active{background:var(--wine);color:#fff1ec;border-color:var(--wine)}
+.badge{display:none;position:absolute;top:-5px;right:-3px;min-width:17px;height:17px;border-radius:99px;background:var(--rose);color:white;font-size:10px;line-height:17px;font-style:normal}
+
+.tab{display:none}
+.tab.active{display:block}
+
+.hero{background:var(--wine);color:#fff1ec;border-radius:24px;padding:25px 22px;margin:4px 0 14px;box-shadow:var(--shadow)}
+.hero-kicker{opacity:.8;font-size:.88rem}
+.hero-num{font:600 4.3rem/.95 var(--serif);color:var(--apricot);margin-top:8px}
+.hero-label{opacity:.78;margin:3px 0 13px}
+.hero-title{font:600 1.28rem var(--serif)}
+.hero-sub{opacity:.76;font-size:.92rem;margin-top:3px}
+
+.quick-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:14px}
+.quick-grid button{border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:16px;padding:12px 6px;text-align:center}
+.quick-grid b{display:block;font-size:21px}
+.quick-grid span{display:block;font-weight:650;margin-top:4px}
+.quick-grid small{display:block;color:var(--mute);font-size:.68rem;margin-top:2px}
+
+.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:16px;margin-bottom:14px;box-shadow:var(--shadow)}
+
+.head,.section-title{display:flex;align-items:center;justify-content:space-between;margin-bottom:11px}
+.section-title{align-items:flex-end;margin:8px 2px 14px}
+.section-title h1{font:600 1.65rem var(--serif);margin:0}
+.section-title p{color:var(--mute);margin:3px 0 0;font-size:.88rem}
+.counter{background:var(--tint);color:var(--rose);border-radius:99px;padding:5px 10px;font-size:.78rem}
+
+.head h2,h2{font:600 1.12rem var(--serif);margin:0}
+.nav{width:36px;height:36px;border-radius:50%;border:1px solid var(--line);background:none;color:var(--ink)}
+
+.grid{display:grid;grid-template-columns:repeat(7,1fr);gap:2px;text-align:center}
+.dow{color:var(--mute);font-size:.76rem;padding-bottom:4px}
+.d{aspect-ratio:1;border:0;background:none;color:var(--ink);border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;font-size:.92rem}
+.d.today{box-shadow:inset 0 0 0 1.5px var(--rose)}
+.d.sel{background:var(--wine);color:#fff1ec}
+
+.dots{display:flex;gap:3px;height:6px}
+.dot{width:6px;height:6px;border-radius:50%;background:var(--rose);display:inline-block}
+.dot.wait{background:none;box-shadow:inset 0 0 0 1.5px var(--rose)}
+.dot.note{border-radius:1px;background:var(--mute);width:5px;height:5px}
+
+.legend{display:flex;gap:14px;justify-content:center;color:var(--mute);font-size:.78rem;margin-top:10px}
+.legend .dot{vertical-align:middle;margin-right:4px}
+
+.empty{color:var(--mute);margin:10px 0}
+
+.ev{display:flex;gap:10px;padding:12px 0;border-top:1px solid var(--line)}
+.ev:first-of-type{border-top:0}
+.ev input[type=checkbox],.list-row input[type=checkbox],.wish-card>input[type=checkbox]{appearance:none;-webkit-appearance:none;width:22px;height:22px;flex:none;margin:1px 0 0;padding:0;border:1.5px solid var(--mute);border-radius:7px;background:none;display:grid;place-content:center;cursor:pointer}
+.ev input[type=checkbox]::after,.list-row input[type=checkbox]::after,.wish-card>input[type=checkbox]::after{content:"";width:10px;height:6px;border-left:2px solid #fff;border-bottom:2px solid #fff;transform:rotate(-45deg) translate(1px,-1px);opacity:0}
+.ev input:checked,.list-row input:checked,.wish-card>input:checked{background:var(--rose);border-color:var(--rose)}
+.ev input:checked::after,.list-row input:checked::after,.wish-card>input:checked::after{opacity:1}
+.ev input:disabled{opacity:.3;cursor:not-allowed}
+
+.ev .body{flex:1;min-width:0}
+.ev .ttl{font-weight:650}
+.ev.done .ttl{text-decoration:line-through;opacity:.55}
+.meta{color:var(--mute);font-size:.88rem}
+
+.chip{display:inline-block;font-size:.77rem;border-radius:99px;padding:2px 9px;margin-top:6px;background:var(--tint)}
+.chip.ok{color:var(--ok)}
+.chip.wait{color:var(--wait)}
+
+.link{border:0;background:none;color:var(--rose);font-size:.82rem;padding:2px 5px}
+
+.hist{list-style:none;margin:8px 0 0;padding:0 0 0 10px;border-left:2px solid var(--line);color:var(--mute);font-size:.82rem}
+.hist li+li{margin-top:2px}
+
+.x{border:0;background:none;color:var(--mute);width:32px;height:32px;border-radius:8px;align-self:flex-start}
+.x:hover{background:var(--tint)}
+
+details{margin-top:10px;border-top:1px solid var(--line);padding-top:10px}
+summary{cursor:pointer;color:var(--rose);font-weight:600;list-style:none}
+summary::-webkit-details-marker{display:none}
+
+input:not([type=checkbox]),textarea,select{width:100%;border:1px solid var(--line);background:var(--bg);color:var(--ink);border-radius:12px;padding:10px 12px;font:inherit;margin-top:8px}
+
+.row{display:flex;gap:8px}
+.row>*{min-width:0;flex:1}
+
+.btn{border:0;border-radius:12px;background:var(--rose);color:#fff;padding:10px 16px;margin-top:10px;font-weight:650}
+.btn.compact{flex:0 0 auto;padding:10px 15px}
+
+.bubbles{display:flex;flex-direction:column;gap:6px;margin:10px 0}
+.b{max-width:85%;background:var(--tint);border-radius:16px 16px 16px 4px;padding:8px 12px}
+.b.me{align-self:flex-end;border-radius:16px 16px 4px 16px;background:var(--wine);color:#fff1ec}
+.b small{display:block;opacity:.7;font-size:.73rem}
+.b .link{color:inherit;opacity:.8;padding:0 0 0 6px;font-size:.72rem}
+
+.summary{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.stat{background:var(--bg);border-radius:13px;padding:11px 8px;text-align:center}
+.stat b{display:block;font-size:1rem}
+.stat span{display:block;color:var(--mute);font-size:.68rem;margin-top:3px}
+
+.mini-note{padding:10px 0;border-top:1px solid var(--line)}
+.mini-note:first-child{border-top:0}
+.mini-note b{display:block}
+.mini-note span{display:block;margin-top:2px}
+.mini-note small,.note-card small,.list-row small,.wish-body small{display:block;color:var(--mute);font-size:.73rem;margin-top:4px}
+
+.note-card,.wish-card{display:flex;gap:10px;align-items:flex-start;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:13px;margin-bottom:9px}
+.note-card>div{display:flex;gap:10px;flex:1;min-width:0}
+.note-icon{font-size:21px}
+.note-card h3,.wish-card h3{font:600 1rem var(--serif);margin:0}
+.note-card p{margin:4px 0 0;white-space:normal}
+
+.list-row{display:flex;align-items:center;gap:10px;padding:11px 0;border-bottom:1px solid var(--line)}
+.list-row:last-child{border-bottom:0}
+.list-row>div{flex:1;min-width:0}
+.list-row.checked b{text-decoration:line-through;opacity:.5}
+
+.wish-card>input{margin-top:2px}
+.wish-body{flex:1;min-width:0}
+.wish-top{display:flex;gap:8px;align-items:center;justify-content:space-between}
+.priority{font-size:.68rem;padding:3px 7px;border-radius:99px;background:var(--tint);color:var(--mute);white-space:nowrap}
+.priority.high{color:var(--rose)}
+.price{display:block;margin-top:6px}
+.wish-link{display:inline-block;color:var(--rose);font-size:.8rem;margin-top:6px;text-decoration:none}
+.wish-card.checked .wish-body{opacity:.55}
+.wish-card.checked h3{text-decoration:line-through}
+
+.notif{display:flex;width:100%;gap:10px;text-align:left;border:0;border-bottom:1px solid var(--line);background:none;color:var(--ink);padding:13px 2px;position:relative}
+.notif:last-child{border-bottom:0}
+.notif-icon{font-size:20px}
+.notif span{flex:1;min-width:0}
+.notif b,.notif small,.notif em{display:block}
+.notif small{color:var(--mute);margin-top:2px}
+.notif em{font-style:normal;color:var(--mute);font-size:.7rem;margin-top:4px}
+.notif.read{opacity:.58}
+.unread-dot{width:7px;height:7px;background:var(--rose);border-radius:50%;margin-top:7px;flex:none}
+
+.login-heart{font-size:52px}
+.lcard{width:100%;max-width:320px;text-align:center}
+.lcard h1{font:italic 600 2.4rem var(--serif);margin:5px 0 18px}
+.lcard input{text-align:center;font-size:1.4rem;letter-spacing:.35rem}
+.lcard .btn{width:100%}
+
+.wish-actions{
+  display:flex;
+  align-items:center;
+  gap:6px;
+  margin-left:auto;
+}
+
+.edit-wish{
+  border:0;
+  background:transparent;
+  cursor:pointer;
+  font-size:16px;
+  padding:6px;
+  border-radius:8px;
+}
+
+.edit-wish:hover{
+  background:rgba(0,0,0,.05);
+}
+
+.wish-edit{
+  width:100%;
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+}
+
+.wish-edit-actions{
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+
+#login{position:fixed;inset:0;background:var(--bg);display:none;align-items:center;justify-content:center;padding:20px;z-index:99}
+#err{color:var(--rose);min-height:1.4em;margin-top:8px;font-size:.9rem}
+
+@media(max-width:560px){
+  main{padding:0 12px 30px}
+  .tabs button{padding:8px 9px}
+  .tabs button span{display:none}
+  .quick-grid{grid-template-columns:repeat(2,1fr)}
+  .summary{grid-template-columns:repeat(2,1fr)}
+  .hero-num{font-size:3.7rem}
+  .section-title h1{font-size:1.45rem}
+
+  .notification-dropdown{
+    position:fixed;
+    top:70px;
+    right:12px;
+    width:calc(100vw - 24px);
+  }
+}
+
+@media(prefers-reduced-motion:reduce){
+  *{scroll-behavior:auto!important}
+}
+
+/* =========================
+   YENİ ÖZELLİKLER
+========================= */
+
+.special-grid{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:10px;
+}
+
+.special-card{
+  background:var(--card);
+  border:1px solid var(--line);
+  border-radius:18px;
+  padding:15px;
+  position:relative;
+}
+
+.special-icon{
+  font-size:27px;
+  margin-bottom:5px;
+}
+
+.special-card h3{
+  font:600 1.05rem var(--serif);
+  margin:0;
+}
+
+.special-date{
+  color:var(--mute);
+  font-size:.8rem;
+  margin-top:3px;
+}
+
+.special-countdown{
+  font:600 1.65rem var(--serif);
+  color:var(--rose);
+  margin-top:10px;
+}
+
+.special-note{
+  color:var(--mute);
+  font-size:.78rem;
+  margin-top:4px;
+}
+
+.special-actions{
+  display:flex;
+  gap:4px;
+  position:absolute;
+  top:9px;
+  right:9px;
+}
+
+.special-actions button{
+  border:0;
+  background:none;
+  padding:5px;
+  border-radius:7px;
+  cursor:pointer;
+}
+
+.special-actions button:hover{
+  background:var(--tint);
+}
+
+
+/* İzlenecekler */
+
+.watch-grid{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:10px;
+}
+
+.watch-card{
+  background:var(--card);
+  border:1px solid var(--line);
+  border-radius:18px;
+  overflow:hidden;
+  position:relative;
+}
+
+.watch-poster{
+  width:100%;
+  aspect-ratio:2/3;
+  background:var(--tint);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  overflow:hidden;
+}
+
+.watch-poster img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+}
+
+.watch-no-poster{
+  font-size:42px;
+  opacity:.5;
+}
+
+.watch-body{
+  padding:12px;
+}
+
+.watch-body h3{
+  font:600 1rem var(--serif);
+  margin:0;
+}
+
+.watch-meta{
+  color:var(--mute);
+  font-size:.75rem;
+  margin-top:4px;
+}
+
+.watch-status{
+  display:inline-block;
+  margin-top:7px;
+  padding:3px 8px;
+  border-radius:99px;
+  background:var(--tint);
+  color:var(--rose);
+  font-size:.7rem;
+}
+
+.watch-rating{
+  margin-top:5px;
+  font-size:.78rem;
+}
+
+.watch-note{
+  color:var(--mute);
+  font-size:.76rem;
+  margin-top:6px;
+}
+
+.watch-actions{
+  display:flex;
+  gap:4px;
+  margin-top:8px;
+}
+
+.watch-actions button{
+  flex:1;
+  border:1px solid var(--line);
+  background:none;
+  color:var(--ink);
+  border-radius:9px;
+  padding:6px;
+  cursor:pointer;
+  font-size:.76rem;
+}
+
+.watch-actions button:hover{
+  background:var(--tint);
+}
+
+
+/* Anılar */
+
+.memory-card{
+  background:var(--card);
+  border:1px solid var(--line);
+  border-radius:18px;
+  padding:15px;
+  margin-bottom:10px;
+}
+
+.memory-top{
+  display:flex;
+  justify-content:space-between;
+  gap:10px;
+}
+
+.memory-card h3{
+  font:600 1.1rem var(--serif);
+  margin:0;
+}
+
+.memory-date{
+  color:var(--mute);
+  font-size:.78rem;
+  margin-top:3px;
+}
+
+.memory-location{
+  color:var(--mute);
+  font-size:.8rem;
+  margin-top:7px;
+}
+
+.memory-description{
+  margin-top:9px;
+  white-space:pre-wrap;
+}
+
+.memory-photos{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:5px;
+  margin-top:12px;
+}
+
+.memory-photo{
+  aspect-ratio:1;
+  border-radius:10px;
+  overflow:hidden;
+  background:var(--tint);
+  cursor:pointer;
+}
+
+.memory-photo img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+}
+
+.memory-actions{
+  display:flex;
+  justify-content:flex-end;
+  gap:5px;
+  margin-top:10px;
+}
+
+#save-memory-photos {
+  margin-top: 14px;
+  width: 100%;
+}
+
+@media(max-width:560px){
+  #memory-picker{
+    grid-template-columns:repeat(3,minmax(0,1fr));
+    max-height:50vh;
+  }
+}
+
+/* Anlık Foto */
+.instant-compose{display:flex;flex-direction:column;gap:10px}
+.instant-upload-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.instant-upload-row input[type=file]{flex:1;min-width:180px;margin:0;padding:8px}
+.instant-upload-row .btn{margin-top:0}
+.instant-list{display:flex;flex-direction:column;gap:14px}
+.instant-card{overflow:hidden;border:1px solid var(--line);border-radius:18px;background:var(--card);box-shadow:var(--shadow)}
+.instant-card-head{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 14px}
+.instant-card-head b{font-weight:700}
+.instant-card-head small{display:block;color:var(--mute);font-size:.76rem;margin-top:2px}
+.instant-image-wrap{position:relative;background:var(--tint);min-height:130px;overflow:hidden}
+.instant-image{display:block;width:100%;max-height:520px;aspect-ratio:4/3;object-fit:cover;transition:filter .25s ease,transform .25s ease}
+.instant-image.locked{filter:blur(18px) brightness(.78);transform:scale(1.04)}
+.instant-lock-overlay{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;padding:18px;background:rgba(58,26,42,.12)}
+.instant-lock-overlay button{border:1px solid rgba(255,255,255,.65);border-radius:999px;padding:11px 17px;background:rgba(107,33,67,.92);color:#fff;font-weight:700;box-shadow:0 5px 20px rgba(0,0,0,.18)}
+.instant-empty{text-align:center;padding:28px 16px;color:var(--mute);border:1px dashed var(--line);border-radius:16px}
+@media(max-width:560px){.instant-image{max-height:420px}.instant-upload-row{align-items:stretch}.instant-upload-row input[type=file]{flex-basis:100%}}
+
+/* Immich galeri */
+
+.photo-grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:5px;
+}
+
+.photo-item{
+  aspect-ratio:1;
+  border-radius:12px;
+  overflow:hidden;
+  background:var(--tint);
+  cursor:pointer;
+  position:relative;
+}
+
+.photo-item img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+}
+
+.photo-item.selected{
+  box-shadow:inset 0 0 0 3px var(--rose);
+}
+
+.photo-item.selected::after{
+  content:"✓";
+  position:absolute;
+  right:6px;
+  top:6px;
+  width:22px;
+  height:22px;
+  border-radius:50%;
+  background:var(--rose);
+  color:#fff;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-weight:bold;
+}
+
+
+/* Büyük fotoğraf */
+
+.photo-lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+
+  display: none;
+
+  align-items: center;
+  justify-content: center;
+
+  padding: 20px;
+  box-sizing: border-box;
+
+  background: rgba(0,0,0,.88);
+
+  overflow-y: auto;
+}
+
+.photo-lightbox.open {
+  display: flex;
+}
+
+.photo-lightbox > div{
+  box-sizing:border-box;
+  width:min(760px,100%);
+  max-height:90vh;
+  overflow:auto;
+  background:var(--card);
+  color:var(--ink);
+  border-radius:18px;
+  padding:16px;
+}
+
+.photo-lightbox img{
+  max-width:100%;
+  max-height:70vh;
+  object-fit:contain;
+  border-radius:12px;
+}
+
+.photo-lightbox .x{
+  position:absolute;
+  top:20px;
+  right:20px;
+  width:40px;
+  height:40px;
+  border:0;
+  border-radius:50%;
+  background:rgba(255,255,255,.15);
+  color:white;
+  font-size:22px;
+}
+
+
+/* Dashboard özel gün */
+
+.dashboard-special{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  padding:12px;
+  border-radius:14px;
+  background:var(--tint);
+}
+
+.dashboard-special-icon{
+  font-size:30px;
+}
+
+.dashboard-special-body{
+  flex:1;
+}
+
+.dashboard-special-body b{
+  display:block;
+}
+
+.dashboard-special-body small{
+  color:var(--mute);
+}
+
+@media(max-width:560px){
+
+  .special-grid{
+    grid-template-columns:1fr;
+  }
+
+  .watch-grid{
+    grid-template-columns:repeat(2,1fr);
+  }
+
+  .memory-photos{
+    grid-template-columns:repeat(3,1fr);
+  }
+
+  .photo-grid{
+    grid-template-columns:repeat(3,1fr);
+  }
+
+}
+
+/* =========================================================
+   FIX: Desktop tabs / calendar / photo modal
+   ========================================================= */
+
+/* --- Desktop ana menü --- */
+.tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  width: 100%;
+}
+
+.tabs button {
+  flex: 0 0 auto;
+  white-space: nowrap;
+}
+
+/* Küçük desktop ekranlarda butonlar sıkışmasın */
+@media (min-width: 561px) and (max-width: 1100px) {
+  .tabs {
+    gap: 5px;
+  }
+
+  .tabs button {
+    padding: 8px 10px;
+    font-size: .82rem;
+  }
+
+  .tabs button span {
+    display: inline;
+  }
+}
+
+/* --- Takvim hücreleri --- */
+.calendar {
+  width: 100%;
+  table-layout: fixed;
+}
+
+.calendar th,
+.calendar td {
+  width: 14.285%;
+}
+
+.calendar td {
+  vertical-align: top;
+}
+
+/* Tarihlerin arasındaki gereksiz geniş boşluğu azalt */
+.calendar-grid {
+    grid-template-columns: repeat(7, minmax(0, 1fr));
+    gap: 4px;
+}
+
+.calendar-day {
+  min-width: 0 !important;
+}
+
+/* --- Fotoğraf modalı --- */
+.memory-modal {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: rgba(0, 0, 0, .68);
+  align-items: center;
+  justify-content: center;
+  padding: 18px;
+}
+
+.memory-modal.open {
+  display: flex !important;
+}
+
+.memory-modal-card {
+  width: min(680px, 100%);
+  max-height: 90vh;
+  overflow-y: auto;
+  background: var(--card);
+  color: var(--ink);
+  border-radius: 20px;
+  padding: 16px;
+  position: relative;
+  box-sizing: border-box;
+}
+
+.memory-modal-image {
+  display: block;
+  width: 100%;
+  max-height: 60vh;
+  object-fit: contain;
+  background: #111;
+  border-radius: 14px;
+}
+
+.memory-modal-close {
+  position: absolute;
+  right: 12px;
+  top: 12px;
+  z-index: 2;
+  width: 34px;
+  height: 34px;
+  border: 0;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, .65);
+  color: #fff;
+  cursor: pointer;
+  font-size: 18px;
+}
+
+/* Fotoğrafı anıya ekleme alanı */
+.memory-attach {
+  display: block;
+  margin-top: 14px;
+}
+
+.memory-attach .row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  margin-top: 8px;
+}
+
+.memory-attach select {
+  flex: 1;
+  min-width: 0;
+}
+
+.memory-attach .btn {
+  flex: 0 0 auto;
+  white-space: nowrap;
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+/* Mobilde modal içindeki buton da düzgün sığsın */
+@media (max-width: 560px) {
+  .memory-attach .row {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .memory-attach .btn {
+    width: 100%;
+  }
+}
+
+#save-memory-photos:disabled {
+  opacity: .65;
+  cursor: wait;
+}
+
+/* =====================================================
+   ANILAR - FOTOĞRAF SEÇME MODALI
+   ===================================================== */
+
+.photo-lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 20px;
+  box-sizing: border-box;
+
+  background: rgba(0,0,0,.88);
+
+  overflow-y: auto;
+}
+
+.photo-lightbox .memory-photo-modal {
+  width: min(760px, 100%);
+  max-height: 90vh;
+
+  background: var(--card);
+  color: var(--ink);
+
+  border-radius: 18px;
+  padding: 16px;
+
+  box-sizing: border-box;
+
+  overflow-y: auto;
+}
+
+
+/* Fotoğraf seçim grid'i */
+.memory-picker-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+
+  gap: 8px;
+
+  margin-top: 12px;
+
+  max-height: 55vh;
+  overflow-y: auto;
+}
+
+
+/* Fotoğraf */
+.memory-picker-grid .photo-item {
+  position: relative;
+
+  width: 100%;
+  aspect-ratio: 1;
+
+  padding: 0;
+  margin: 0;
+
+  border: 0;
+  border-radius: 12px;
+
+  overflow: hidden;
+
+  background: var(--tint);
+
+  cursor: pointer;
+
+  box-sizing: border-box;
+}
+
+
+.memory-picker-grid .photo-item img {
+  display: block;
+
+  width: 100%;
+  height: 100%;
+
+  object-fit: cover;
+}
+
+
+/* Seçili fotoğraf */
+.memory-picker-grid .photo-item.selected {
+  box-shadow:
+    inset 0 0 0 3px var(--rose);
+}
+
+
+.memory-picker-grid .photo-item.selected::after {
+  content: "✓";
+
+  position: absolute;
+
+  right: 6px;
+  top: 6px;
+
+  width: 24px;
+  height: 24px;
+
+  border-radius: 50%;
+
+  background: var(--rose);
+  color: #fff;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-weight: bold;
+}
+
+
+/* Kaydet butonu */
+.photo-lightbox .memory-save-button {
+  display: block !important;
+
+  width: 100% !important;
+
+  margin-top: 14px;
+
+  position: static !important;
+
+  box-sizing: border-box;
+}
+
+
+/* Mobil */
+@media(max-width:560px) {
+
+  .photo-lightbox {
+    padding: 12px;
+  }
+
+  .photo-lightbox .memory-photo-modal {
+    padding: 12px;
+  }
+
+  .memory-picker-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    max-height: 52vh;
+  }
+
+}
+
+/* FOTOĞRAF MODALI - GÜVENLİ BAŞLANGIÇ */
+body > .photo-lightbox {
+  display: none !important;
+}
+
+body > .photo-lightbox.open {
+  display: flex !important;
+}
+
+#save-memory-photos {
+  display: inline-flex !important;
+  width: auto !important;
+  margin-top: 14px;
+  position: static !important;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.photo-lightbox #save-memory-photos {
+  position: static !important;
+
+  display: block !important;
+
+  width: 100% !important;
+  height: auto !important;
+
+  margin: 14px 0 0 0 !important;
+  padding: 10px 16px !important;
+
+  border: 0 !important;
+  border-radius: 12px !important;
+
+  background: var(--rose) !important;
+  color: #fff !important;
+
+  font: inherit !important;
+  font-weight: 650 !important;
+  font-size: 15px !important;
+
+  cursor: pointer;
+
+  box-sizing: border-box;
+}
+
+
+/* Aşkımız sayaç kartı ve çoklu alışveriş listeleri */
+.love-counter[hidden]{display:none}
+.love-counter{display:flex;align-items:center;justify-content:space-between;gap:18px;padding:22px 24px;margin:0 0 16px;border:1px solid rgba(255,179,138,.22);background:linear-gradient(135deg,#6b2143 0%,#511a36 58%,#3a172b 100%);color:#fff1ec;border-radius:24px;box-shadow:var(--shadow);position:relative;overflow:hidden}
+.love-counter:after{content:"";position:absolute;width:190px;height:190px;right:30px;top:-105px;border-radius:50%;background:rgba(255,179,138,.08);pointer-events:none}.love-counter .love-copy{min-width:0;position:relative;z-index:1}.love-counter .love-kicker{font-size:.78rem;letter-spacing:.09em;text-transform:uppercase;color:#ffcfb7;font-weight:750}.love-counter h2{font:600 1.45rem var(--serif);margin:5px 0 0;color:#fff1ec}
+.love-counter .love-heart{font-size:2.4rem;position:relative;z-index:1;filter:drop-shadow(0 4px 8px rgba(0,0,0,.2));animation:heartFloat 3s ease-in-out infinite}
+.love-duration{display:flex;flex-wrap:wrap;gap:8px;margin-top:13px}.love-duration span{padding:8px 11px;border-radius:12px;background:rgba(255,241,236,.09);border:1px solid rgba(255,207,183,.25);font-size:.88rem;color:#fff1ec;white-space:nowrap}.love-duration b{color:#ffb38a;font-size:1.12rem;margin-right:3px}
+.shopping-list-tools{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:9px;align-items:center}.shopping-list-picker{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:14px 0 4px}.shopping-list-chip{border:1px solid var(--line);background:#fff;color:var(--ink);border-radius:999px;padding:9px 13px;cursor:pointer;transition:transform .18s,background .18s,border-color .18s}.shopping-list-chip:hover{transform:translateY(-1px)}.shopping-list-chip.active{background:var(--wine);color:#fff;border-color:var(--wine)}.shopping-list-chip small{opacity:.8;margin-left:5px}.shopping-list-heading{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:8px}.shopping-list-heading h2{font:600 1.35rem var(--serif);margin:0}.shopping-list-heading .link{font-size:.85rem}.shopping-list-empty{padding:24px 10px;text-align:center;color:var(--muted)}
+@keyframes heartFloat{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-3px) scale(1.04)}}
+@media(max-width:560px){.love-counter{padding:17px}.love-counter h2{font-size:1.2rem}.love-counter .love-heart{font-size:1.8rem}.love-duration{gap:6px}.love-duration span{font-size:.8rem;padding:7px 8px}.shopping-list-tools{grid-template-columns:1fr}.shopping-list-tools button{width:100%}}
+
+
+/* AŞKIMIZ — ortak bordo gradient teması */
+:root {
+  --love-wine-1: #6b2143;
+  --love-wine-2: #511a36;
+  --love-wine-3: #3a172b;
+  --love-cream: #fff1ec;
+  --love-peach: #ffcfb7;
+  --love-apricot: #ffb38a;
+}
+
+/* Kartlar: sayaçla aynı sıcak, derin bordo gradient */
+.tab .card,
+.tab .stat,
+.tab .note-card,
+.tab .wish-card,
+.tab .watch-card,
+.tab .special-card,
+.tab .instant-card,
+.tab .memory-card,
+.tab .lcard,
+.tab .event-card,
+.tab .notification-card,
+.tab .shared-note-card,
+.tab .shopping-list-panel,
+.tab .shopping-item-card,
+.tab .quick-grid button {
+  background: linear-gradient(135deg, var(--love-wine-1) 0%, var(--love-wine-2) 58%, var(--love-wine-3) 100%);
+  color: var(--love-cream);
+  border-color: rgba(255, 179, 138, .24);
+  box-shadow: 0 10px 28px rgba(58, 23, 43, .12);
+}
+
+/* İç içe kartlar da aynı paleti korusun; alanları ayırmak için daha hafif ton */
+.tab .card .card,
+.tab .card .note-card,
+.tab .card .wish-card,
+.tab .card .watch-card,
+.tab .card .special-card,
+.tab .card .instant-card,
+.tab .card .memory-card,
+.tab .card .lcard {
+  background: linear-gradient(135deg, rgba(255, 207, 183, .10), rgba(255, 241, 236, .035));
+  border-color: rgba(255, 207, 183, .18);
+}
+
+.tab .card h1,
+.tab .card h2,
+.tab .card h3,
+.tab .card h4,
+.tab .card label,
+.tab .card strong,
+.tab .card b,
+.tab .note-card h1,
+.tab .note-card h2,
+.tab .wish-card h1,
+.tab .wish-card h2,
+.tab .watch-card h1,
+.tab .watch-card h2,
+.tab .special-card h1,
+.tab .special-card h2,
+.tab .instant-card h1,
+.tab .instant-card h2,
+.tab .memory-card h1,
+.tab .memory-card h2,
+.tab .lcard h1,
+.tab .lcard h2,
+.tab .stat b {
+  color: var(--love-cream);
+}
+
+.tab .card p,
+.tab .card small,
+.tab .card .muted,
+.tab .card .hint,
+.tab .note-card p,
+.tab .wish-card p,
+.tab .watch-card p,
+.tab .special-card p,
+.tab .instant-card p,
+.tab .memory-card p,
+.tab .lcard p,
+.tab .stat span {
+  color: rgba(255, 241, 236, .76);
+}
+
+/* Form alanları kart üzerinde okunaklı kalsın */
+.tab .card input,
+.tab .card textarea,
+.tab .card select,
+.tab .note-card input,
+.tab .note-card textarea,
+.tab .wish-card input,
+.tab .wish-card textarea,
+.tab .watch-card input,
+.tab .watch-card textarea,
+.tab .special-card input,
+.tab .special-card textarea {
+  color: var(--ink);
+  background: rgba(255, 250, 248, .96);
+  border-color: rgba(255, 207, 183, .4);
+}
+
+/* showTab ile açılan tüm navigasyon butonları */
+.tabs button,
+button[onclick*="showTab("] {
+  background: linear-gradient(135deg, var(--love-wine-1) 0%, var(--love-wine-2) 58%, var(--love-wine-3) 100%);
+  color: var(--love-cream);
+  border: 1px solid rgba(255, 179, 138, .28);
+  box-shadow: 0 5px 14px rgba(58, 23, 43, .12);
+  transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease, filter .18s ease;
+}
+
+.tabs button:hover,
+button[onclick*="showTab("]:hover {
+  transform: translateY(-1px);
+  border-color: rgba(255, 179, 138, .58);
+  box-shadow: 0 8px 18px rgba(58, 23, 43, .2);
+  filter: brightness(1.08);
+}
+
+.tabs button.active,
+button[onclick*="showTab("].active {
+  background: linear-gradient(135deg, #843054 0%, #64203f 55%, #45172f 100%);
+  color: #fff8f4;
+  border-color: rgba(255, 207, 183, .62);
+  box-shadow: inset 0 0 0 1px rgba(255, 207, 183, .12), 0 6px 16px rgba(58, 23, 43, .22);
+}
+
+/* Sayaçla aynı görsel dilde hızlı erişim kartları */
+.quick-grid button b { color: var(--love-apricot); }
+.quick-grid button span { color: var(--love-cream); }
+.quick-grid button small { color: rgba(255, 241, 236, .72); }
+
+
+/* Form alanları: göz yormayan sıcak mürdüm / şarap tonu */
+:root {
+  color-scheme: dark;
+  --love-field: #351728;
+  --love-field-soft: #402033;
+  --love-field-border: rgba(255, 179, 138, .30);
+  --love-field-text: #fff1ec;
+  --love-field-placeholder: #d6aebc;
+}
+
+input:not([type="checkbox"]):not([type="radio"]),
+textarea,
+select {
+  color: var(--love-field-text) !important;
+  background: linear-gradient(145deg, var(--love-field-soft) 0%, var(--love-field) 100%) !important;
+  border: 1px solid var(--love-field-border) !important;
+  border-radius: 12px;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, .14);
+  caret-color: var(--love-apricot, #ffb38a);
+  transition: border-color .18s ease, box-shadow .18s ease, background .18s ease;
+}
+
+input:not([type="checkbox"]):not([type="radio"]):focus,
+textarea:focus,
+select:focus {
+  outline: none;
+  border-color: rgba(255, 179, 138, .78) !important;
+  box-shadow: 0 0 0 3px rgba(255, 179, 138, .12), inset 0 1px 2px rgba(0, 0, 0, .12);
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: var(--love-field-placeholder) !important;
+  opacity: .88;
+}
+
+select option,
+select optgroup {
+  color: var(--love-field-text);
+  background: #351728;
+}
+
+input[type="date"],
+input[type="time"],
+input[type="datetime-local"],
+input[type="month"] {
+  color-scheme: dark;
+}
+
+input[type="file"] {
+  color: var(--love-field-placeholder) !important;
+}
+
+input[type="file"]::file-selector-button {
+  color: var(--love-cream, #fff1ec);
+  background: linear-gradient(135deg, #6b2143, #3a172b);
+  border: 1px solid var(--love-field-border);
+  border-radius: 8px;
+  padding: 7px 10px;
+  margin-right: 10px;
+  cursor: pointer;
+}
+
+/* Alışveriş listesi seçicileri ve küçük form kontrolleri */
+.shopping-list-chip {
+  color: var(--love-field-text);
+  background: linear-gradient(135deg, #402033, #351728);
+  border-color: var(--love-field-border);
+}
+.shopping-list-chip.active {
+  background: linear-gradient(135deg, #843054, #45172f);
+  color: #fff8f4;
+}
+
+/* Bazı bileşenlerdeki eski açık renk kurallarını geçersiz kıl */
+.tab .card input,
+.tab .card textarea,
+.tab .card select,
+.tab .note-card input,
+.tab .note-card textarea,
+.tab .wish-card input,
+.tab .wish-card textarea,
+.tab .watch-card input,
+.tab .watch-card textarea,
+.tab .special-card input,
+.tab .special-card textarea {
+  color: var(--love-field-text) !important;
+  background: linear-gradient(145deg, var(--love-field-soft) 0%, var(--love-field) 100%) !important;
+  border-color: var(--love-field-border) !important;
+}
+
+
+/* Seçili alışveriş listesini silme kontrolü */
+.shopping-list-heading{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.shopping-delete-list{flex-shrink:0;display:inline-flex;align-items:center;gap:7px;padding:8px 12px;border:1px solid rgba(255,179,138,.32);border-radius:12px;background:linear-gradient(135deg,rgba(105,31,59,.92),rgba(48,20,37,.96));color:#ffd9d0;font:inherit;font-size:.82rem;font-weight:650;cursor:pointer;transition:transform .2s ease,box-shadow .2s ease,border-color .2s ease}
+.shopping-delete-list span{font-size:1.15rem;line-height:1}
+.shopping-delete-list:hover:not(:disabled){transform:translateY(-1px);border-color:rgba(255,179,138,.65);box-shadow:0 6px 16px rgba(20,5,14,.2)}
+.shopping-delete-list:disabled{opacity:.42;cursor:not-allowed;filter:saturate(.55)}
+@media(max-width:420px){.shopping-list-heading{align-items:flex-start}.shopping-delete-list{padding:7px 9px;font-size:.76rem}}
+
+
+
+/* =========================================================
+   PREMIUM UI PASS — Aşkımız
+   Sekme geçişleri, derinlik, tutarlı etkileşimler
+   ========================================================= */
+:root {
+  --premium-wine-deep: #351426;
+  --premium-wine: #64203f;
+  --premium-wine-light: #843054;
+  --premium-apricot: #ffbf9c;
+  --premium-radius: 20px;
+  --premium-ease: cubic-bezier(.2,.75,.25,1);
+  --premium-shadow: 0 12px 34px rgba(72, 20, 47, .09), 0 2px 7px rgba(72, 20, 47, .035);
+}
+
+html { scroll-behavior: smooth; }
+body {
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+main { padding-top: 2px; }
+
+/* Sekme içeriği: kısa, yumuşak giriş animasyonu */
+.tab.active {
+  animation: premiumTabEnter .34s var(--premium-ease) both;
+  transform-origin: top center;
+}
+@keyframes premiumTabEnter {
+  from { opacity: 0; transform: translateY(9px) scale(.996); filter: blur(2px); }
+  to   { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
+}
+
+/* Üst navigasyon: cam hissi, seçili sekme ve kontrollü hover */
+.tabs {
+  padding: 7px 2px 13px;
+  gap: 7px;
+  margin: 0 -2px 4px;
+  background: linear-gradient(180deg, var(--bg) 75%, color-mix(in srgb, var(--bg) 0%, transparent));
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+}
+.tabs button {
+  min-height: 39px;
+  border-radius: 13px;
+  padding: 9px 13px;
+  font-size: .84rem;
+  font-weight: 650;
+  letter-spacing: .005em;
+  position: relative;
+  isolation: isolate;
+  transition: transform .2s var(--premium-ease), box-shadow .2s ease, border-color .2s ease, filter .2s ease;
+}
+.tabs button::after {
+  content: '';
+  position: absolute;
+  left: 13px;
+  right: 13px;
+  bottom: 4px;
+  height: 2px;
+  border-radius: 99px;
+  background: var(--premium-apricot);
+  transform: scaleX(0);
+  transform-origin: center;
+  transition: transform .22s var(--premium-ease);
+  z-index: -1;
+}
+.tabs button.active::after { transform: scaleX(1); }
+.tabs button:active, button[onclick*="showTab("]:active { transform: scale(.97); }
+
+/* Kartlar ve bölümler: ortak tasarım dili */
+.card,
+.special-card,
+.wish-card,
+.watch-card,
+.note-card,
+.instant-card,
+.memory-card,
+.lcard {
+  border-radius: var(--premium-radius);
+  box-shadow: var(--premium-shadow);
+  transition: border-color .22s ease, box-shadow .22s ease, transform .22s var(--premium-ease);
+}
+.card { padding: clamp(15px, 2.5vw, 20px); }
+@media (hover:hover) {
+  .card:hover,
+  .special-card:hover,
+  .wish-card:hover,
+  .watch-card:hover,
+  .note-card:hover,
+  .instant-card:hover,
+  .memory-card:hover,
+  .lcard:hover {
+    border-color: color-mix(in srgb, var(--rose) 25%, var(--line));
+    box-shadow: 0 16px 38px rgba(72, 20, 47, .11), 0 3px 8px rgba(72, 20, 47, .04);
+  }
+}
+
+.section-title { gap: 12px; margin-bottom: 16px; }
+.section-title h1 { letter-spacing: -.025em; line-height: 1.12; }
+.section-title p { line-height: 1.5; }
+.head { gap: 12px; }
+
+/* Butonlar: aynı basma ve odak hissi, mevcut renkler korunur */
+button {
+  -webkit-tap-highlight-color: transparent;
+  transition: transform .18s var(--premium-ease), box-shadow .18s ease, filter .18s ease, border-color .18s ease;
+}
+button:focus-visible {
+  outline: 2px solid var(--premium-apricot);
+  outline-offset: 3px;
+}
+.quick-grid button {
+  min-height: 92px;
+  border-radius: 18px;
+  box-shadow: 0 5px 16px rgba(72, 20, 47, .055);
+}
+.quick-grid button:active { transform: scale(.975); }
+
+/* İçerik alanlarının daha derli toplu görünmesi */
+input, textarea, select { min-height: 42px; }
+textarea { line-height: 1.55; }
+::selection { background: rgba(217, 70, 111, .24); color: var(--ink); }
+
+/* Kullanıcının hareket azaltma tercihini gözet */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto !important; }
+  *, *::before, *::after {
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+@media (max-width: 560px) {
+  .tabs { gap: 6px; padding-bottom: 11px; }
+  .tabs button { min-height: 38px; padding: 8px 11px; }
+  .card { border-radius: 18px; }
+  .quick-grid button { min-height: 88px; }
+}
+
+
+/* AŞKIMIZ PREMIUM HEADER + TYPOGRAPHY + SUMMARY STATS */
+:root{--sans:"Montserrat","Avenir Next",Avenir,system-ui,-apple-system,"Segoe UI",sans-serif;--serif:"Montserrat","Avenir Next",Avenir,system-ui,-apple-system,"Segoe UI",sans-serif}
+body,button,input,textarea,select{font-family:var(--sans)}
+.bn,.hero-num,.hero-title,.hero h1,.hero h2,.hero h3,.love-counter h2,.shopping-list-heading h2,.notification-head,.note-card h3,.wish-card h3{font-family:var(--sans);font-style:normal}
+.top{position:relative;isolation:isolate;gap:14px;margin:10px 0 13px;padding:15px 16px;border:1px solid rgba(255,207,183,.25);border-radius:20px;background:linear-gradient(120deg,#6b2143 0%,#511a36 56%,#321426 100%);box-shadow:0 12px 28px rgba(45,12,30,.18),inset 0 1px 0 rgba(255,241,236,.07)}
+.top:before{content:"";position:absolute;z-index:-1;inset:0;border-radius:inherit;background:radial-gradient(circle at 12% 0%,rgba(255,179,138,.12),transparent 42%),radial-gradient(circle at 100% 100%,rgba(217,70,111,.10),transparent 40%);pointer-events:none}
+.top .brand-heart{font-size:28px;filter:drop-shadow(0 3px 5px rgba(0,0,0,.16))}
+.top .bs{color:rgba(255,241,236,.72);letter-spacing:.015em}
+.top .menu{gap:9px}
+.top .notification-btn{min-width:42px}
+.top .notification-dropdown{top:calc(100% + 12px)}
+.top .dd{top:calc(100% + 12px)}
+.tabs{gap:6px;padding:4px 0 13px;background:linear-gradient(var(--bg) 78%,transparent)}
+.tabs button{font-family:var(--sans);font-weight:600;letter-spacing:-.01em}
+#summary .stat{position:relative;min-width:0;border:1px solid rgba(255,179,138,.36)!important;border-radius:14px;padding:12px 9px;background:linear-gradient(135deg,#6b2143 0%,#511a36 58%,#3a172b 100%)!important;box-shadow:inset 0 1px 0 rgba(255,241,236,.08),0 7px 18px rgba(58,23,43,.12)!important;outline:1px solid rgba(255,241,236,.035);outline-offset:-4px}
+#summary .stat b{font-size:1.05rem;color:#fff1ec!important;font-weight:750}
+#summary .stat span{color:rgba(255,241,236,.78)!important;font-size:.68rem;line-height:1.35}
+@media(max-width:560px){.top{padding:13px 12px;border-radius:17px;margin-top:8px}.top .brand{gap:7px}.top .brand-heart{font-size:24px}.bn{font-size:1.32rem}.top .bs{font-size:.65rem}.top .menu{gap:7px}.top .notification-btn{width:40px;min-width:40px;padding:8px}.top .notification-btn .notification-label{display:none}.avatar{width:38px;height:38px;flex-basis:38px}}
+
+
+/* Aşkımız: mevcut arka plan rengini koruyan, çok hafif ripple */
+html { background: var(--bg); }
+body { position: relative; isolation: isolate; background: transparent; }
+body::before {
+  content: ""; position: fixed; inset: -12%; z-index: -1; pointer-events: none;
+  background:
+    radial-gradient(ellipse at 18% 28%, rgba(132,48,84,.23) 0%, transparent 42%),
+    radial-gradient(ellipse at 78% 68%, rgba(217,70,111,.10) 0%, transparent 38%),
+    radial-gradient(ellipse at 52% 46%, rgba(107,33,67,.14) 0%, transparent 48%),
+    repeating-radial-gradient(ellipse at 48% 52%, transparent 0 105px, rgba(217,70,111,.045) 109px, transparent 116px, transparent 176px);
+  filter: blur(13px); opacity: .95; transform: translate3d(0,0,0) scale(1);
+  animation: askimiz-ripple 30s ease-in-out infinite alternate;
+}
+@keyframes askimiz-ripple {
+  0% { transform: translate3d(-1%,-.6%,0) scale(1); }
+  50% { transform: translate3d(.5%,.6%,0) scale(1.035); }
+  100% { transform: translate3d(1%,-.4%,0) scale(1.015); }
+}
+.top { position: relative; z-index: 50; }
+.top .menu { position: relative; z-index: 60; }
+.top .notification-dropdown { position: absolute; z-index: 1002; top: calc(100% + 12px); }
+.top #dd { position: absolute; z-index: 1003; top: calc(100% + 12px); right: 0; }
+.tabs { z-index: 10; }
+@media (prefers-reduced-motion: reduce) { body::before { animation: none; } }
+
+
+/* SON REVİZYON: İzlenecekler aksiyon butonları + kare Wishlist checkbox */
+#tab-watchlist .watch-actions button {
+  border: 1px solid rgba(255, 207, 183, .24);
+  background: linear-gradient(135deg, #6b2143 0%, #511a36 58%, #3a172b 100%);
+  color: #fff1ec;
+  border-radius: 10px;
+  min-height: 36px;
+  padding: 8px 9px;
+  font-family: var(--sans);
+  font-size: .76rem;
+  font-weight: 650;
+  box-shadow: inset 0 1px 0 rgba(255, 241, 236, .07);
+  transition: transform .16s ease, filter .16s ease, box-shadow .16s ease;
+}
+#tab-watchlist .watch-actions button:hover {
+  background: linear-gradient(135deg, #7a294e 0%, #60203f 58%, #451a32 100%);
+  filter: brightness(1.06);
+  box-shadow: 0 4px 12px rgba(58, 23, 43, .2);
+}
+#tab-watchlist .watch-actions button:active { transform: scale(.97); }
+#tab-watchlist .watch-actions button:focus-visible {
+  outline: 2px solid var(--apricot);
+  outline-offset: 2px;
+}
+
+/* Wishlist checkbox: kare formu sabitle; genel input min-height kuralını geçersiz kıl */
+#tab-wishlist .wish-card > input[type="checkbox"] {
+  appearance: none !important;
+  -webkit-appearance: none !important;
+  box-sizing: border-box !important;
+  width: 22px !important;
+  min-width: 22px !important;
+  max-width: 22px !important;
+  height: 22px !important;
+  min-height: 22px !important;
+  max-height: 22px !important;
+  aspect-ratio: 1 / 1;
+  flex: 0 0 22px !important;
+  padding: 0 !important;
+  margin: 2px 0 0 !important;
+  border-radius: 6px;
+}
+
+/* Yan menü: kapalı başlar, hamburger ile kayarak açılır */
+.brand-group{display:flex;align-items:center;gap:12px;min-width:0}
+.sidebar-toggle{width:42px;height:42px;flex:0 0 42px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;border:1px solid var(--line);border-radius:13px;background:var(--card);color:var(--ink);box-shadow:0 4px 14px rgba(65,20,43,.08);padding:0;transition:background .2s,transform .2s}
+.sidebar-toggle:hover{background:var(--tint)}
+.sidebar-toggle:active{transform:scale(.95)}
+.sidebar-toggle span{display:block;width:19px;height:2px;border-radius:3px;background:currentColor;transition:transform .22s,opacity .18s}
+.sidebar-toggle[aria-expanded="true"] span:first-child{transform:translateY(7px) rotate(45deg)}
+.sidebar-toggle[aria-expanded="true"] span:nth-child(2){opacity:0}
+.sidebar-toggle[aria-expanded="true"] span:last-child{transform:translateY(-7px) rotate(-45deg)}
+.sidebar-backdrop{position:fixed;inset:0;background:rgba(28,9,20,.42);backdrop-filter:blur(2px);z-index:10020;opacity:0;visibility:hidden;transition:opacity .24s,visibility .24s}
+.sidebar-backdrop.open{opacity:1;visibility:visible}
+.sidebar-nav{position:fixed!important;top:0;bottom:0;left:0;width:min(290px,84vw)!important;height:100dvh;overflow-y:auto;overscroll-behavior:contain;display:flex!important;flex-direction:column;flex-wrap:nowrap!important;align-items:stretch;gap:7px!important;padding:88px 14px 24px!important;margin:0!important;background:var(--card)!important;border-right:1px solid var(--line);box-shadow:12px 0 36px rgba(40,10,25,.16);z-index:10030;transform:translateX(-105%);visibility:hidden;transition:transform .26s cubic-bezier(.2,.8,.2,1),visibility .26s;top:0!important;bottom:0!important;max-height:none!important}
+.sidebar-nav.open{transform:translateX(0);visibility:visible}
+.sidebar-nav button{width:100%;min-height:46px;display:flex;align-items:center;gap:12px;text-align:left;white-space:normal!important;padding:11px 13px!important;border:1px solid transparent!important;border-radius:13px!important;background:transparent!important;color:var(--ink)!important;font-size:.92rem;font-weight:600;box-shadow:none!important}
+.sidebar-nav button span{display:inline!important}
+.sidebar-nav button.active{background:var(--tint)!important;color:var(--wine)!important;border-color:rgba(217,70,111,.18)!important}
+.sidebar-nav button::after{display:none!important}
+body.sidebar-open{overflow:hidden}
+@media(max-width:560px){.top{gap:8px}.brand-group{gap:9px}.sidebar-toggle{width:39px;height:39px;flex-basis:39px}.brand-heart{font-size:26px}.bn{font-size:1.32rem}.bs{font-size:.65rem}.menu{gap:7px}.sidebar-nav{width:min(280px,86vw)!important}}
+/* Seçili öğelerde metin/arka plan kontrastını koru */
+.sidebar-nav button.active,
+.tabs button.active,
+button[onclick*="showTab("].active,
+.shopping-list-chip.active {
+  color: #fff8f4 !important;
+  -webkit-text-fill-color: #fff8f4 !important;
+}
+
+/* Seçili kart/etiket durumlarında soluk veya koyu metin oluşmasını önle */
+.card.active,
+.card.selected,
+.wish-card.active,
+.wish-card.selected,
+.watch-card.active,
+.watch-card.selected,
+.special-card.active,
+.special-card.selected {
+  color: #fff1ec;
+}
+.card.active :is(h1,h2,h3,h4,p,span,strong,small,label),
+.card.selected :is(h1,h2,h3,h4,p,span,strong,small,label),
+.wish-card.active :is(h1,h2,h3,h4,p,span,strong,small,label),
+.wish-card.selected :is(h1,h2,h3,h4,p,span,strong,small,label),
+.watch-card.active :is(h1,h2,h3,h4,p,span,strong,small,label),
+.watch-card.selected :is(h1,h2,h3,h4,p,span,strong,small,label),
+.special-card.active :is(h1,h2,h3,h4,p,span,strong,small,label),
+.special-card.selected :is(h1,h2,h3,h4,p,span,strong,small,label) {
+  color: #fff1ec;
+}
+
+@media(prefers-reduced-motion:reduce){.sidebar-nav,.sidebar-backdrop,.sidebar-toggle span{transition:none}}
+
+
+/* Mobil bildirim menüsü: ekrana sığsın, içerik kendi içinde kaydırılsın */
+@media (max-width: 560px) {
+  .notification-dropdown {
+    position: fixed !important;
+    top: max(12px, env(safe-area-inset-top)) !important;
+    right: 12px !important;
+    left: 12px !important;
+    width: auto !important;
+    max-width: none !important;
+    max-height: calc(100dvh - 24px - env(safe-area-inset-top) - env(safe-area-inset-bottom)) !important;
+    overflow: hidden !important;
+    display: none;
+    z-index: 10050 !important;
+    box-sizing: border-box;
+  }
+
+  .notification-dropdown.open {
+    display: flex !important;
+    flex-direction: column;
+  }
+
+  .notification-head {
+    flex: 0 0 auto;
+    padding: 12px 14px;
+  }
+
+  .notification-list {
+    min-height: 0;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .notification-item {
+    padding: 10px 12px;
+    gap: 9px;
+  }
+
+  .notification-all {
+    flex: 0 0 auto;
+    padding: 11px 12px;
+  }
+}
+
+
+
+</style>
+
+
+</head>
+
+
+
+
+
+<body>
+
+<div id="login">
+  <div class="lcard">
+    <div class="login-heart">💕</div>
+    <h1>Aşkımız</h1>
+    <input id="username" type="text" placeholder="Kullanıcı adı" autocomplete="username" aria-label="Kullanıcı adı" required>
+    <input id="password" type="password" placeholder="Şifre" autocomplete="current-password" aria-label="Şifre" required>
+    <button class="btn" onclick="login()">Giriş yap</button>
+    <div id="err" role="alert"></div>
+  </div>
+</div>
+
+<main>
+
+<header class="top">
+
+  <div class="brand-group">
+    <button id="sidebarToggle" class="sidebar-toggle" type="button" aria-label="Menüyü aç" aria-controls="sidebarNav" aria-expanded="false" onclick="toggleSidebar()">
+      <span></span><span></span><span></span>
+    </button>
+    <div class="brand">
+    <span class="brand-heart">💕</span>
+    <div>
+      <span class="bn">Aşkımız</span>
+      <span class="bs">ikimizin küçük dünyası</span>
+    </div>
+    </div>
+  </div>
+
+  <div class="menu">
+
+    <!-- Bildirim -->
+    <div class="notification-menu">
+
+      <button
+        id="notificationBtn"
+        class="notification-btn"
+        aria-label="Bildirimler"
+        aria-haspopup="true"
+        aria-expanded="false"
+        onclick="toggleNotifications(event)"
+      >
+        <span aria-hidden="true">🔔</span><span class="notification-label">Bildirimler</span>
+        <i id="notificationBadge" class="notification-badge"></i>
+      </button>
+
+      <div id="notificationDropdown" class="notification-dropdown">
+
+        <div class="notification-head">
+          Bildirimler
+        </div>
+
+        <div id="notificationPreview" class="notification-list"></div>
+
+        <button
+          class="notification-all"
+          onclick="showTab('notifications');closeNotifications()"
+        >
+          Tüm bildirimleri görüntüle →
+        </button>
+
+      </div>
+
+    </div>
+
+    <!-- Kullanıcı -->
+    <button
+      id="avatar"
+      class="avatar"
+      aria-haspopup="true"
+      aria-expanded="false"
+      onclick="toggleMenu(event)"
+    ></button>
+
+    <div id="dd" class="dd">
+
+      <div class="who">
+        <small>Giriş yapan</small>
+        <b id="who"></b>
+      </div>
+
+      <button class="ddi" id="push-enable-btn" onclick="enablePush()">
+        🔔 Bildirimleri aç
+      </button>
+
+      <button class="ddi" onclick="logout()">
+        Çıkış yap
+      </button>
+
+    </div>
+
+  </div>
+
+</header>
+
+<div id="sidebarBackdrop" class="sidebar-backdrop" onclick="closeSidebar()" aria-hidden="true"></div>
+
+<nav id="sidebarNav" class="tabs sidebar-nav" aria-label="Ana menü" aria-hidden="true">
+
+  <button data-tab="home" onclick="showTab('home')">
+    🏠 <span>Ana Sayfa</span>
+  </button>
+
+  <button data-tab="calendar" onclick="showTab('calendar')">
+    📅 <span>Takvim</span>
+  </button>
+
+  <button data-tab="notes" onclick="showTab('notes')">
+    📝 <span>Notlar</span>
+  </button>
+
+  <button data-tab="shopping" onclick="showTab('shopping')">
+    🛒 <span>Liste</span>
+  </button>
+
+  <button data-tab="wishlist" onclick="showTab('wishlist')">
+    🎁 <span>Wishlist</span>
+  </button>
+
+  <button data-tab="specialdays" onclick="showTab('specialdays')">
+    ❤️ <span>Özel Günler</span>
+  </button>
+
+  <button data-tab="watchlist" onclick="showTab('watchlist')">
+    🎬 <span>İzlenecekler</span>
+  </button>
+
+  <button data-tab="instantphoto" onclick="showTab('instantphoto')">
+    💌 <span>Anlık Foto</span>
+  </button>
+
+  <button data-tab="memories" onclick="showTab('memories')">
+    📸 <span>Anılarımız</span>
+  </button>
+
+</nav>
+
+
+<section id="tab-home" class="tab active">
+
+  <section class="hero" id="hero"></section>
+
+  <section class="love-counter" id="love-counter" aria-live="polite" hidden>
+    <div class="love-copy">
+      <div class="love-kicker" id="love-kicker"></div>
+      <h2>Birlikte geçen zamanımız</h2>
+      <div id="love-duration" class="love-duration"><span>Hesaplanıyor…</span></div>
+    </div>
+    <div class="love-heart" aria-hidden="true">❤️</div>
+  </section>
+
+  <section class="quick-grid">
+    <button onclick="showTab('calendar')">
+      <b>📅</b>
+      <span>Buluşma</span>
+      <small>Bir plan yap</small>
+    </button>
+
+    <button onclick="showTab('notes')">
+      <b>📝</b>
+      <span>Not bırak</span>
+      <small>Aklındakini yaz</small>
+    </button>
+
+    <button onclick="showTab('shopping')">
+      <b>🛒</b>
+      <span>Alışveriş</span>
+      <small>Listeye bak</small>
+    </button>
+
+    <button onclick="showTab('wishlist')">
+      <b>🎁</b>
+      <span>Wishlist</span>
+      <small>Bir şey ekle</small>
+    </button>
+  </section>
+
+  <section class="card">
+    <div class="head">
+      <h2>Bugünün özeti</h2>
+    </div>
+    <div id="summary" class="summary"></div>
+  </section>
+
+  <section class="card">
+    <div class="head">
+      <h2>Son ortak notlar</h2>
+      <button class="link" onclick="showTab('notes')">Tümünü gör →</button>
+    </div>
+    <div id="recent-notes"></div>
+  </section>
+
+</section>
+
+
+<section id="tab-calendar" class="tab">
+
+  <section class="card">
+    <div class="head">
+      <button class="nav" aria-label="Önceki ay" onclick="mv(-1)">‹</button>
+      <h2 id="mon"></h2>
+      <button class="nav" aria-label="Sonraki ay" onclick="mv(1)">›</button>
+    </div>
+
+    <div class="grid" id="cal"></div>
+
+    <div class="legend">
+      <span><i class="dot"></i>onaylı</span>
+      <span><i class="dot wait"></i>bekliyor</span>
+      <span><i class="dot note"></i>not</span>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2 id="dayt"></h2>
+    <div id="evs"></div>
+
+    <details>
+      <summary>Buluşma öner</summary>
+
+      <input id="et" placeholder="Ne yapıyoruz? (ör. Yeni kahveciyi deneyelim)">
+
+      <div class="row">
+        <input id="etm" type="time" aria-label="Saat">
+        <input id="epl" placeholder="Mekan">
+      </div>
+
+      <button class="btn" onclick="addEv()">Öneriyi gönder</button>
+    </details>
+  </section>
+
+  <section class="card">
+    <h2>Bu günün notları</h2>
+    <div class="bubbles" id="nts"></div>
+
+    <textarea id="nt" rows="2" placeholder="Bir not bırak..."></textarea>
+
+    <button class="btn" onclick="addNote()">Notu bırak</button>
+  </section>
+
+</section>
+
+
+<section id="tab-notes" class="tab">
+
+  <section class="section-title">
+    <div>
+      <h1>Ortak Notlar</h1>
+      <p>İkinizin saklamak istediği şeyler.</p>
+    </div>
+  </section>
+
+  <section class="card">
+    <input id="snt-title" placeholder="Başlık (isteğe bağlı)">
+    <textarea id="snt-text" rows="4" placeholder="Bir fikir, plan, hatırlatma..."></textarea>
+    <button class="btn" onclick="addSharedNote()">Notu kaydet</button>
+  </section>
+
+  <div id="shared-notes"></div>
+
+</section>
+
+
+<section id="tab-shopping" class="tab">
+
+  <section class="section-title">
+    <div>
+      <h1>Alışveriş Listesi</h1>
+      <p>Birimiz eklesin, ikimiz görelim.</p>
+    </div>
+
+  </section>
+
+  <section class="card">
+    <div class="shopping-list-tools">
+      <input id="shop-list-title" maxlength="80" placeholder="Yeni liste adı (örn. Haftalık market)">
+      <button class="btn compact" onclick="createShoppingList()">＋ Liste oluştur</button>
+    </div>
+    <div id="shopping-list-picker" class="shopping-list-picker" aria-label="Alışveriş listeleri"></div>
+  </section>
+
+  <section class="card">
+    <div class="shopping-list-heading">
+      <h2 id="shopping-active-title">Alışveriş listesi</h2>
+      <button id="shopping-delete-list" class="shopping-delete-list" type="button" onclick="deleteShoppingList()" aria-label="Seçili alışveriş listesini sil">Listeyi sil <span aria-hidden="true">×</span></button>
+    </div>
+    <div class="row">
+      <input id="shop-text" placeholder="Seçili listeye ürün ekle (örn. filtre kahve)" onkeydown="if(event.key==='Enter')addShopping()">
+      <button class="btn compact" onclick="addShopping()">Ekle</button>
+    </div>
+    <div id="shopping-list"></div>
+  </section>
+
+</section>
+
+
+<section id="tab-wishlist" class="tab">
+
+  <section class="section-title">
+    <div>
+      <h1>Wishlist</h1>
+      <p>Birlikte istediğimiz şeyler.</p>
+    </div>
+  </section>
+
+  <section class="card">
+
+    <input id="wish-title" placeholder="Ne istiyoruz?">
+
+    <div class="row">
+
+      <input
+        id="wish-price"
+        type="number"
+        inputmode="decimal"
+        min="0"
+        step="0.01"
+        placeholder="Fiyat (isteğe bağlı)"
+      >
+
+      <select id="wish-currency">
+        <option value="TRY">₺ Türk Lirası</option>
+        <option value="EUR">€ Euro</option>
+        <option value="USD">$ Dolar</option>
+        <option value="GBP">£ Sterlin</option>
+      </select>
+
+    </div>
+
+    <div class="row">
+
+      <select id="wish-priority">
+        <option value="normal">Normal öncelik</option>
+        <option value="high">Yüksek öncelik</option>
+        <option value="low">Düşük öncelik</option>
+      </select>
+
+    </div>
+
+    <input
+      id="wish-url"
+      placeholder="Link (isteğe bağlı)"
+    >
+
+    <button
+      class="btn"
+      onclick="addWishlist()"
+    >
+      Wishlist'e ekle
+    </button>
+
+  </section>
+
+  <div id="wishlist-list"></div>
+
+</section>
+
+<section id="tab-specialdays" class="tab">
+
+  <section class="section-title">
+    <div>
+      <h1>Özel Günler ❤️</h1>
+      <p>Bizim için önemli olan tarihler.</p>
+    </div>
+  </section>
+
+  <section class="card">
+
+    <input id="special-title" placeholder="Örn. Yıl dönümümüz">
+
+    <div class="row">
+      <input id="special-date" type="date">
+
+      <input
+        id="special-icon"
+        value="❤️"
+        maxlength="4"
+        placeholder="Emoji"
+      >
+    </div>
+
+    <label style="display:flex;align-items:center;gap:8px;margin-top:10px">
+      <input
+        id="special-recurring"
+        type="checkbox"
+        checked
+        style="width:auto;margin:0"
+      >
+      Her yıl tekrarlansın
+    </label>
+
+    <textarea
+      id="special-note"
+      rows="2"
+      placeholder="Küçük bir not (isteğe bağlı)"
+    ></textarea>
+
+    <button class="btn" onclick="addSpecialDay()">
+      Özel gün ekle ❤️
+    </button>
+
+  </section>
+
+  <div id="special-days-list"></div>
+
+</section>
+
+
+<section id="tab-watchlist" class="tab">
+
+  <section class="section-title">
+    <div>
+      <h1>İzlenecekler 🎬</h1>
+      <p>Birlikte izlemek istediğimiz filmler ve diziler.</p>
+    </div>
+  </section>
+
+  <section class="card">
+
+    <input
+      id="watch-title"
+      placeholder="Film veya dizi adı"
+    >
+
+    <div class="row">
+
+      <select id="watch-type">
+        <option value="movie">🎬 Film</option>
+        <option value="series">📺 Dizi</option>
+      </select>
+
+      <select id="watch-status">
+        <option value="planned">İzlenecek</option>
+        <option value="watching">İzleniyor</option>
+        <option value="watched">İzlendi</option>
+      </select>
+
+    </div>
+
+    <div class="row">
+
+      <input
+        id="watch-genre"
+        placeholder="Tür"
+      >
+
+      <input
+        id="watch-rating"
+        type="number"
+        min="0"
+        max="10"
+        step=".1"
+        placeholder="Puan / 10"
+      >
+
+    </div>
+
+    <input
+      id="watch-poster"
+      placeholder="Poster URL (isteğe bağlı)"
+    >
+
+    <textarea
+      id="watch-note"
+      rows="2"
+      placeholder="Not (isteğe bağlı)"
+    ></textarea>
+
+    <button class="btn" onclick="addWatchlist()">
+      İzleneceklere ekle 🎬
+    </button>
+
+  </section>
+
+  <div id="watchlist-list"></div>
+
+</section>
+
+
+<section id="tab-instantphoto" class="tab">
+
+  <section class="section-title">
+    <div>
+      <h1>Anlık Foto 💌</h1>
+      <p>Gün içinde birbirimize küçük sürprizler gönderelim.</p>
+    </div>
+  </section>
+
+  <section class="card instant-compose">
+    <h2>Bir fotoğraf gönder</h2>
+    <p class="meta">Fotoğraflar Immich'teki <b>Aşkımız-Gelenler</b> albümüne kaydedilir ve kalıcıdır.</p>
+    <div class="instant-upload-row">
+      <input id="instant-photo-file" type="file" accept="image/*" aria-label="Gönderilecek fotoğraf">
+      <button id="instant-send-btn" class="btn" onclick="sendInstantPhoto()">Fotoğrafı gönder ❤️</button>
+    </div>
+    <p id="instant-upload-status" class="meta" role="status"></p>
+  </section>
+
+  <div id="instant-photo-list" class="instant-list">
+    <p class="empty">Fotoğraflar yükleniyor…</p>
+  </div>
+
+</section>
+
+
+<section id="tab-memories" class="tab">
+
+  <section class="section-title">
+    <div>
+      <h1>Anılarımız 📸</h1>
+      <p>Birlikte yaşadığımız güzel şeyler.</p>
+    </div>
+  </section>
+
+  <section class="card">
+
+    <input
+      id="memory-title"
+      placeholder="Anının adı"
+    >
+
+    <div class="row">
+
+      <input
+        id="memory-date"
+        type="date"
+      >
+
+      <input
+        id="memory-location"
+        placeholder="📍 Nerede?"
+      >
+
+    </div>
+
+    <textarea
+      id="memory-description"
+      rows="4"
+      placeholder="Bu anıyı özel yapan neydi?"
+    ></textarea>
+
+    <button
+      class="btn"
+      onclick="addMemory()"
+    >
+      Anıyı kaydet ❤️
+    </button>
+
+  </section>
+
+
+  <section class="card">
+
+    <div class="head">
+      <h2>Fotoğraf Albümümüz</h2>
+
+      <span
+        id="immich-count"
+        class="counter"
+      ></span>
+    </div>
+
+    <p class="meta">
+      Immich'teki <b>Aşkımız ❤️</b> albümümüz.
+    </p>
+
+    <div
+      id="immich-gallery"
+      class="photo-grid"
+      style="margin-top:12px"
+    ></div>
+
+  </section>
+
+
+  <div id="memories-list"></div>
+
+</section>
+
+<section id="tab-notifications" class="tab">
+
+  <section class="section-title">
+
+    <div>
+      <h1>Bildirimler</h1>
+      <p>İkiniz arasında olan bitenler.</p>
+    </div>
+
+    <button class="link" onclick="readAll()">
+      Tümünü okundu işaretle
+    </button>
+
+  </section>
+
+  <section class="card">
+    <div id="notifications"></div>
+  </section>
+
+</section>
+
+</main>
+
+<div
+  id="photoLightbox"
+  class="photo-lightbox"
+  onclick="closePhoto(event)"
+>
+  <button
+    aria-label="Kapat"
+    onclick="closePhoto()"
+  >
+    ✕
+  </button>
+
+  <img id="lightboxImage" src="" alt="">
+</div>
+
+<script>
+
+const $=id=>document.getElementById(id);
+
+const AY=[
+  'Ocak','Şubat','Mart','Nisan','Mayıs','Haziran',
+  'Temmuz','Ağustos','Eylül','Ekim','Kasım','Aralık'
+];
+
+const iso=d=>
+  d.getFullYear()+'-'+
+  String(d.getMonth()+1).padStart(2,'0')+'-'+
+  String(d.getDate()).padStart(2,'0');
+
+const esc=s=>
+  String(s??'').replace(/[&<>"']/g,c=>({
+    '&':'&amp;',
+    '<':'&lt;',
+    '>':'&gt;',
+    '"':'&quot;',
+    "'":'&#39;'
+  }[c]));
+
+const long=ds=>
+  new Date(ds+'T00:00').toLocaleDateString(
+    'tr-TR',
+    {
+      weekday:'long',
+      day:'numeric',
+      month:'long'
+    }
+  );
+
+let EV=[],
+    NT=[],
+    SN=[],
+    SHOP=[],
+    SHOP_LISTS=[],
+    ACTIVE_SHOP_LIST=null,
+    SHOP_DATA={lists:[],items:[]},
+    WISH=[],
+    NOTIF=[],
+    SPECIAL=[],
+    WATCH=[],
+    MEMORIES=[],
+    IMMICH=[],
+    INSTANT_PHOTOS=[],
+    UNLOCKED_INSTANT_PHOTOS=new Set(),
+    view=new Date(),
+    sel=iso(new Date()),
+    me='';
+
+view.setDate(1);
+
+
+async function api(m,u,b){
+
+  const r=await fetch(u,{
+    method:m,
+    headers:{
+      'Content-Type':'application/json'
+    },
+    body:b?JSON.stringify(b):undefined
+  });
+
+  if(r.status===401){
+    $('login').style.display='flex';
+    throw 0;
+  }
+
+  if(!r.ok){
+    let x={};
+
+    try{
+      x=await r.json();
+    }catch(e){}
+
+    throw new Error(
+      x.detail||'İşlem başarısız'
+    );
+  }
+
+  return r.json();
+}
+
+
+async function login(){
+
+  const username=$('username').value.trim();
+  const password=$('password').value;
+
+  if(!username || !password){
+    $('err').textContent='Kullanıcı adı ve şifre gerekli.';
+    return;
+  }
+
+  try{
+    const r=await fetch('/api/login',{
+      method:'POST',
+      headers:{
+        'Content-Type':'application/json'
+      },
+      body:JSON.stringify({ username, password })
+    });
+
+    if(r.ok){
+      $('login').style.display='none';
+      $('password').value='';
+      $('err').textContent='';
+      init();
+    }else{
+      $('err').textContent=
+        r.status===429
+          ?'Çok fazla başarısız deneme. 30 dakika sonra tekrar dene.'
+          :'Kullanıcı adı veya şifre yanlış, lütfen tekrar dene.';
+    }
+  }catch(e){
+    $('err').textContent='Bağlantı kurulamadı. Lütfen tekrar dene.';
+  }
+}
+
+$('username').addEventListener(
+  'keydown',
+  e=>e.key==='Enter'&&login()
+);
+$('password').addEventListener(
+  'keydown',
+  e=>e.key==='Enter'&&login()
+);
+
+
+/* =========================
+   KULLANICI MENÜSÜ
+========================= */
+
+
+function profileImageSlug(name){
+  const normalized = String(name||'')
+    .trim()
+    .toLocaleLowerCase('tr')
+    .replace(/ı/g,'i')
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g,'')
+    .replace(/[^a-z0-9]+/g,'-')
+    .replace(/^-+|-+$/g,'');
+
+  return normalized;
+}
+
+function renderProfileAvatar(name){
+  const avatar=$('avatar');
+  if(!avatar) return;
+  const displayName=String(name||'').trim();
+  const initial=displayName.charAt(0).toLocaleUpperCase('tr')||'?';
+  avatar.setAttribute('aria-label',`${displayName||'Kullanıcı'} profili`);
+  avatar.innerHTML=`<span class="avatar-fallback">${esc(initial)}</span>`;
+  const slug=profileImageSlug(displayName);
+  if(!slug) return;
+  const img=document.createElement('img');
+  img.alt='';
+  img.decoding='async';
+  img.loading='eager';
+  img.style.cssText='display:block;width:100%;height:100%;object-fit:cover;border-radius:50%;';
+  img.onload=()=>{
+    const fallback=avatar.querySelector('.avatar-fallback');
+    if(fallback) fallback.remove();
+  };
+  img.onerror=()=>{
+    img.remove();
+    // Görsel yüklenemezse harf görünür kalmalı.
+    if(!avatar.querySelector('.avatar-fallback')){
+      avatar.insertAdjacentHTML('afterbegin',`<span class="avatar-fallback">${esc(initial)}</span>`);
+    }
+  };
+  img.src=`/profile-images/${slug}.png?v=${Date.now()}`;
+  avatar.appendChild(img);
+}
+
+function toggleMenu(e){
+
+  e.stopPropagation();
+
+  const o=$('dd').classList.toggle('open');
+
+  $('avatar').setAttribute(
+    'aria-expanded',
+    o
+  );
+
+  closeNotifications();
+}
+
+
+function closeMenu(){
+
+  $('dd').classList.remove('open');
+
+  $('avatar').setAttribute(
+    'aria-expanded',
+    false
+  );
+}
+
+
+/* =========================
+   BİLDİRİM MENÜSÜ
+========================= */
+
+function toggleNotifications(e){
+
+  e.stopPropagation();
+
+  const dropdown=$('notificationDropdown');
+  const btn=$('notificationBtn');
+
+  const open=
+    dropdown.classList.toggle('open');
+
+  btn.setAttribute(
+    'aria-expanded',
+    open
+  );
+
+  closeMenu();
+
+  if(open){
+    renderNotificationPreview();
+  }
+}
+
+
+function closeNotifications(){
+
+  const dropdown=$('notificationDropdown');
+  const btn=$('notificationBtn');
+
+  dropdown.classList.remove('open');
+
+  btn.setAttribute(
+    'aria-expanded',
+    false
+  );
+}
+
+function notificationTarget(target){
+
+  target = String(target || '').trim();
+
+  if(target.startsWith('calendar:'))
+    return 'calendar';
+
+  if(target.startsWith('notes:'))
+    return 'notes';
+
+  if(target.startsWith('shopping:'))
+    return 'shopping';
+
+  if(target.startsWith('wishlist:'))
+    return 'wishlist';
+
+  if(target.startsWith('special-day:'))
+    return 'specialdays';
+
+  if(target.startsWith('watchlist:'))
+    return 'watchlist';
+
+  if(target.startsWith('memory:'))
+    return 'memories';
+
+  if(target.startsWith('instantphoto:'))
+    return 'instantphoto';
+
+  return null;
+}
+
+async function openNotification(id){
+
+  const n = NOTIF.find(
+    x => Number(x.id) === Number(id)
+  );
+
+  if(!n){
+    console.error('Bildirim bulunamadı:', id);
+    return;
+  }
+
+  const target = notificationTarget(
+    String(n.target || '').trim()
+  );
+
+  console.log('BİLDİRİM:', n);
+  console.log('TARGET:', n.target);
+  console.log('GİDİLECEK SEKME:', target);
+
+  if(!n.read){
+
+    await api(
+      'POST',
+      '/api/notifications/' + n.id + '/read'
+    );
+
+    n.read = 1;
+  }
+
+  renderNotifications();
+  closeNotifications();
+
+  if(target){
+    showTab(target);
+  }else{
+    console.error(
+      'Bildirimde geçerli target yok:',
+      n.target
+    );
+  }
+}
+
+function renderNotificationPreview(){
+
+  const unread=
+    NOTIF
+      .filter(n=>!n.read)
+      .slice(0,5);
+
+  const box=$('notificationPreview');
+
+  if(!unread.length){
+
+    box.innerHTML=
+      '<div class="notification-empty">Şimdilik yeni bir şey yok. ✨</div>';
+
+    return;
+  }
+
+  box.innerHTML=
+    unread.map(n=>{
+
+      const icon=
+        n.type==='shopping'
+          ?'🛒'
+          :n.type==='wishlist'
+          ?'🎁'
+          :n.type==='event'
+          ?'💕'
+          :n.type==='special_day'
+          ?'❤️'
+          :n.type==='watchlist'
+          ?'🎬'
+          :n.type==='memory'
+          ?'📸'
+          :n.type==='instant_photo'
+          ?'💌'
+          :'📝';
+
+      return `
+        <button
+          class="notification-item"
+          onclick="openNotification(${n.id})"
+        >
+
+          <span class="notification-icon">
+            ${icon}
+          </span>
+
+          <span class="notification-content">
+
+            <b>
+              ${esc(n.title)}
+            </b>
+
+            <small>
+              ${esc(n.text)}
+            </small>
+
+            <em>
+              ${new Date(
+                n.created.replace(' ','T')
+              ).toLocaleString('tr-TR')}
+            </em>
+
+          </span>
+
+          <i class="unread-dot"></i>
+
+        </button>
+      `;
+
+    }).join('');
+}
+
+function updateNotificationHeader(){
+
+  const unread=
+    NOTIF.filter(n=>!n.read).length;
+
+  const dot=$('notificationBadge');
+  if(!dot) return;
+
+  dot.textContent=
+    unread > 99 ? '99+' : (unread ? String(unread) : '');
+
+  dot.style.display=
+    unread
+      ?'block'
+      :'none';
+
+  $('notificationBtn')?.setAttribute(
+    'aria-label',
+    unread ? `Bildirimler, ${unread} okunmamış` : 'Bildirimler'
+  );
+}
+
+
+/* Dışarı tıklanınca menüleri kapat */
+
+document.addEventListener(
+  'click',
+  e=>{
+
+    if(!e.target.closest('.menu')){
+
+      closeMenu();
+      closeNotifications();
+
+    }
+
+  }
+);
+
+
+document.addEventListener(
+  'keydown',
+  e=>{
+
+    if(e.key==='Escape'){
+
+      closeMenu();
+      closeNotifications();
+
+    }
+
+  }
+);
+
+
+/* =========================
+   KAYAR YAN MENÜ
+========================= */
+function openSidebar(){
+  const nav=$('sidebarNav'), backdrop=$('sidebarBackdrop'), btn=$('sidebarToggle');
+  if(!nav||!backdrop||!btn)return;
+  nav.classList.add('open'); backdrop.classList.add('open');
+  nav.setAttribute('aria-hidden','false'); backdrop.setAttribute('aria-hidden','false');
+  btn.setAttribute('aria-expanded','true'); btn.setAttribute('aria-label','Menüyü kapat');
+  document.body.classList.add('sidebar-open');
+}
+function closeSidebar(){
+  const nav=$('sidebarNav'), backdrop=$('sidebarBackdrop'), btn=$('sidebarToggle');
+  if(!nav||!backdrop||!btn)return;
+  nav.classList.remove('open'); backdrop.classList.remove('open');
+  nav.setAttribute('aria-hidden','true'); backdrop.setAttribute('aria-hidden','true');
+  btn.setAttribute('aria-expanded','false'); btn.setAttribute('aria-label','Menüyü aç');
+  document.body.classList.remove('sidebar-open');
+}
+function toggleSidebar(){
+  $('sidebarNav')?.classList.contains('open') ? closeSidebar() : openSidebar();
+}
+// Kenardan içeri kaydırarak aç, menüden sola kaydırarak veya dışına dokunarak kapat.
+(function enableSidebarSwipe(){
+  let startX=0,startY=0;
+  document.addEventListener('touchstart',e=>{
+    if(!e.touches||!e.touches.length)return;
+    startX=e.touches[0].clientX; startY=e.touches[0].clientY;
+  },{passive:true});
+  document.addEventListener('touchend',e=>{
+    if(!e.changedTouches||!e.changedTouches.length)return;
+    const dx=e.changedTouches[0].clientX-startX;
+    const dy=e.changedTouches[0].clientY-startY;
+    if(Math.abs(dx)<65||Math.abs(dx)<Math.abs(dy)*1.25)return;
+    const nav=$('sidebarNav');
+    if(dx>0&&startX<28&&!nav.classList.contains('open'))openSidebar();
+    else if(dx<0&&nav.classList.contains('open')&&startX<Math.min(nav.getBoundingClientRect().right,320))closeSidebar();
+  },{passive:true});
+  document.addEventListener('keydown',e=>{if(e.key==='Escape')closeSidebar();});
+})();
+
+/* =========================
+   SEKME SİSTEMİ
+========================= */
+
+function showTab(tab){
+
+  closeSidebar();
+  closeNotifications();
+  closeMenu();
+
+  if(tab !== 'instantphoto' && UNLOCKED_INSTANT_PHOTOS.size){
+    UNLOCKED_INSTANT_PHOTOS.clear();
+    if($('tab-instantphoto')?.classList.contains('active'))
+      renderInstantPhotos();
+  }
+
+  const targetTab = $('tab-' + tab);
+
+  if(!targetTab){
+    console.error(
+      'Sekme bulunamadı:',
+      tab,
+      'Beklenen element:',
+      'tab-' + tab
+    );
+    return;
+  }
+
+  document
+    .querySelectorAll('.tab')
+    .forEach(x => x.classList.remove('active'));
+
+  targetTab.classList.add('active');
+
+  document
+    .querySelectorAll('.tabs button')
+    .forEach(x =>
+      x.classList.toggle(
+        'active',
+        x.dataset.tab === tab
+      )
+    );
+
+  history.replaceState(
+    null,
+    '',
+    '#' + tab
+  );
+
+  if(tab === 'home')
+    loadDashboard();
+
+  if(tab === 'notes')
+    loadSharedNotes();
+
+  if(tab === 'shopping')
+    loadShopping();
+
+  if(tab === 'wishlist')
+    loadWishlist();
+
+  if(tab === 'specialdays')
+    loadSpecialDays();
+
+  if(tab === 'watchlist')
+    loadWatchlist();
+
+  if(tab === 'memories')
+    loadMemories();
+
+  if(tab === 'instantphoto')
+    loadInstantPhotos();
+
+  if(tab === 'notifications')
+    loadNotifications();
+}
+
+/* =========================
+   TÜM VERİLER
+========================= */
+
+async function loadAll(){
+
+  try{
+    [
+      EV,
+      NT,
+      SN,
+      SHOP_DATA,
+      WISH,
+      NOTIF,
+      SPECIAL,
+      WATCH,
+      MEMORIES
+    ]=await Promise.all([
+
+      api('GET','/api/events'),
+
+      api('GET','/api/notes'),
+
+      api('GET','/api/shared-notes'),
+
+      api('GET','/api/shopping'),
+
+      api('GET','/api/wishlist'),
+
+      api('GET','/api/notifications'),
+
+      api('GET','/api/special-days'),
+
+      api('GET','/api/watchlist'),
+
+      api('GET','/api/memories')
+
+    ]);
+
+    SHOP_LISTS=SHOP_DATA.lists||[];
+    SHOP=SHOP_DATA.items||[];
+    if(!SHOP_LISTS.some(x=>x.id===ACTIVE_SHOP_LIST)) ACTIVE_SHOP_LIST=SHOP_LISTS[0]?.id??null;
+
+    drawCalendar();
+    renderSharedNotes();
+    renderShopping();
+    renderWishlist();
+    renderNotifications();
+    renderSpecialDays();
+    renderWatchlist();
+    renderMemories();
+
+    await loadDashboard();
+
+  }catch(e){console.error('Sayfa verileri yüklenemedi:',e);}
+
+}
+
+
+/* =========================
+   DASHBOARD
+========================= */
+
+async function loadDashboard(){
+
+  renderLoveDuration();
+
+  const d=
+    await api(
+      'GET',
+      '/api/dashboard'
+    );
+
+  const u=d.upcoming;
+
+  $('hero').innerHTML=
+    u
+      ?`
+        <div class="hero-kicker">
+          ❤️ Sıradaki buluşmamız
+        </div>
+
+        <div class="hero-num">
+          ${esc(daysUntil(u.date))}
+        </div>
+
+        <div class="hero-label">
+          ${daysUntil(u.date)===0
+            ?'bugün'
+            :'gün kaldı'}
+        </div>
+
+        <div class="hero-title">
+          ${esc(u.title)}
+        </div>
+
+        <div class="hero-sub">
+          ${esc(long(u.date))}
+          ${u.time?' · '+esc(u.time):''}
+          ${u.place?' · 📍'+esc(u.place):''}
+        </div>
+      `
+      :`
+        <div class="hero-kicker">
+          ❤️ Aşkımız
+        </div>
+
+        <div class="hero-title">
+          Sıradaki buluşma henüz yok
+        </div>
+
+        <div class="hero-sub">
+          Takvimden güzel bir plan yapalım.
+        </div>
+      `;
+
+  $('summary').innerHTML=`
+
+    <div class="stat">
+      <b>🔔 ${d.unread}</b>
+      <span>okunmamış bildirim</span>
+    </div>
+
+    <div class="stat">
+      <b>📝 ${d.notes_count}</b>
+      <span>ortak not</span>
+    </div>
+
+    <div class="stat">
+      <b>🛒 ${d.shopping_count}</b>
+      <span>alınacak ürün</span>
+    </div>
+
+    <div class="stat">
+      <b>🎁 ${d.wishlist_count}</b>
+      <span>bekleyen istek</span>
+    </div>
+
+  `;
+
+  $('recent-notes').innerHTML=
+    d.recent_notes.length
+      ?d.recent_notes.map(n=>`
+
+        <div class="mini-note">
+
+          <b>
+            ${esc(n.title||'Not')}
+          </b>
+
+          <span>
+            ${esc(n.text)}
+          </span>
+
+          <small>
+            ${esc(n.author)}
+            ·
+            ${new Date(
+              n.created.replace(' ','T')
+            ).toLocaleDateString('tr-TR')}
+          </small>
+
+        </div>
+
+      `).join('')
+      :'<p class="empty">Henüz ortak not yok.</p>';
+
+  badge(d.unread);
+  updateNotificationHeader();
+}
+
+
+function daysUntil(ds){
+
+  return Math.max(
+    0,
+    Math.round(
+      (
+        new Date(ds+'T00:00')
+        -
+        new Date(
+          iso(new Date())+'T00:00'
+        )
+      )/864e5
+    )
+  );
+
+}
+
+
+function badge(n){
+
+  const el = $('notificationBadge');
+
+  if(!el){
+    return;
+  }
+
+  el.textContent =
+    n ? n : '';
+
+  el.style.display =
+    n
+      ? 'inline-block'
+      : 'none';
+
+}
+
+
+/* =========================
+   TAKVİM
+========================= */
+
+function mv(n){
+
+  view.setMonth(
+    view.getMonth()+n
+  );
+
+  drawCalendar();
+
+}
+
+
+function pick(ds){
+
+  sel=ds;
+  drawCalendar();
+
+}
+
+
+function stat(e){
+
+  const ok=
+    e.status==='accepted';
+
+  const chip=
+    ok
+      ?'<span class="chip ok">Onaylandı</span>'
+      :`
+        <span class="chip wait">
+          ${esc(e.proposed_by)}
+          önerdi · yanıt bekleniyor
+        </span>
+      `;
+
+  const rs=
+    (!ok&&e.proposed_by===me)
+      ?`
+        <button
+          class="link"
+          onclick="resend(${e.id})"
+        >
+          Maili tekrar gönder
+        </button>
+      `
+      :'';
+
+  const h=
+    (e.hist||[]).length>1||
+    (e.hist||[]).some(
+      x=>x.text!=='önerdi'
+    )
+      ?`
+        <ul class="hist">
+          ${e.hist.map(x=>`
+            <li>
+              <b>${esc(x.who)}</b>
+              ${esc(x.text)}
+            </li>
+          `).join('')}
+        </ul>
+      `
+      :'';
+
+  return chip+rs+h;
+
+}
+
+
+function drawCalendar(){
+
+  const t=iso(new Date());
+
+  $('mon').textContent=
+    AY[view.getMonth()]
+    +' '
+    +view.getFullYear();
+
+  let h=[
+    'Pt','Sa','Ça','Pe',
+    'Cu','Ct','Pz'
+  ]
+    .map(
+      x=>`<div class="dow">${x}</div>`
+    )
+    .join('');
+
+  const first=
+    (view.getDay()+6)%7;
+
+  const n=
+    new Date(
+      view.getFullYear(),
+      view.getMonth()+1,
+      0
+    ).getDate();
+
+  h+='<div></div>'.repeat(first);
+
+  for(let i=1;i<=n;i++){
+
+    const ds=
+      iso(
+        new Date(
+          view.getFullYear(),
+          view.getMonth(),
+          i
+        )
+      );
+
+    const es=
+      EV.filter(
+        e=>e.date===ds
+      );
+
+    const acc=
+      es.some(
+        e=>e.status==='accepted'
+      );
+
+    const wait=
+      es.some(
+        e=>e.status!=='accepted'
+      );
+
+    const nt=
+      NT.some(
+        x=>x.date===ds
+      );
+
+    h+=`
+      <button
+        class="d
+          ${ds===t?'today':''}
+          ${ds===sel?'sel':''}"
+        aria-label="${i} ${AY[view.getMonth()]}"
+        onclick="pick('${ds}')"
+      >
+
+        ${i}
+
+        <span class="dots">
+
+          ${acc
+            ?'<i class="dot"></i>'
+            :''}
+
+          ${wait
+            ?'<i class="dot wait"></i>'
+            :''}
+
+          ${nt
+            ?'<i class="dot note"></i>'
+            :''}
+
+        </span>
+
+      </button>
+    `;
+
+  }
+
+  $('cal').innerHTML=h;
+
+  $('dayt').textContent=
+    long(sel);
+
+  const es=
+    EV.filter(
+      e=>e.date===sel
+    );
+
+  $('evs').innerHTML=
+    es.length
+      ?es.map(e=>`
+
+        <div class="ev ${e.done?'done':''}">
+
+          <input
+            type="checkbox"
+            aria-label="Gittik"
+            ${e.done?'checked':''}
+            ${e.status==='accepted'
+              ?''
+              :'disabled'}
+            onchange="tog(${e.id})"
+          >
+
+          <div class="body">
+
+            <div class="ttl">
+              ${esc(e.title)}
+            </div>
+
+            <div class="meta">
+              ${esc(e.time)}
+              ${e.time&&e.place?' · ':''}
+              ${esc(e.place)}
+            </div>
+
+            ${stat(e)}
+
+          </div>
+
+          <button
+            class="x"
+            aria-label="Sil"
+            onclick="delEv(${e.id})"
+          >
+            ✕
+          </button>
+
+        </div>
+
+      `).join('')
+      :'<p class="empty">Bu güne plan yok.</p>';
+
+  const ns=
+    NT.filter(
+      x=>x.date===sel
+    );
+
+  $('nts').innerHTML=
+    ns.length
+      ?ns.map(x=>`
+
+        <div class="b ${x.author===me?'me':''}">
+
+          ${esc(x.text)}
+
+          <small>
+
+            ${esc(x.author)}
+
+            ${
+              x.author===me
+                ?`
+                  <button
+                    class="link"
+                    onclick="delNote(${x.id})"
+                  >
+                    sil
+                  </button>
+                `
+                :''
+            }
+
+          </small>
+
+        </div>
+
+      `).join('')
+      :'<p class="empty">Henüz not yok.</p>';
+
+}
+
+
+async function addEv(){
+
+  const title=
+    $('et').value.trim();
+
+  if(!title)return;
+
+  await api(
+    'POST',
+    '/api/events',
+    {
+      title,
+      date:sel,
+      time:$('etm').value,
+      place:$('epl').value
+    }
+  );
+
+  $('et').value=
+    $('etm').value=
+    $('epl').value='';
+
+  await loadAll();
+
+}
+
+
+async function tog(id){
+
+  await api(
+    'POST',
+    '/api/events/'+id+'/done'
+  );
+
+  await loadAll();
+
+}
+
+
+async function delEv(id){
+
+  if(confirm('Bu buluşma silinsin mi?')){
+
+    await api(
+      'DELETE',
+      '/api/events/'+id
+    );
+
+    await loadAll();
+
+  }
+
+}
+
+
+async function addNote(){
+
+  const text=
+    $('nt').value.trim();
+
+  if(!text)return;
+
+  await api(
+    'POST',
+    '/api/notes',
+    {
+      date:sel,
+      text
+    }
+  );
+
+  $('nt').value='';
+
+  await loadAll();
+
+}
+
+
+async function delNote(id){
+
+  await api(
+    'DELETE',
+    '/api/notes/'+id
+  );
+
+  await loadAll();
+
+}
+
+
+async function resend(id){
+
+  await api(
+    'POST',
+    '/api/events/'+id+'/resend'
+  );
+
+  alert('Mail tekrar gönderildi.');
+
+}
+
+
+/* =========================
+   ORTAK NOTLAR
+========================= */
+
+function renderSharedNotes(){
+
+  $('shared-notes').innerHTML=
+    SN.length
+      ?SN.map(n=>`
+
+        <article class="note-card">
+
+          <div>
+
+            <span class="note-icon">
+              📝
+            </span>
+
+            <div>
+
+              <h3>
+                ${esc(
+                  n.title||'Başlıksız not'
+                )}
+              </h3>
+
+              <p>
+                ${esc(n.text)
+                  .replace(/\n/g,'<br>')}
+              </p>
+
+              <small>
+                ${esc(n.author)}
+                ·
+                ${new Date(
+                  n.created.replace(' ','T')
+                ).toLocaleString('tr-TR')}
+              </small>
+
+            </div>
+
+          </div>
+
+          ${
+            n.author===me
+              ?`
+                <button
+                  class="x"
+                  onclick="delSharedNote(${n.id})"
+                >
+                  ✕
+                </button>
+              `
+              :''
+          }
+
+        </article>
+
+      `).join('')
+      :'<p class="empty">Henüz ortak not yok.</p>';
+
+}
+
+
+async function loadSharedNotes(){
+
+  SN=
+    await api(
+      'GET',
+      '/api/shared-notes'
+    );
+
+  renderSharedNotes();
+
+}
+
+
+async function addSharedNote(){
+
+  const text=
+    $('snt-text').value.trim();
+
+  if(!text)return;
+
+  await api(
+    'POST',
+    '/api/shared-notes',
+    {
+      title:$('snt-title').value,
+      text
+    }
+  );
+
+  $('snt-title').value=
+    $('snt-text').value='';
+
+  await loadAll();
+
+}
+
+
+async function delSharedNote(id){
+
+  if(confirm('Bu ortak not silinsin mi?')){
+
+    await api(
+      'DELETE',
+      '/api/shared-notes/'+id
+    );
+
+    await loadAll();
+
+  }
+
+}
+
+
+/* =========================
+   ALIŞVERİŞ
+========================= */
+
+function renderShopping(){
+  const lists=SHOP_LISTS||[];
+  if(!lists.length){
+    $('shopping-list-picker').innerHTML='';
+    $('shopping-active-title').textContent='Alışveriş listesi';
+    $('shopping-list').innerHTML='<p class="empty">Henüz liste yok. Yukarıdan bir liste oluştur. 🛒</p>';
+    return;
+  }
+  if(!lists.some(x=>Number(x.id)===Number(ACTIVE_SHOP_LIST))) ACTIVE_SHOP_LIST=lists[0].id;
+  $('shopping-list-picker').innerHTML=lists.map(list=>`
+    <button class="shopping-list-chip ${Number(list.id)===Number(ACTIVE_SHOP_LIST)?'active':''}" onclick="selectShoppingList(${Number(list.id)})">${esc(list.title)} <small>${Number(list.open_count||0)} açık</small></button>
+  `).join('');
+  const active=lists.find(x=>Number(x.id)===Number(ACTIVE_SHOP_LIST))||lists[0];
+  const deleteButton=$('shopping-delete-list');
+  if(deleteButton){
+    deleteButton.disabled=lists.length<=1;
+    deleteButton.title=lists.length<=1?'Son alışveriş listesi silinemez':'Seçili listeyi ve içindeki ürünleri sil';
+  }
+  const items=SHOP.filter(x=>Number(x.list_id)===Number(active.id));
+  $('shopping-active-title').textContent=active.title;
+  $('shopping-list').innerHTML=items.length?items.map(x=>`
+    <div class="list-row ${x.done?'checked':''}">
+      <input type="checkbox" ${x.done?'checked':''} onchange="toggleShopping(${x.id})" aria-label="${esc(x.text)} tamamlandı">
+      <div><b>${esc(x.text)}</b><small>${esc(x.added_by||'')}</small></div>
+      <button class="x" onclick="delShopping(${x.id})" aria-label="${esc(x.text)} ürününü sil">✕</button>
+    </div>
+  `).join(''):'<div class="shopping-list-empty">Bu liste henüz boş. İlk ürünü ekleyelim. 🛒</div>';
+}
+
+function selectShoppingList(id){ACTIVE_SHOP_LIST=id;renderShopping();}
+
+async function loadShopping(){
+  const data=await api('GET','/api/shopping');
+  SHOP_LISTS=Array.isArray(data.lists)?data.lists:[];
+  SHOP=Array.isArray(data.items)?data.items:[];
+  if(!SHOP_LISTS.some(x=>Number(x.id)===Number(ACTIVE_SHOP_LIST))) ACTIVE_SHOP_LIST=SHOP_LISTS[0]?.id??null;
+  renderShopping();
+}
+
+async function deleteShoppingList(){
+  const active=(SHOP_LISTS||[]).find(x=>Number(x.id)===Number(ACTIVE_SHOP_LIST));
+  if(!active)return;
+  if((SHOP_LISTS||[]).length<=1){
+    alert('Son alışveriş listesini silemezsin. İstersen önce yeni bir liste oluştur.');
+    return;
+  }
+  const itemCount=(SHOP||[]).filter(x=>Number(x.list_id)===Number(active.id)).length;
+  const detail=itemCount?` Bu listedeki ${itemCount} ürün de silinecek.`:'';
+  if(!confirm(`“${active.title}” listesini silmek istediğine emin misin?${detail} Bu işlem geri alınamaz.`))return;
+  const button=$('shopping-delete-list');
+  if(button)button.disabled=true;
+  try{
+    await api('DELETE',`/api/shopping/lists/${Number(active.id)}`);
+    ACTIVE_SHOP_LIST=null;
+    await loadShopping();
+    await loadDashboard();
+  }catch(e){
+    console.error('Alışveriş listesi silinemedi:',e);
+    alert('Liste silinemedi: '+(e?.message||'Sunucuya ulaşılamadı.'));
+  }finally{
+    if(button)button.disabled=(SHOP_LISTS||[]).length<=1;
+  }
+}
+
+async function createShoppingList(){
+  const input=$('shop-list-title');
+  const title=input.value.trim();
+  if(!title){input.focus();return;}
+  try{
+    const result=await api('POST','/api/shopping',{title});
+    input.value='';
+    await loadShopping();
+    if(result?.id) selectShoppingList(Number(result.id));
+  }catch(e){
+    console.error('Alışveriş listesi oluşturulamadı:',e);
+    alert('Liste oluşturulamadı: '+(e?.message||'Sunucuya ulaşılamadı.'));
+  }
+}
+
+async function addShopping(){
+  const input=$('shop-text');
+  const text=input.value.trim();
+  if(!text)return;
+  if(!ACTIVE_SHOP_LIST){alert('Önce bir alışveriş listesi oluştur.');return;}
+  try{
+    await api('POST',`/api/shopping/${ACTIVE_SHOP_LIST}/items`,{text});
+    input.value='';
+    await loadShopping();
+    await loadDashboard();
+  }catch(e){
+    console.error('Ürün eklenemedi:',e);
+    alert('Ürün eklenemedi: '+(e?.message||'Sunucuya ulaşılamadı.'));
+  }
+}
+
+async function toggleShopping(id){await api('POST','/api/shopping/'+id+'/toggle');await loadAll();}
+async function delShopping(id){await api('DELETE','/api/shopping/'+id);await loadAll();}
+
+let LOVE_START='';
+function renderLoveDuration(){
+  const box=$('love-counter');
+  const m=/^(\d{4})-(\d{2})-(\d{2})$/.exec(LOVE_START||'');
+  if(!m){if(box)box.hidden=true;return;}
+  if(box)box.hidden=false;
+  const start=new Date(+m[1],+m[2]-1,+m[3],0,0,0),now=new Date();
+  $('love-kicker').textContent=start.toLocaleDateString('tr-TR',{day:'numeric',month:'long',year:'numeric'})+' tarihinden beri';
+  if(now<start){$('love-duration').innerHTML='<span>Hikâyemiz yakında başlıyor ❤️</span>';return;}
+  let years=now.getFullYear()-start.getFullYear();
+  let anniversary=new Date(start.getFullYear()+years,start.getMonth(),start.getDate());
+  if(anniversary>now){years--;anniversary=new Date(start.getFullYear()+years,start.getMonth(),start.getDate());}
+  let months=(now.getFullYear()-anniversary.getFullYear())*12+(now.getMonth()-anniversary.getMonth());
+  let monthMark=new Date(anniversary.getFullYear(),anniversary.getMonth()+months,anniversary.getDate());
+  if(monthMark>now){months--;monthMark=new Date(anniversary.getFullYear(),anniversary.getMonth()+months,anniversary.getDate());}
+  const today=new Date(now.getFullYear(),now.getMonth(),now.getDate());
+  const mark=new Date(monthMark.getFullYear(),monthMark.getMonth(),monthMark.getDate());
+  const remaining=Math.floor((today-mark)/86400000),weeks=Math.floor(remaining/7),days=remaining%7;
+  $('love-duration').innerHTML=`<span><b>${years}</b> Yıl</span><span><b>${months}</b> Ay</span><span><b>${weeks}</b> Hafta</span><span><b>${days}</b> Gün</span>`;
+}
+
+/* =========================
+   WISHLIST
+========================= */
+
+const currencySymbols = {
+  TRY: '₺',
+  EUR: '€',
+  USD: '$',
+  GBP: '£'
+};
+
+
+function formatWishlistPrice(price, currency){
+
+  if(!price) return '';
+
+  const value = Number(
+    String(price).replace(',', '.')
+  );
+
+  if(Number.isNaN(value)) {
+    return esc(price);
+  }
+
+  const symbol =
+    currencySymbols[currency] || currency || '₺';
+
+  return `${value.toLocaleString('tr-TR', {
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 2
+  })} ${symbol}`;
+}
+
+
+function renderWishlist(){
+
+  const p = {
+    high: 'Yüksek',
+    normal: 'Normal',
+    low: 'Düşük'
+  };
+
+  $('wishlist-list').innerHTML =
+    WISH.length
+
+      ? WISH.map(x => `
+
+        <article
+          class="wish-card ${x.done ? 'checked' : ''}"
+          id="wish-card-${x.id}"
+        >
+
+          <input
+            type="checkbox"
+            ${x.done ? 'checked' : ''}
+            onchange="toggleWishlist(${x.id})"
+          >
+
+          <div class="wish-body">
+
+            <div class="wish-top">
+
+              <h3>
+                ${esc(x.title)}
+              </h3>
+
+              <span
+                class="priority ${esc(x.priority)}"
+              >
+                ${p[x.priority] || 'Normal'}
+              </span>
+
+            </div>
+
+            ${
+              x.price
+                ? `
+                  <b class="price">
+                    ${formatWishlistPrice(
+                      x.price,
+                      x.currency
+                    )}
+                  </b>
+                `
+                : ''
+            }
+
+            ${
+              x.url
+                ? `
+                  <a
+                    class="wish-link"
+                    href="${esc(x.url)}"
+                    target="_blank"
+                    rel="noopener"
+                  >
+                    Linki aç ↗
+                  </a>
+                `
+                : ''
+            }
+
+            <small>
+              ${esc(x.added_by)}
+            </small>
+
+          </div>
+
+          <div class="wish-actions">
+
+            <button
+              class="edit-wish"
+              onclick="editWishlist(${x.id})"
+              title="Düzenle"
+            >
+              ✏️
+            </button>
+
+            <button
+              class="x"
+              onclick="delWishlist(${x.id})"
+              title="Sil"
+            >
+              ✕
+            </button>
+
+          </div>
+
+        </article>
+
+      `).join('')
+
+      : '<p class="empty">Wishlist henüz boş. Birlikte hayal kurmaya başlayın. 🎁</p>';
+}
+
+/* =========================
+   ÖZEL GÜNLER
+========================= */
+
+function specialNextDate(item){
+
+  const today = new Date();
+  today.setHours(0,0,0,0);
+
+  const original = new Date(item.date + 'T00:00');
+
+  if(!item.recurring)
+    return original;
+
+  let next = new Date(
+    today.getFullYear(),
+    original.getMonth(),
+    original.getDate()
+  );
+
+  if(next < today){
+
+    next = new Date(
+      today.getFullYear()+1,
+      original.getMonth(),
+      original.getDate()
+    );
+
+  }
+
+  return next;
+}
+
+
+function specialDaysBetween(a,b){
+
+  return Math.round(
+    (b-a)/864e5
+  );
+
+}
+
+
+function renderSpecialDays(){
+
+  const box=$('special-days-list');
+
+  if(!SPECIAL.length){
+
+    box.innerHTML=
+      '<p class="empty">Henüz özel bir gün eklemediniz. ❤️</p>';
+
+    return;
+  }
+
+  const sorted=
+    [...SPECIAL].sort(
+      (a,b)=>
+        specialNextDate(a)-specialNextDate(b)
+    );
+
+  box.innerHTML=`
+
+    <section class="special-grid">
+
+      ${sorted.map(item=>{
+
+        const next=
+          specialNextDate(item);
+
+        const today=
+          new Date();
+
+        today.setHours(0,0,0,0);
+
+        const days=
+          specialDaysBetween(
+            today,
+            next
+          );
+
+        let countdown;
+
+        if(days===0)
+          countdown='Bugün! ❤️';
+        else if(days===1)
+          countdown='Yarın';
+        else
+          countdown=days+' gün kaldı';
+
+        return `
+
+          <article class="special-card">
+
+            <div class="special-actions">
+
+              <button
+                onclick="editSpecialDay(${item.id})"
+                title="Düzenle"
+              >
+                ✏️
+              </button>
+
+              <button
+                onclick="deleteSpecialDay(${item.id})"
+                title="Sil"
+              >
+                ✕
+              </button>
+
+            </div>
+
+            <div class="special-icon">
+              ${esc(item.icon || '❤️')}
+            </div>
+
+            <h3>
+              ${esc(item.title)}
+            </h3>
+
+            <div class="special-date">
+              ${new Date(
+                item.date+'T00:00'
+              ).toLocaleDateString(
+                'tr-TR',
+                {
+                  day:'numeric',
+                  month:'long',
+                  year:'numeric'
+                }
+              )}
+            </div>
+
+            <div class="special-countdown">
+              ${countdown}
+            </div>
+
+            ${
+              item.note
+                ?`
+                  <div class="special-note">
+                    ${esc(item.note)}
+                  </div>
+                `
+                :''
+            }
+
+          </article>
+
+        `;
+
+      }).join('')}
+
+    </section>
+
+  `;
+
+}
+
+
+async function loadSpecialDays(){
+
+  SPECIAL=
+    await api(
+      'GET',
+      '/api/special-days'
+    );
+
+  renderSpecialDays();
+
+}
+
+
+async function addSpecialDay(){
+
+  const title=
+    $('special-title').value.trim();
+
+  const date=
+    $('special-date').value;
+
+  if(!title || !date){
+
+    alert('Özel gün adı ve tarihi gerekli.');
+
+    return;
+  }
+
+  await api(
+    'POST',
+    '/api/special-days',
+    {
+      title,
+      date,
+      recurring:$('special-recurring').checked,
+      icon:$('special-icon').value.trim() || '❤️',
+      note:$('special-note').value.trim()
+    }
+  );
+
+  $('special-title').value='';
+  $('special-date').value='';
+  $('special-icon').value='❤️';
+  $('special-recurring').checked=true;
+  $('special-note').value='';
+
+  await loadAll();
+
+}
+
+
+async function editSpecialDay(id){
+
+  const item=
+    SPECIAL.find(
+      x=>Number(x.id)===Number(id)
+    );
+
+  if(!item)return;
+
+  const title=
+    prompt('Özel gün adı:',item.title);
+
+  if(title===null)return;
+
+  const date=
+    prompt('Tarih (YYYY-MM-DD):',item.date);
+
+  if(date===null)return;
+
+  const note=
+    prompt('Not:',item.note||'');
+
+  if(note===null)return;
+
+  await api(
+    'PUT',
+    '/api/special-days/'+id,
+    {
+      title,
+      date,
+      recurring:Boolean(item.recurring),
+      icon:item.icon||'❤️',
+      note
+    }
+  );
+
+  await loadAll();
+
+}
+
+
+async function deleteSpecialDay(id){
+
+  if(!confirm('Bu özel gün silinsin mi?'))
+    return;
+
+  await api(
+    'DELETE',
+    '/api/special-days/'+id
+  );
+
+  await loadAll();
+
+}
+
+
+/* =========================
+   İZLENECEKLER
+========================= */
+
+function watchStatusText(status){
+
+  return {
+    planned:'İzlenecek',
+    watching:'İzleniyor',
+    watched:'İzlendi'
+  }[status] || status;
+
+}
+
+
+function watchTypeText(type){
+
+  return type==='series'
+    ?'📺 Dizi'
+    :'🎬 Film';
+
+}
+
+
+function renderWatchlist(){
+
+  const box=$('watchlist-list');
+
+  if(!WATCH.length){
+
+    box.innerHTML=
+      '<p class="empty">Henüz izlenecek bir şey yok. 🍿</p>';
+
+    return;
+  }
+
+  box.innerHTML=`
+
+    <section class="watch-grid">
+
+      ${WATCH.map(item=>`
+
+        <article class="watch-card">
+
+          <div class="watch-poster">
+
+            ${
+              item.poster_url
+                ?`
+                  <img
+                    src="${esc(item.poster_url)}"
+                    alt="${esc(item.title)}"
+                    loading="lazy"
+                  >
+                `
+                :`
+                  <span class="watch-no-poster">
+                    ${item.media_type==='series'
+                      ?'📺'
+                      :'🎬'}
+                  </span>
+                `
+            }
+
+          </div>
+
+          <div class="watch-body">
+
+            <h3>
+              ${esc(item.title)}
+            </h3>
+
+            <div class="watch-meta">
+
+              ${watchTypeText(item.media_type)}
+
+              ${
+                item.genre
+                  ?' · '+esc(item.genre)
+                  :''
+              }
+
+            </div>
+
+            <span class="watch-status">
+              ${watchStatusText(item.status)}
+            </span>
+
+            ${
+              item.rating !== null &&
+              item.rating !== undefined &&
+              item.rating !== ''
+                ?`
+                  <div class="watch-rating">
+                    ⭐ ${esc(item.rating)}/10
+                  </div>
+                `
+                :''
+            }
+
+            ${
+              item.note
+                ?`
+                  <div class="watch-note">
+                    ${esc(item.note)}
+                  </div>
+                `
+                :''
+            }
+
+            <div class="watch-actions">
+
+              <button
+                onclick="cycleWatchStatus(${item.id})"
+              >
+                Durumu değiştir
+              </button>
+
+              <button
+                onclick="editWatchlist(${item.id})"
+              >
+                ✏️
+              </button>
+
+              <button
+                onclick="deleteWatchlist(${item.id})"
+              >
+                ✕
+              </button>
+
+            </div>
+
+          </div>
+
+        </article>
+
+      `).join('')}
+
+    </section>
+
+  `;
+
+}
+
+
+async function loadWatchlist(){
+
+  WATCH=
+    await api(
+      'GET',
+      '/api/watchlist'
+    );
+
+  renderWatchlist();
+
+}
+
+
+async function addWatchlist(){
+
+  const title=
+    $('watch-title').value.trim();
+
+  if(!title){
+
+    alert('Film veya dizi adı gerekli.');
+
+    return;
+  }
+
+  let rating=
+    $('watch-rating').value;
+
+  rating=
+    rating===''
+      ?null
+      :Number(rating);
+
+  await api(
+    'POST',
+    '/api/watchlist',
+    {
+      title,
+      media_type:$('watch-type').value,
+      status:$('watch-status').value,
+      genre:$('watch-genre').value.trim(),
+      poster_url:$('watch-poster').value.trim(),
+      rating,
+      note:$('watch-note').value.trim()
+    }
+  );
+
+  $('watch-title').value='';
+  $('watch-genre').value='';
+  $('watch-rating').value='';
+  $('watch-poster').value='';
+  $('watch-note').value='';
+
+  await loadAll();
+
+}
+
+
+async function cycleWatchStatus(id){
+
+  const item=
+    WATCH.find(
+      x=>Number(x.id)===Number(id)
+    );
+
+  if(!item)return;
+
+  const next={
+    planned:'watching',
+    watching:'watched',
+    watched:'planned'
+  }[item.status] || 'planned';
+
+  await api(
+    'PUT',
+    '/api/watchlist/'+id,
+    {
+      title:item.title,
+      media_type:item.media_type,
+      status:next,
+      genre:item.genre||'',
+      poster_url:item.poster_url||'',
+      rating:item.rating,
+      note:item.note||''
+    }
+  );
+
+  await loadAll();
+
+}
+
+
+async function editWatchlist(id){
+
+  const item=
+    WATCH.find(
+      x=>Number(x.id)===Number(id)
+    );
+
+  if(!item)return;
+
+  const title=
+    prompt('Film / dizi adı:',item.title);
+
+  if(title===null)return;
+
+  const genre=
+    prompt('Tür:',item.genre||'');
+
+  if(genre===null)return;
+
+  const poster=
+    prompt('Poster URL:',item.poster_url||'');
+
+  if(poster===null)return;
+
+  await api(
+    'PUT',
+    '/api/watchlist/'+id,
+    {
+      title,
+      media_type:item.media_type,
+      status:item.status,
+      genre,
+      poster_url:poster,
+      rating:item.rating,
+      note:item.note||''
+    }
+  );
+
+  await loadAll();
+
+}
+
+
+async function deleteWatchlist(id){
+
+  if(!confirm('Bu içerik silinsin mi?'))
+    return;
+
+  await api(
+    'DELETE',
+    '/api/watchlist/'+id
+  );
+
+  await loadAll();
+
+}
+
+
+/* =========================
+   ANILAR
+========================= */
+
+async function loadMemories(){
+
+  MEMORIES=
+    await api(
+      'GET',
+      '/api/memories'
+    );
+
+  renderMemories();
+
+  await loadImmichPhotos();
+
+}
+
+
+function renderMemories(){
+
+  const box=$('memories-list');
+
+  if(!MEMORIES.length){
+
+    box.innerHTML=
+      '<p class="empty">Henüz bir anı eklemediniz. İlk güzel anınızı kaydedin. ❤️</p>';
+
+    return;
+
+  }
+
+  box.innerHTML=
+    MEMORIES.map(item=>`
+
+      <article class="memory-card">
+
+        <div class="memory-top">
+
+          <div>
+
+            <h3>
+              ${esc(item.title)}
+            </h3>
+
+            <div class="memory-date">
+              ${new Date(
+                item.date+'T00:00'
+              ).toLocaleDateString(
+                'tr-TR',
+                {
+                  weekday:'long',
+                  day:'numeric',
+                  month:'long',
+                  year:'numeric'
+                }
+              )}
+            </div>
+
+          </div>
+
+          <button
+            class="x"
+            onclick="deleteMemory(${item.id})"
+          >
+            ✕
+          </button>
+
+        </div>
+
+        ${
+          item.location
+            ?`
+              <div class="memory-location">
+                📍 ${esc(item.location)}
+              </div>
+            `
+            :''
+        }
+
+        ${
+          item.description
+            ?`
+              <div class="memory-description">
+                ${esc(item.description)}
+              </div>
+            `
+            :''
+        }
+
+        <div
+          class="memory-photos"
+          id="memory-photos-${item.id}"
+        >
+          <span class="meta">
+            ${item.photo_count || 0} fotoğraf
+          </span>
+        </div>
+
+        <div class="memory-actions">
+
+          <button
+            class="link"
+            onclick="chooseMemoryPhotos(${item.id})"
+          >
+            📸 Fotoğraf ekle
+          </button>
+
+        </div>
+
+      </article>
+
+    `).join('');
+
+  loadMemoryPhotos();
+
+}
+
+
+async function loadMemoryPhotos(){
+
+  for(const item of MEMORIES){
+
+    try{
+
+      const detail=
+        await api(
+          'GET',
+          '/api/memories/'+item.id
+        );
+
+      const box=
+        $('memory-photos-'+item.id);
+
+      if(!box)continue;
+
+      if(!detail.photos.length){
+
+        box.innerHTML=
+          '<span class="meta">Henüz fotoğraf eklenmemiş.</span>';
+
+        continue;
+
+      }
+
+      box.innerHTML=
+        detail.photos.map(photo=>`
+
+          <div
+            class="memory-photo"
+            onclick="openPhoto('${esc(photo.thumbnail)}')"
+          >
+            <img
+              src="${esc(photo.thumbnail)}"
+              loading="lazy"
+              alt=""
+            >
+          </div>
+
+        `).join('');
+
+    }catch(e){
+
+      console.error(
+        'Anı fotoğrafları alınamadı:',
+        e
+      );
+
+    }
+
+  }
+
+}
+
+
+async function addMemory(){
+
+  const title=
+    $('memory-title').value.trim();
+
+  const date=
+    $('memory-date').value;
+
+  if(!title || !date){
+
+    alert('Anı başlığı ve tarihi gerekli.');
+
+    return;
+
+  }
+
+  await api(
+    'POST',
+    '/api/memories',
+    {
+      title,
+      date,
+      description:
+        $('memory-description')
+          .value
+          .trim(),
+      location:
+        $('memory-location')
+          .value
+          .trim()
+    }
+  );
+
+  $('memory-title').value='';
+  $('memory-date').value='';
+  $('memory-description').value='';
+  $('memory-location').value='';
+
+  await loadAll();
+
+}
+
+
+async function deleteMemory(id){
+
+  if(!confirm('Bu anı ve ona bağlı fotoğraf kayıtları silinsin mi?'))
+    return;
+
+  await api(
+    'DELETE',
+    '/api/memories/'+id
+  );
+
+  await loadAll();
+
+}
+
+
+/* =========================
+   ANLIK FOTO
+========================= */
+
+async function loadInstantPhotos(){
+  try{
+    INSTANT_PHOTOS=await api('GET','/api/instant-photos');
+    renderInstantPhotos();
+  }catch(e){
+    $('instant-photo-list').innerHTML=
+      `<p class="empty">${esc(e.message||'Fotoğraflar yüklenemedi.')}</p>`;
+  }
+}
+
+function renderInstantPhotos(){
+  const box=$('instant-photo-list');
+  if(!box) return;
+
+  if(!INSTANT_PHOTOS.length){
+    box.innerHTML='<div class="instant-empty">Henüz anlık fotoğraf yok. İlk sürprizi sen gönder 💗</div>';
+    return;
+  }
+
+  box.innerHTML=INSTANT_PHOTOS.map(photo=>{
+    const unlocked=UNLOCKED_INSTANT_PHOTOS.has(Number(photo.id));
+    const sender=String(photo.sender||'');
+    const stamp=photo.created
+      ?new Date(String(photo.created).replace(' ','T')+'Z').toLocaleString('tr-TR')
+      :'';
+    const src=unlocked?photo.image:photo.thumbnail;
+
+    return `
+      <article class="instant-card">
+        <div class="instant-card-head">
+          <div>
+            <b>${esc(sender)}</b>
+            <small>${esc(stamp)}</small>
+          </div>
+          <span aria-hidden="true">💌</span>
+        </div>
+        <div class="instant-image-wrap">
+          <img
+            class="instant-image ${unlocked?'':'locked'}"
+            src="${esc(src)}"
+            alt="${unlocked?'Açılmış anlık fotoğraf':'Kilitli anlık fotoğraf'}"
+            loading="lazy"
+          >
+          ${unlocked?'':`
+            <div class="instant-lock-overlay">
+              <button type="button" onclick="unlockInstantPhoto(${Number(photo.id)})">
+                🔓 Fotoğrafın Kilidini Aç
+              </button>
+            </div>
+          `}
+        </div>
+      </article>
+    `;
+  }).join('');
+}
+
+function unlockInstantPhoto(id){
+  UNLOCKED_INSTANT_PHOTOS.add(Number(id));
+  renderInstantPhotos();
+}
+
+async function sendInstantPhoto(){
+  const input=$('instant-photo-file');
+  const file=input.files?.[0];
+  const status=$('instant-upload-status');
+  const button=$('instant-send-btn');
+
+  if(!file){
+    status.textContent='Önce göndermek için bir fotoğraf seç.';
+    return;
+  }
+  if(!file.type.startsWith('image/')){
+    status.textContent='Lütfen bir fotoğraf dosyası seç.';
+    return;
+  }
+  if(file.size>15*1024*1024){
+    status.textContent='Fotoğraf en fazla 15 MB olabilir.';
+    return;
+  }
+
+  button.disabled=true;
+  button.textContent='Gönderiliyor…';
+  status.textContent='Fotoğraf Immich albümüne yükleniyor…';
+
+  try{
+    const response=await fetch(
+      '/api/instant-photos?filename='+encodeURIComponent(file.name),
+      {
+        method:'POST',
+        headers:{'Content-Type':file.type||'image/jpeg'},
+        body:file
+      }
+    );
+
+    if(response.status===401){
+      $('login').style.display='flex';
+      throw new Error('Oturum süresi doldu, tekrar giriş yap.');
+    }
+    if(!response.ok){
+      let payload={};
+      try{payload=await response.json()}catch{}
+      throw new Error(payload.detail||'Fotoğraf gönderilemedi.');
+    }
+
+    input.value='';
+    status.textContent='Fotoğraf gönderildi ❤️';
+    await loadInstantPhotos();
+  }catch(e){
+    status.textContent=e.message||'Fotoğraf gönderilemedi.';
+  }finally{
+    button.disabled=false;
+    button.textContent='Fotoğrafı gönder ❤️';
+  }
+}
+
+
+/* =========================
+   IMMICH
+========================= */
+
+async function loadImmichPhotos(){
+
+  const result=
+    await api(
+      'GET',
+      '/api/immich/photos'
+    );
+
+  IMMICH=
+    result.photos || [];
+
+  $('immich-count').textContent=
+    IMMICH.length+' fotoğraf';
+
+  renderImmichGallery();
+
+}
+
+
+function renderImmichGallery(){
+
+  const box=
+    $('immich-gallery');
+
+  if(!IMMICH.length){
+
+    box.innerHTML=
+      '<p class="empty">Immich albümünde henüz fotoğraf yok.</p>';
+
+    return;
+
+  }
+
+  box.innerHTML=
+    IMMICH.map(photo=>`
+
+      <div
+        class="photo-item"
+        data-asset-id="${esc(photo.id)}"
+        onclick="openPhoto('${esc(photo.thumbnail)}')"
+      >
+
+        <img
+          src="${esc(photo.thumbnail)}"
+          loading="lazy"
+          alt="${esc(photo.filename)}"
+        >
+
+      </div>
+
+    `).join('');
+
+}
+
+
+async function chooseMemoryPhotos(memoryId) {
+
+  if (!IMMICH.length) {
+    await loadImmichPhotos();
+  }
+
+  const selected = new Set();
+
+  const modal = document.createElement('div');
+  modal.className = 'photo-lightbox open';
+
+  modal.innerHTML = `
+    <div class="memory-photo-modal">
+
+      <div class="head">
+        <h2>Anıya fotoğraf ekle</h2>
+
+        <button
+          type="button"
+          class="x"
+          id="close-memory-photo-modal">
+          ✕
+        </button>
+      </div>
+
+      <p class="meta">
+        Albümden istediğiniz fotoğrafları seçin.
+      </p>
+
+      <div
+        id="memory-picker"
+        class="memory-picker-grid"
+      >
+        ${IMMICH.map(photo => `
+          <div
+            class="photo-item"
+            data-asset="${esc(photo.id)}"
+          >
+            <img
+              src="${esc(photo.thumbnail)}"
+              loading="lazy"
+              alt=""
+            >
+          </div>
+        `).join('')}
+      </div>
+
+      <button
+        type="button"
+        class="btn memory-save-button"
+        id="save-memory-photos">
+        ❤️ Seçilenleri anıya ekle
+      </button>
+
+    </div>
+  `;
+
+  document.body.appendChild(modal);
+
+
+  /* Kapat */
+  modal.querySelector(
+    '#close-memory-photo-modal'
+  ).onclick = () => {
+    modal.remove();
+  };
+
+
+  /* Fotoğraf seçimi */
+  modal.querySelectorAll('.photo-item').forEach(photoEl => {
+
+    photoEl.addEventListener('click', () => {
+
+      const assetId = photoEl.dataset.asset;
+
+      if (selected.has(assetId)) {
+
+        selected.delete(assetId);
+        photoEl.classList.remove('selected');
+
+      } else {
+
+        selected.add(assetId);
+        photoEl.classList.add('selected');
+
+      }
+
+      console.log(
+        'Seçilen fotoğraf:',
+        [...selected]
+      );
+
+    });
+
+  });
+
+
+  /* Kaydet */
+  modal.querySelector(
+    '#save-memory-photos'
+  ).onclick = async () => {
+
+    if (selected.size === 0) {
+      alert('Önce en az bir fotoğraf seçmelisin ❤️');
+      return;
+    }
+
+    const button =
+      modal.querySelector('#save-memory-photos');
+
+    button.disabled = true;
+    button.textContent = 'Ekleniyor...';
+
+    try {
+
+      for (const assetId of selected) {
+
+        await api(
+          'POST',
+          '/api/memories/' + memoryId + '/photos',
+          {
+            asset_id: assetId,
+            sort_order: 0
+          }
+        );
+
+      }
+
+      modal.remove();
+
+      await loadMemories();
+
+    } catch (e) {
+
+      console.error(
+        'Fotoğraflar eklenemedi:',
+        e
+      );
+
+      alert(
+        'Fotoğraflar anıya eklenirken bir hata oluştu.'
+      );
+
+      button.disabled = false;
+      button.textContent =
+        '❤️ Seçilenleri anıya ekle';
+
+    }
+
+  };
+
+}
+
+
+function openPhoto(src){
+
+  $('lightboxImage').src=src;
+
+  $('photoLightbox')
+    .classList.add('open');
+
+}
+
+
+function closePhoto(e){
+
+  if(
+    e &&
+    e.target &&
+    e.target.id!=='photoLightbox'
+  ){
+    return;
+  }
+
+  $('photoLightbox')
+    .classList.remove('open');
+
+  $('lightboxImage').src='';
+
+}
+
+async function loadWishlist(){
+
+  WISH =
+    await api(
+      'GET',
+      '/api/wishlist'
+    );
+
+  renderWishlist();
+
+}
+
+
+async function addWishlist(){
+
+  const title =
+    $('wish-title').value.trim();
+
+  if(!title){
+    alert('Ne istediğinizi yazın.');
+    return;
+  }
+
+  const price =
+    $('wish-price').value.trim();
+
+  if(price && Number(price) < 0){
+    alert('Fiyat negatif olamaz.');
+    return;
+  }
+
+  await api(
+    'POST',
+    '/api/wishlist',
+    {
+      title,
+      url: $('wish-url').value.trim(),
+      price,
+      currency: $('wish-currency').value,
+      priority: $('wish-priority').value
+    }
+  );
+
+  $('wish-title').value = '';
+  $('wish-url').value = '';
+  $('wish-price').value = '';
+  $('wish-currency').value = 'TRY';
+  $('wish-priority').value = 'normal';
+
+  await loadAll();
+
+}
+
+
+async function editWishlist(id){
+
+  const item =
+    WISH.find(x => x.id === id);
+
+  if(!item) return;
+
+  const card =
+    $('wish-card-' + id);
+
+  if(!card) return;
+
+  card.innerHTML = `
+
+    <div class="wish-edit">
+
+      <input
+        id="edit-wish-title-${id}"
+        value="${esc(item.title)}"
+        placeholder="Ne istiyoruz?"
+      >
+
+      <div class="row">
+
+        <input
+          id="edit-wish-price-${id}"
+          type="number"
+          inputmode="decimal"
+          min="0"
+          step="0.01"
+          value="${esc(item.price || '')}"
+          placeholder="Fiyat"
+        >
+
+        <select id="edit-wish-currency-${id}">
+
+          <option
+            value="TRY"
+            ${item.currency === 'TRY' ? 'selected' : ''}
+          >
+            ₺ Türk Lirası
+          </option>
+
+          <option
+            value="EUR"
+            ${item.currency === 'EUR' ? 'selected' : ''}
+          >
+            € Euro
+          </option>
+
+          <option
+            value="USD"
+            ${item.currency === 'USD' ? 'selected' : ''}
+          >
+            $ Dolar
+          </option>
+
+          <option
+            value="GBP"
+            ${item.currency === 'GBP' ? 'selected' : ''}
+          >
+            £ Sterlin
+          </option>
+
+        </select>
+
+      </div>
+
+      <select id="edit-wish-priority-${id}">
+
+        <option
+          value="normal"
+          ${item.priority === 'normal' ? 'selected' : ''}
+        >
+          Normal öncelik
+        </option>
+
+        <option
+          value="high"
+          ${item.priority === 'high' ? 'selected' : ''}
+        >
+          Yüksek öncelik
+        </option>
+
+        <option
+          value="low"
+          ${item.priority === 'low' ? 'selected' : ''}
+        >
+          Düşük öncelik
+        </option>
+
+      </select>
+
+      <input
+        id="edit-wish-url-${id}"
+        value="${esc(item.url || '')}"
+        placeholder="Link (isteğe bağlı)"
+      >
+
+      <div class="wish-edit-actions">
+
+        <button
+          class="btn"
+          onclick="saveWishlist(${id})"
+        >
+          Kaydet
+        </button>
+
+        <button
+          class="link"
+          onclick="loadWishlist()"
+        >
+          Vazgeç
+        </button>
+
+      </div>
+
+    </div>
+
+  `;
+
+}
+
+
+async function saveWishlist(id){
+
+  const title =
+    $('edit-wish-title-' + id)
+      .value
+      .trim();
+
+  if(!title){
+    alert('Ne istediğinizi yazın.');
+    return;
+  }
+
+  const price =
+    $('edit-wish-price-' + id)
+      .value
+      .trim();
+
+  if(price && Number(price) < 0){
+    alert('Fiyat negatif olamaz.');
+    return;
+  }
+
+  await api(
+    'PUT',
+    '/api/wishlist/' + id,
+    {
+      title,
+      url: $('edit-wish-url-' + id)
+        .value
+        .trim(),
+
+      price,
+
+      currency:
+        $('edit-wish-currency-' + id)
+          .value,
+
+      priority:
+        $('edit-wish-priority-' + id)
+          .value
+    }
+  );
+
+  await loadAll();
+
+}
+
+
+async function toggleWishlist(id){
+
+  await api(
+    'POST',
+    '/api/wishlist/' + id + '/toggle'
+  );
+
+  await loadAll();
+
+}
+
+
+async function delWishlist(id){
+
+  await api(
+    'DELETE',
+    '/api/wishlist/' + id
+  );
+
+  await loadAll();
+
+}
+
+
+/* =========================
+   BİLDİRİMLER
+========================= */
+
+function renderNotifications(){
+
+  const unread=
+    NOTIF.filter(
+      n=>!n.read
+    ).length;
+
+  $('notifications').innerHTML=
+    NOTIF.length
+      ?NOTIF.map(n=>`
+
+        <button
+          class="notif ${n.read?'read':''}"
+          onclick="openNotification(${n.id})"
+        >
+
+          <span class="notif-icon">
+
+            ${
+              n.type==='shopping'
+              ?'🛒'
+              :n.type==='wishlist'
+              ?'🎁'
+              :n.type==='event'
+              ?'💕'
+              :n.type==='special_day'
+              ?'❤️'
+              :n.type==='watchlist'
+              ?'🎬'
+              :n.type==='memory'
+              ?'📸'
+              :n.type==='instant_photo'
+              ?'💌'
+              :'📝'
+            }
+
+          </span>
+
+          <span>
+
+            <b>
+              ${esc(n.title)}
+            </b>
+
+            <small>
+              ${esc(n.text)}
+            </small>
+
+            <em>
+              ${new Date(
+                n.created.replace(' ','T')
+              ).toLocaleString('tr-TR')}
+            </em>
+
+          </span>
+
+          ${
+            n.read
+              ?''
+              :'<i class="unread-dot"></i>'
+          }
+
+        </button>
+
+      `).join('')
+      :'<p class="empty">Şimdilik yeni bir şey yok. ✨</p>';
+
+  badge(unread);
+
+  updateNotificationHeader();
+
+  /*
+    Eğer popup açıksa,
+    okuma sonrası içeriğini de yenile.
+  */
+  if(
+    $('notificationDropdown').classList.contains('open')
+  ){
+    renderNotificationPreview();
+  }
+
+}
+
+
+async function loadNotifications(){
+
+  NOTIF=
+    await api(
+      'GET',
+      '/api/notifications'
+    );
+
+  renderNotifications();
+
+}
+
+
+async function enablePush() {
+    if (!("serviceWorker" in navigator)) {
+        alert("Bu tarayıcı bildirimleri desteklemiyor.");
+        return;
+    }
+
+    if (!("PushManager" in window)) {
+        alert("Bu tarayıcı push bildirimlerini desteklemiyor.");
+        return;
+    }
+
+    if (!("Notification" in window)) {
+        alert("Bu tarayıcı bildirim iznini desteklemiyor.");
+        return;
+    }
+
+    try {
+        const permission = await Notification.requestPermission();
+
+        if (permission !== "granted") {
+            alert("Bildirim izni verilmedi.");
+            return;
+        }
+
+        const registration = await navigator.serviceWorker.register("/sw.js");
+
+        const publicKeyResponse = await api(
+            "GET",
+            "/api/push/public-key"
+        );
+
+        const publicKey = publicKeyResponse.publicKey;
+
+        let subscription = await registration.pushManager.getSubscription();
+
+        if (!subscription) {
+            subscription = await registration.pushManager.subscribe({
+                userVisibleOnly: true,
+                applicationServerKey: urlBase64ToUint8Array(publicKey)
+            });
+        }
+
+        await api(
+            "POST",
+            "/api/push/subscribe",
+            subscription.toJSON()
+        );
+
+        const button = $("push-enable-btn");
+
+        if (button) {
+            button.textContent = "🔔 Bildirimler açık";
+            button.disabled = true;
+        }
+
+        alert("Bildirimler açıldı. 💕");
+
+    } catch (err) {
+        console.error("Push kurulumu başarısız:", err);
+        alert("Bildirimler açılırken bir hata oluştu.");
+    }
+}
+
+
+function urlBase64ToUint8Array(base64String) {
+    const padding = "=".repeat(
+        (4 - base64String.length % 4) % 4
+    );
+
+    const base64 = (
+        base64String +
+        padding
+    )
+        .replace(/-/g, "+")
+        .replace(/_/g, "/");
+
+    const rawData = atob(base64);
+
+    return Uint8Array.from(
+        [...rawData].map(char => char.charCodeAt(0))
+    );
+}
+
+async function updatePushButton() {
+    const button = $("push-enable-btn");
+
+    if (!button) return;
+
+    if (
+        !("serviceWorker" in navigator) ||
+        !("PushManager" in window) ||
+        !("Notification" in window)
+    ) {
+        button.style.display = "none";
+        return;
+    }
+
+    try {
+        const registration = await navigator.serviceWorker.ready;
+        const subscription = await registration.pushManager.getSubscription();
+
+        if (
+            subscription &&
+            Notification.permission === "granted"
+        ) {
+            button.textContent = "🔔 Bildirimler açık";
+            button.disabled = true;
+        }
+    } catch (err) {
+        console.error("Push durumu alınamadı:", err);
+    }
+}
+
+async function readAll(){
+
+  await api(
+    'POST',
+    '/api/notifications/read-all'
+  );
+
+  await loadNotifications();
+
+}
+
+
+/* =========================
+   LOGOUT
+========================= */
+
+async function logout(){
+
+  await fetch(
+    '/api/logout',
+    {
+      method:'POST'
+    }
+  );
+
+  location.reload();
+
+}
+
+
+/* =========================
+   INIT
+========================= */
+
+async function init(){
+
+
+  if ("serviceWorker" in navigator) {
+      navigator.serviceWorker.register("/sw.js")
+          .catch(err => console.error("Service Worker:", err));
+  }
+
+  await updatePushButton();
+
+  try{
+
+    const meInfo=await api('GET','/api/me');
+    me=meInfo.name;
+    LOVE_START=meInfo.since||'';
+    renderLoveDuration();
+
+    $('who').textContent=me;
+
+    renderProfileAvatar(me);
+
+    const q=
+      new URLSearchParams(
+        location.search
+      ).get('d');
+
+    if(
+      /^\d{4}-\d\d-\d\d$/.test(q||'')
+    ){
+
+      sel=q;
+
+      view=
+        new Date(
+          q+'T00:00'
+        );
+
+      view.setDate(1);
+
+    }
+
+    await loadAll();
+
+    const tab=
+      (location.hash||'#home')
+        .slice(1);
+
+    showTab(
+      [
+        'home',
+        'calendar',
+        'notes',
+        'shopping',
+        'wishlist',
+        'specialdays',
+        'watchlist',
+        'memories',
+        'instantphoto',
+        'notifications'
+      ].includes(tab)
+        ?tab
+        :'home'
+    );
+
+  }catch(e){}
+
+}
+
+
+$('shop-text').addEventListener(
+  'keydown',
+  e=>e.key==='Enter'&&addShopping()
+);
+
+$('wish-title').addEventListener(
+  'keydown',
+  e=>e.key==='Enter'&&addWishlist()
+);
+
+
+init();
+
+</script>
+</body>
+</html>

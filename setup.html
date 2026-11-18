@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#6b2143">
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<title>Kurulum · Aşkımız</title>
+<style>
+:root{--bg:#fbf3f1;--card:#fff;--ink:#3a1a2a;--mute:#8f6f7c;--line:#efdde0;--wine:#6b2143;--rose:#d9466f;--apricot:#ffb38a;--ok:#3f8f68;--err:#c0392b;--tint:#fdeaee;--shadow:0 8px 30px rgba(107,33,67,.08);--sans:"Montserrat","Avenir Next",Avenir,system-ui,-apple-system,"Segoe UI",sans-serif}
+@media(prefers-color-scheme:dark){:root{--bg:#1a0f15;--card:#261620;--ink:#f6e3e8;--mute:#b592a0;--line:#3a2431;--wine:#4a1830;--rose:#e0507a;--tint:#3a2230;--ok:#6cc39a;--err:#ff7b6b;--shadow:none}}
+*{box-sizing:border-box}
+html{padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom)}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 var(--sans)}
+:focus-visible{outline:2px solid var(--rose);outline-offset:2px}
+main{max-width:560px;margin:0 auto;padding:24px 16px 48px}
+button,input{font:inherit}
+.brand{display:flex;align-items:center;gap:10px;font-weight:800;font-size:1.4rem;letter-spacing:-.03em;margin-bottom:18px}
+.brand span{color:var(--rose)}
+.progress{display:flex;gap:6px;margin-bottom:18px}
+.progress i{flex:1;height:5px;border-radius:9px;background:var(--line);transition:background .3s}
+.progress i.on{background:var(--rose)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:24px 20px;box-shadow:var(--shadow)}
+.hero{background:linear-gradient(135deg,#843054,#3a172b);color:#fff1ec;border:0}
+.hero p{color:#f3d9d6}
+h1{font-size:1.35rem;line-height:1.25;margin:0 0 6px;letter-spacing:-.02em}
+.step-no{font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--rose);margin-bottom:6px}
+.hero .step-no{color:var(--apricot)}
+p{margin:0 0 14px;color:var(--mute)}
+label{display:block;font-weight:600;font-size:.88rem;margin:14px 0 6px}
+label small{font-weight:500;color:var(--mute)}
+input[type=text],input[type=email],input[type=password],input[type=url],input[type=number],input[type=date]{width:100%;padding:12px 14px;border:1px solid var(--line);border-radius:12px;background:var(--bg);color:var(--ink);min-height:46px}
+input:focus{border-color:var(--rose);outline:none}
+.code{font:700 1.4rem/1 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.12em;text-align:center;text-transform:uppercase}
+.hint{font-size:.8rem;color:var(--mute);margin-top:6px}
+.hint a{color:var(--rose)}
+.row{display:grid;grid-template-columns:1fr 110px;gap:10px}
+.actions{display:flex;gap:10px;justify-content:space-between;align-items:center;margin-top:22px;flex-wrap:wrap}
+.btn{border:0;border-radius:12px;padding:12px 20px;font-weight:700;min-height:46px;cursor:pointer}
+.primary{background:var(--rose);color:#fff;margin-left:auto}
+.primary:disabled{opacity:.55;cursor:wait}
+.ghost{background:none;color:var(--mute);padding-left:4px;padding-right:4px}
+.soft{background:var(--tint);color:var(--ink)}
+.msg{margin-top:14px;padding:10px 12px;border-radius:10px;font-size:.88rem;display:none}
+.msg.err{display:block;background:rgba(192,57,43,.1);color:var(--err)}
+.hero .msg.err{background:rgba(255,255,255,.14);color:#ffe1dc}
+.msg.ok{display:block;background:rgba(63,143,104,.12);color:var(--ok)}
+.photo{display:flex;align-items:center;gap:14px;margin-top:6px}
+.avatar{width:64px;height:64px;border-radius:50%;background:linear-gradient(135deg,#843054,#3a172b);color:#fff1ec;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:1.4rem;overflow:hidden;flex:0 0 64px}
+.avatar img{width:100%;height:100%;object-fit:cover}
+.chips{display:flex;gap:8px;flex-wrap:wrap;margin-top:4px}
+.chip{border:1px solid var(--line);background:var(--bg);color:var(--ink);border-radius:999px;padding:6px 12px;font-size:.82rem;cursor:pointer}
+.chip:hover{border-color:var(--rose)}
+.summary{list-style:none;padding:0;margin:8px 0 0}
+.summary li{display:flex;justify-content:space-between;gap:12px;padding:10px 0;border-bottom:1px solid var(--line);font-size:.92rem}
+.summary li:last-child{border:0}
+.summary b{text-align:right;word-break:break-word}
+.off{color:var(--mute);font-weight:500}
+.done-names{background:var(--tint);border-radius:12px;padding:12px 14px;margin:10px 0 4px}
+.done-names code{font-weight:700;font-size:1rem}
+[hidden]{display:none!important}
+.step{animation:in .25s ease}
+@keyframes in{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+@media(prefers-reduced-motion:reduce){.step{animation:none}}
+</style>
+</head>
+<body>
+<main>
+  <div class="brand"><span>♥</span> Aşkımız <small style="font-weight:500;font-size:.85rem;color:var(--mute)">· kurulum</small></div>
+  <div class="progress" id="progress" aria-hidden="true"></div>
+
+  <!-- 0: kurulum kodu -->
+  <section class="step card hero" data-step="0">
+    <div class="step-no">Hoş geldin</div>
+    <h1>Takviminizi birkaç dakikada kuralım 💕</h1>
+    <p>Güvenlik için önce kurulum kodunu gir. Kodu, uygulamayı başlattığın terminalde ya da sunucudaki <code>data/.setup-token</code> dosyasında bulabilirsin.</p>
+    <label for="token" style="color:#fff1ec">Kurulum kodu</label>
+    <input id="token" class="code" type="text" placeholder="XXXX-XXXX-XXXX" autocomplete="off" autocapitalize="characters" spellcheck="false">
+    <div class="msg" id="msg0"></div>
+    <div class="actions"><button class="btn primary" data-next>Başla</button></div>
+  </section>
+
+  <!-- 1: adres -->
+  <section class="step card" data-step="1" hidden>
+    <div class="step-no">Adım 1 / 5 · Temel bilgiler</div>
+    <h1>Uygulamaya hangi adresten gireceksiniz?</h1>
+    <p>E-postalardaki “Cevabını ver” bağlantıları bu adrese gider. Alan adın varsa onu yaz, yoksa şimdilik böyle kalabilir.</p>
+    <label for="base_url">Uygulama adresi</label>
+    <input id="base_url" type="url" placeholder="https://takvim.ornek.com" autocomplete="off">
+    <div class="hint">Telefona uygulama gibi kurmak ve anlık bildirim almak için adresin <b>https://</b> olması gerekir.</div>
+    <label for="since">Birlikteliğinizin başladığı gün <small>(isteğe bağlı)</small></label>
+    <input id="since" type="date">
+    <div class="hint">Ana sayfada “birlikte geçen zamanınızı” gösteren sayaç bu tarihten başlar. Boş bırakırsan sayaç gizlenir.</div>
+    <div class="msg" id="msg1"></div>
+    <div class="actions"><button class="btn ghost" data-back>Geri</button><button class="btn primary" data-next>Devam</button></div>
+  </section>
+
+  <!-- 2 ve 3: kişiler -->
+  <template id="person-tpl">
+    <div class="step-no"></div>
+    <h1></h1>
+    <p>Giriş yaparken <b>adını</b> ve şifreni kullanacaksın. E-posta, yeni plan ve not bildirimleri için.</p>
+    <label>Ad <small>(giriş adı da bu olacak)</small></label>
+    <input type="text" data-f="name" maxlength="40" autocomplete="off">
+    <label>E-posta <small>(isteğe bağlı)</small></label>
+    <input type="email" data-f="email" autocomplete="off">
+    <label>Şifre <small>(en az 8 karakter)</small></label>
+    <input type="password" data-f="password" autocomplete="new-password">
+    <label>Şifre tekrar</label>
+    <input type="password" data-f="password2" autocomplete="new-password">
+    <label>Profil fotoğrafı <small>(isteğe bağlı)</small></label>
+    <div class="photo">
+      <div class="avatar" data-f="avatar">?</div>
+      <div>
+        <button type="button" class="btn soft" data-f="pick">Fotoğraf seç</button>
+        <button type="button" class="btn ghost" data-f="clear" hidden>Kaldır</button>
+        <input type="file" accept="image/*" data-f="file" hidden>
+      </div>
+    </div>
+    <div class="msg"></div>
+    <div class="actions"><button class="btn ghost" data-back>Geri</button><button class="btn primary" data-next>Devam</button></div>
+  </template>
+  <section class="step card" data-step="2" data-person="0" hidden></section>
+  <section class="step card" data-step="3" data-person="1" hidden></section>
+
+  <!-- 4: Immich -->
+  <section class="step card" data-step="4" hidden>
+    <div class="step-no">Adım 4 / 5 · Fotoğraflar <span class="off">(isteğe bağlı)</span></div>
+    <h1>Immich ile fotoğraf albümü</h1>
+    <p>Kendi sunucunda <a href="https://immich.app" target="_blank" rel="noopener" style="color:var(--rose)">Immich</a> varsa, anılarınız ve anlık fotoğraflarınız oradaki bir albümde toplanır. Yoksa bu adımı atla.</p>
+    <label for="im_url">Immich adresi</label>
+    <input id="im_url" type="url" placeholder="http://127.0.0.1:2283" autocomplete="off">
+    <label for="im_key">API anahtarı</label>
+    <input id="im_key" type="password" autocomplete="off" spellcheck="false">
+    <div class="hint">Immich’te: profil resmi → <b>Hesap Ayarları</b> → <b>API Anahtarları</b> → <b>Yeni API Anahtarı</b>.</div>
+    <label for="im_album">Albüm adı</label>
+    <input id="im_album" type="text" value="Aşkımız ❤️">
+    <label for="im_instant">Anlık fotoğraf albümü</label>
+    <input id="im_instant" type="text" value="Aşkımız-Gelenler">
+    <div class="msg" id="msg4"></div>
+    <div class="actions">
+      <button class="btn ghost" data-back>Geri</button>
+      <button class="btn soft" id="test-immich">Bağlantıyı test et</button>
+      <button class="btn primary" data-next>Devam</button>
+    </div>
+  </section>
+
+  <!-- 5: SMTP -->
+  <section class="step card" data-step="5" hidden>
+    <div class="step-no">Adım 5 / 5 · E-posta <span class="off">(isteğe bağlı)</span></div>
+    <h1>E-posta bildirimleri</h1>
+    <p>Biri yeni bir plan önerdiğinde ya da not bıraktığında diğerine e-posta gider. Boş bırakırsan bildirimler yalnızca uygulama içinde görünür.</p>
+    <div class="chips" id="presets">
+      <button type="button" class="chip" data-host="smtp.gmail.com" data-port="587">Gmail</button>
+      <button type="button" class="chip" data-host="smtp-mail.outlook.com" data-port="587">Outlook</button>
+      <button type="button" class="chip" data-host="smtp.yandex.com" data-port="587">Yandex</button>
+      <button type="button" class="chip" data-host="smtp.mail.me.com" data-port="587">iCloud</button>
+    </div>
+    <div class="row">
+      <div><label for="sm_host">SMTP sunucusu</label><input id="sm_host" type="text" placeholder="smtp.gmail.com" autocomplete="off"></div>
+      <div><label for="sm_port">Port</label><input id="sm_port" type="number" value="587"></div>
+    </div>
+    <label for="sm_user">Gönderen e-posta (kullanıcı adı)</label>
+    <input id="sm_user" type="email" autocomplete="off">
+    <label for="sm_pass">Şifre</label>
+    <input id="sm_pass" type="password" autocomplete="off">
+    <div class="hint">Gmail’de normal şifren çalışmaz; <a href="https://myaccount.google.com/apppasswords" target="_blank" rel="noopener">uygulama şifresi</a> oluştur (2 adımlı doğrulama açık olmalı).</div>
+    <div class="msg" id="msg5"></div>
+    <div class="actions">
+      <button class="btn ghost" data-back>Geri</button>
+      <button class="btn soft" id="test-smtp">Test e-postası gönder</button>
+      <button class="btn primary" data-next>Devam</button>
+    </div>
+  </section>
+
+  <!-- 6: özet -->
+  <section class="step card" data-step="6" hidden>
+    <div class="step-no">Son kontrol</div>
+    <h1>Her şey hazır görünüyor ✨</h1>
+    <p>Ayarlar sunucuda <code>data/config.json</code> dosyasına, yalnızca sunucu kullanıcısının okuyabileceği şekilde kaydedilecek. Şifreler düz metin olarak değil, özetlenerek saklanır.</p>
+    <ul class="summary" id="summary"></ul>
+    <div class="msg" id="msg6"></div>
+    <div class="actions"><button class="btn ghost" data-back>Geri</button><button class="btn primary" id="finish">Kurulumu tamamla</button></div>
+  </section>
+
+  <!-- 7: bitti -->
+  <section class="step card hero" data-step="7" hidden>
+    <div class="step-no">Tamamlandı</div>
+    <h1>Kurulum bitti, iyi ki varsınız 🎉</h1>
+    <p>Giriş adlarınız:</p>
+    <div class="done-names" id="done-names" style="color:var(--ink)"></div>
+    <p style="margin-top:12px">Ayarları sonradan değiştirmek istersen README’deki “Ayarları değiştirme” bölümüne bak.</p>
+    <div class="actions"><button class="btn primary" id="open-app">Uygulamayı aç</button></div>
+  </section>
+</main>
+
+<script>
+(() => {
+  const $ = (s, el = document) => el.querySelector(s);
+  const $$ = (s, el = document) => [...el.querySelectorAll(s)];
+  const steps = $$('section.step');
+  const TOTAL = 7; // 0..6 ilerleme, 7 = bitti
+  let current = 0;
+  const people = [{photo: ''}, {photo: ''}];
+
+  const store = {
+    get(k){ try { return sessionStorage.getItem(k) || ''; } catch { return ''; } },
+    set(k, v){ try { sessionStorage.setItem(k, v); } catch {} }
+  };
+
+  // ilerleme çubuğu
+  const prog = $('#progress');
+  for (let i = 0; i < TOTAL; i++) prog.appendChild(document.createElement('i'));
+
+  // kişi adımlarını şablondan üret
+  steps.filter(s => s.dataset.person !== undefined).forEach(sec => {
+    const idx = +sec.dataset.person;
+    sec.appendChild($('#person-tpl').content.cloneNode(true));
+    $('.step-no', sec).textContent = `Adım ${idx + 2} / 5 · ${idx + 1}. kişi`;
+    $('h1', sec).textContent = idx === 0 ? 'Önce seni tanıyalım' : 'Şimdi de sevgilini 💞';
+    const f = n => $(`[data-f="${n}"]`, sec);
+    f('name').addEventListener('input', () => { if (!people[idx].photo) f('avatar').textContent = (f('name').value.trim()[0] || '?').toLocaleUpperCase('tr'); });
+    f('pick').onclick = () => f('file').click();
+    f('clear').onclick = () => { people[idx].photo = ''; f('avatar').textContent = (f('name').value.trim()[0] || '?').toLocaleUpperCase('tr'); f('clear').hidden = true; };
+    f('file').onchange = async () => {
+      const file = f('file').files[0];
+      if (!file) return;
+      try {
+        people[idx].photo = await toSquarePng(file, 512);
+        f('avatar').innerHTML = `<img alt="" src="${people[idx].photo}">`;
+        f('clear').hidden = false;
+      } catch { showMsg(sec, 'Bu fotoğraf okunamadı, başka bir tane dene.'); }
+      f('file').value = '';
+    };
+  });
+
+  function toSquarePng(file, size){
+    return new Promise((resolve, reject) => {
+      const img = new Image();
+      img.onload = () => {
+        const s = Math.min(img.width, img.height);
+        const c = document.createElement('canvas');
+        c.width = c.height = size;
+        c.getContext('2d').drawImage(img, (img.width - s) / 2, (img.height - s) / 2, s, s, 0, 0, size, size);
+        URL.revokeObjectURL(img.src);
+        resolve(c.toDataURL('image/png'));
+      };
+      img.onerror = reject;
+      img.src = URL.createObjectURL(file);
+    });
+  }
+
+  function showMsg(sec, text, ok = false){
+    const m = $('.msg', sec);
+    m.className = 'msg ' + (text ? (ok ? 'ok' : 'err') : '');
+    m.textContent = text || '';
+  }
+
+  function show(n){
+    current = n;
+    steps.forEach(s => s.hidden = +s.dataset.step !== n);
+    $$('i', prog).forEach((el, i) => el.classList.toggle('on', i <= Math.min(n, TOTAL - 1)));
+    const sec = steps.find(s => +s.dataset.step === n);
+    showMsg(sec, '');
+    const first = $('input:not([hidden])', sec);
+    if (first && n !== 7) setTimeout(() => first.focus({preventScroll: true}), 50);
+    window.scrollTo({top: 0, behavior: 'smooth'});
+    if (n === 6) renderSummary();
+  }
+
+  async function api(path, body){
+    const r = await fetch(path, {method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({token: $('#token').value.trim(), ...body})});
+    let data = {};
+    try { data = await r.json(); } catch {}
+    if (!r.ok) {
+      let d = data.detail;
+      if (Array.isArray(d)) d = 'Bazı alanlar eksik ya da hatalı.';
+      throw new Error(d || `Sunucu hatası (${r.status})`);
+    }
+    return data;
+  }
+
+  async function busy(btn, fn){
+    const label = btn.textContent;
+    btn.disabled = true; btn.textContent = 'Bekle…';
+    try { return await fn(); } finally { btn.disabled = false; btn.textContent = label; }
+  }
+
+  function personData(idx){
+    const sec = steps.find(s => s.dataset.person === String(idx));
+    const v = n => $(`[data-f="${n}"]`, sec).value;
+    return {sec, name: v('name').trim(), email: v('email').trim(), password: v('password'), password2: v('password2'), photo: people[idx].photo};
+  }
+
+  const validators = {
+    0: async (sec, btn) => {
+      if (!$('#token').value.trim()) throw new Error('Kurulum kodunu gir.');
+      await busy(btn, () => api('/api/setup/verify', {}));
+      store.set('setup-token', $('#token').value.trim());
+    },
+    1: () => {
+      const u = $('#base_url').value.trim();
+      if (!/^https?:\/\/[^\s/]+/i.test(u)) throw new Error('Adres http:// ya da https:// ile başlamalı.');
+      const d = $('#since').value;
+      if (d && new Date(d) > new Date()) throw new Error('Başlangıç tarihi gelecekte olamaz.');
+    },
+    2: () => checkPerson(0),
+    3: () => {
+      checkPerson(1);
+      if (personData(0).name.toLocaleLowerCase('tr') === personData(1).name.toLocaleLowerCase('tr')) throw new Error('İki kişinin adı farklı olmalı.');
+    },
+    4: () => {
+      const url = $('#im_url').value.trim(), key = $('#im_key').value.trim();
+      if ((url && !key) || (!url && key)) throw new Error('Immich için adres ve API anahtarının ikisi de gerekli. Kullanmayacaksan ikisini de boş bırak.');
+    },
+    5: () => {
+      const host = $('#sm_host').value.trim();
+      if (host && (!$('#sm_user').value.trim() || !$('#sm_pass').value)) throw new Error('E-posta için kullanıcı adı ve şifre de gerekli. Kullanmayacaksan sunucu alanını boş bırak.');
+    }
+  };
+
+  function checkPerson(idx){
+    const p = personData(idx);
+    if (!p.name) throw new Error('Adını yaz.');
+    if (/[:,]/.test(p.name)) throw new Error('Ad içinde “:” ya da “,” olamaz.');
+    if (p.email && !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(p.email)) throw new Error('E-posta adresi geçersiz görünüyor.');
+    if (p.password.length < 8) throw new Error('Şifre en az 8 karakter olmalı.');
+    if (p.password !== p.password2) throw new Error('Şifreler eşleşmiyor.');
+  }
+
+  $$('[data-next]').forEach(btn => btn.addEventListener('click', async () => {
+    const sec = btn.closest('section');
+    try {
+      if (validators[current]) await validators[current](sec, btn);
+      show(current + 1);
+    } catch (e) { showMsg(sec, e.message); }
+  }));
+  $$('[data-back]').forEach(btn => btn.addEventListener('click', () => show(Math.max(0, current - 1))));
+
+  // Enter ile ilerle
+  document.addEventListener('keydown', e => {
+    if (e.key !== 'Enter' || e.target.tagName !== 'INPUT') return;
+    const sec = e.target.closest('section');
+    const next = sec && $('[data-next]', sec);
+    if (next) { e.preventDefault(); next.click(); }
+  });
+
+  $$('#presets .chip').forEach(c => c.onclick = () => {
+    $('#sm_host').value = c.dataset.host; $('#sm_port').value = c.dataset.port;
+    if (!$('#sm_user').value) $('#sm_user').value = personData(0).email;
+    $('#sm_user').focus();
+  });
+
+  const immich = () => ({url: $('#im_url').value.trim(), api_key: $('#im_key').value.trim(), album_name: $('#im_album').value.trim(), instant_album_name: $('#im_instant').value.trim()});
+  const smtp = () => ({host: $('#sm_host').value.trim(), port: +$('#sm_port').value || 587, user: $('#sm_user').value.trim(), password: $('#sm_pass').value});
+
+  $('#test-immich').onclick = async e => {
+    const sec = e.target.closest('section');
+    try {
+      if (!immich().url || !immich().api_key) throw new Error('Önce adres ve API anahtarını gir.');
+      const r = await busy(e.target, () => api('/api/setup/test-immich', immich()));
+      showMsg(sec, '✓ ' + r.message, true);
+    } catch (err) { showMsg(sec, err.message); }
+  };
+
+  $('#test-smtp').onclick = async e => {
+    const sec = e.target.closest('section');
+    try {
+      const s = smtp();
+      if (!s.host || !s.user || !s.password) throw new Error('Önce sunucu, kullanıcı adı ve şifreyi gir.');
+      const to = personData(0).email || s.user;
+      const r = await busy(e.target, () => api('/api/setup/test-smtp', {...s, test_to: to}));
+      showMsg(sec, `✓ ${r.message} (${to})`, true);
+    } catch (err) { showMsg(sec, err.message); }
+  };
+
+  function renderSummary(){
+    const a = personData(0), b = personData(1), im = immich(), sm = smtp();
+    const off = t => `<span class="off">${t}</span>`;
+    const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+    const rows = [
+      ['Adres', esc($('#base_url').value.trim())],
+      ['Başlangıç', $('#since').value ? new Date($('#since').value + 'T00:00').toLocaleDateString('tr-TR', {day: 'numeric', month: 'long', year: 'numeric'}) : off('sayaç gizli')],
+      ['1. kişi', esc(a.name) + (a.email ? ` · ${esc(a.email)}` : '')],
+      ['2. kişi', esc(b.name) + (b.email ? ` · ${esc(b.email)}` : '')],
+      ['Immich', im.url ? esc(im.url) : off('kullanılmıyor')],
+      ['E-posta', sm.host ? esc(`${sm.user} @ ${sm.host}`) : off('kullanılmıyor')],
+      ['Anlık bildirim', 'otomatik ayarlanacak']
+    ];
+    $('#summary').innerHTML = rows.map(([k, v]) => `<li><span>${k}</span><b>${v}</b></li>`).join('');
+  }
+
+  $('#finish').onclick = async e => {
+    const sec = e.target.closest('section');
+    try {
+      const strip = p => ({name: p.name, email: p.email, password: p.password, photo: p.photo});
+      const r = await busy(e.target, () => api('/api/setup/complete', {
+        base_url: $('#base_url').value.trim(),
+        relationship_start: $('#since').value,
+        people: [strip(personData(0)), strip(personData(1))],
+        immich: immich(),
+        smtp: smtp()
+      }));
+      $('#done-names').innerHTML = r.usernames.map(u => `<code>${u.replace(/[&<>]/g, '')}</code>`).join(' &nbsp;·&nbsp; ');
+      try { sessionStorage.removeItem('setup-token'); } catch {}
+      show(7);
+    } catch (err) { showMsg(sec, err.message); }
+  };
+
+  $('#open-app').onclick = () => { location.href = '/'; };
+
+  // başlangıç
+  $('#base_url').value = location.origin;
+  $('#token').value = store.get('setup-token');
+  show(0);
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,24 @@
+# Kişisel veriler ve ayarlar — asla commit etme
+data/
+.env
+.env.*
+!.env.example
+*.db
+*.db-*
+*.sqlite*
+profile-images/
+
+# Yedekler
+*.bak
+*.old
+*.before-*
+*backup*
+
+# Python
+__pycache__/
+*.pyc
+venv/
+.venv/
+
+# Sistem
+.DS_Store
