@@ -288,6 +288,13 @@ def complete(b: SetupPayload, request: Request):
     return {"ok": True, "usernames": [e.split(":", 1)[0] for e in login_entries]}
 
 
+@app.get("/icons/{name}")
+def setup_icon(name: str):
+    if name not in ("icon.svg", "icon-192.png", "apple-touch-icon.png"):
+        raise HTTPException(404)
+    return FileResponse(HERE / "icons" / name)
+
+
 @app.get("/{path:path}")
 def setup_page(path: str):
     if path.startswith("api/"):

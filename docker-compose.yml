@@ -1,0 +1,19 @@
+services:
+  askimiz:
+    build: .
+    container_name: askimiz
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    volumes:
+      - askimiz-data:/data
+    environment:
+      TZ: Europe/Istanbul
+      # Önünde Caddy/Nginx/Traefik gibi bir ters vekil varsa onun IP'sini yaz
+      # (ya da "*"), böylece hatalı giriş kilidi gerçek kullanıcı IP'sine göre çalışır.
+      FORWARDED_ALLOW_IPS: "127.0.0.1"
+    # Ayarları kurulum sihirbazı yerine .env ile vermek istersen:
+    # env_file: .env
+
+volumes:
+  askimiz-data:

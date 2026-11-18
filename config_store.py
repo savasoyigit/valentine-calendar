@@ -31,6 +31,12 @@ KNOWN_KEYS = (
 )
 
 
+# Uygulama başlarken gerçekten ortamdan gelen anahtarlar. apply_to_env()
+# config.json değerlerini sonradan os.environ'a kopyaladığı için bu anlık
+# görüntü, hangi ayarın .env/Docker tarafından sabitlendiğini ayırt eder.
+_ENV_AT_START = frozenset(k for k in KNOWN_KEYS if os.getenv(k))
+
+
 def ensure_data_dir():
     DATA_DIR.mkdir(parents=True, exist_ok=True)
     try:
@@ -90,3 +96,21 @@ def clear_setup_token():
         SETUP_TOKEN_PATH.unlink()
     except FileNotFoundError:
         pass
+
+
+def env_locked_keys():
+    """Ortam değişkeniyle verilmiş (ve bu yüzden uygulama içinden değiştirilemeyen) anahtarlar."""
+    return set(_ENV_AT_START)
+
+
+def update_config(changes: dict):
+    """Mevcut config.json'u verilen değerlerle günceller. Boş değer anahtarı siler."""
+    cfg = load_file_config()
+    for key, value in changes.items():
+        if key not in KNOWN_KEYS:
+            continue
+        if value in (None, ""):
+            cfg.pop(key, None)
+        else:
+            cfg[key] = str(value)
+    save_config(cfg)

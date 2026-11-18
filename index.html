@@ -1721,6 +1721,28 @@ button[onclick*="showTab("].active,
 
 
 
+/* Ayarlar */
+.set-card h2{font-size:1.05rem;margin:0 0 8px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.set-card h3{font-size:.95rem;margin:20px 0 4px;padding-top:16px;border-top:1px solid var(--line)}
+.set-label{display:block;font-weight:600;font-size:.86rem;margin-top:12px}
+.set-label small{font-weight:500;color:var(--mute)}
+.set-note{color:var(--mute);font-size:.8rem;margin:6px 0 0}
+.set-note a{color:var(--rose)}
+.set-row{display:grid;grid-template-columns:1fr 100px;gap:10px}
+.set-actions{display:flex;justify-content:flex-end;align-items:center;gap:8px;flex-wrap:wrap;margin-top:6px}
+.set-actions .link{margin-right:auto;margin-top:10px}
+.set-soft{background:var(--tint);color:var(--ink)}
+.set-msg{display:none;margin-top:10px;padding:9px 12px;border-radius:10px;font-size:.85rem}
+.set-msg.ok{display:block;background:rgba(63,143,104,.12);color:var(--ok)}
+.set-msg.err{display:block;background:rgba(192,57,43,.1);color:#c0392b}
+@media(prefers-color-scheme:dark){.set-msg.err{color:#ff8a7a}}
+.set-badge{font-size:.7rem;font-weight:700;padding:3px 8px;border-radius:999px;background:var(--line);color:var(--mute)}
+.set-badge.on{background:rgba(63,143,104,.15);color:var(--ok)}
+.set-photo{display:flex;align-items:center;gap:14px;margin-top:6px}
+.set-avatar{width:72px;height:72px;flex:0 0 72px;font-size:1.5rem;cursor:default}
+.set-photo-actions{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.set-photo-actions .btn{margin-top:0}
+input:disabled{opacity:.6;cursor:not-allowed}
 </style>
 
 
@@ -1814,6 +1836,10 @@ button[onclick*="showTab("].active,
 
       <button class="ddi" id="push-enable-btn" onclick="enablePush()">
         🔔 Bildirimleri aç
+      </button>
+
+      <button class="ddi" onclick="showTab('settings')">
+        ⚙️ Ayarlar
       </button>
 
       <button class="ddi" onclick="logout()">
@@ -2328,6 +2354,88 @@ button[onclick*="showTab("].active,
   <section class="card">
     <div id="notifications"></div>
   </section>
+
+</section>
+
+<section id="tab-settings" class="tab">
+
+  <section class="section-title">
+    <div>
+      <h1>Ayarlar</h1>
+      <p>Hesabın ve ikinizin ortak uygulama ayarları.</p>
+    </div>
+  </section>
+
+  <section class="card set-card">
+    <h2>Profilim</h2>
+    <div class="set-photo">
+      <div class="avatar set-avatar" id="set-avatar"></div>
+      <div class="set-photo-actions">
+        <button class="btn compact" type="button" onclick="$('set-photo-file').click()">Fotoğraf değiştir</button>
+        <button class="link" type="button" id="set-photo-remove" onclick="removeProfilePhoto()" hidden>Kaldır</button>
+        <input type="file" id="set-photo-file" accept="image/*" hidden onchange="uploadProfilePhoto(this)">
+      </div>
+    </div>
+    <div class="set-msg" id="set-msg-photo"></div>
+
+    <h3>Şifre değiştir</h3>
+    <label class="set-label">Mevcut şifre<input type="password" id="set-pw-current" autocomplete="current-password"></label>
+    <label class="set-label">Yeni şifre <small>(en az 8 karakter)</small><input type="password" id="set-pw-new" autocomplete="new-password"></label>
+    <label class="set-label">Yeni şifre tekrar<input type="password" id="set-pw-new2" autocomplete="new-password"></label>
+    <div class="set-actions"><button class="btn" type="button" onclick="changePassword(this)">Şifreyi değiştir</button></div>
+    <div class="set-msg" id="set-msg-password"></div>
+  </section>
+
+  <section class="card set-card">
+    <h2>Genel</h2>
+    <label class="set-label">Uygulama adresi<input type="url" id="set-base-url" data-key="BASE_URL"></label>
+    <p class="set-note">E-postalardaki bağlantılar bu adrese gider.</p>
+    <label class="set-label">Birlikteliğinizin başladığı gün<input type="date" id="set-since" data-key="RELATIONSHIP_START"></label>
+    <p class="set-note">Boş bırakırsan ana sayfadaki sayaç gizlenir.</p>
+    <div class="set-actions"><button class="btn" type="button" onclick="saveGeneral(this)">Kaydet</button></div>
+    <div class="set-msg" id="set-msg-general"></div>
+  </section>
+
+  <section class="card set-card">
+    <h2>Fotoğraflar <span class="set-badge" id="set-immich-badge"></span></h2>
+    <p class="set-note">Anılar ve anlık fotoğraflar için kendi <a href="https://immich.app" target="_blank" rel="noopener">Immich</a> sunucunuz.</p>
+    <label class="set-label">Immich adresi<input type="url" id="set-im-url" data-key="IMMICH_URL" placeholder="http://127.0.0.1:2283"></label>
+    <label class="set-label">API anahtarı<input type="password" id="set-im-key" data-key="IMMICH_API_KEY" autocomplete="off"></label>
+    <p class="set-note">Immich → Hesap Ayarları → API Anahtarları. <span id="set-im-key-hint"></span></p>
+    <label class="set-label">Albüm adı<input type="text" id="set-im-album" data-key="IMMICH_ALBUM_NAME"></label>
+    <label class="set-label">Anlık fotoğraf albümü<input type="text" id="set-im-instant" data-key="INSTANT_ALBUM_NAME"></label>
+    <div class="set-actions">
+      <button class="link" type="button" id="set-im-disable" onclick="disableImmich(this)">Immich’i kapat</button>
+      <button class="btn compact set-soft" type="button" onclick="testImmich(this)">Test et</button>
+      <button class="btn compact" type="button" onclick="saveImmich(this)">Kaydet</button>
+    </div>
+    <div class="set-msg" id="set-msg-immich"></div>
+  </section>
+
+  <section class="card set-card">
+    <h2>E-posta bildirimleri <span class="set-badge" id="set-smtp-badge"></span></h2>
+    <p class="set-note">Yeni plan ve not bildirimleri e-postayla da gelsin. Gmail için <a href="https://myaccount.google.com/apppasswords" target="_blank" rel="noopener">uygulama şifresi</a> gerekir.</p>
+    <div class="set-row">
+      <label class="set-label">SMTP sunucusu<input type="text" id="set-sm-host" data-key="SMTP_HOST" placeholder="smtp.gmail.com"></label>
+      <label class="set-label set-port">Port<input type="number" id="set-sm-port" data-key="SMTP_PORT"></label>
+    </div>
+    <label class="set-label">Kullanıcı adı (gönderen e-posta)<input type="email" id="set-sm-user" data-key="SMTP_USER"></label>
+    <label class="set-label">Şifre<input type="password" id="set-sm-pass" data-key="SMTP_PASS" autocomplete="off"></label>
+    <p class="set-note" id="set-sm-pass-hint"></p>
+    <div class="set-actions">
+      <button class="link" type="button" id="set-sm-disable" onclick="disableSmtp(this)">E-postayı kapat</button>
+      <button class="btn compact set-soft" type="button" onclick="testSmtp(this)">Test e-postası</button>
+      <button class="btn compact" type="button" onclick="saveSmtp(this)">Kaydet</button>
+    </div>
+    <div class="set-msg" id="set-msg-smtp"></div>
+  </section>
+
+  <section class="card set-card">
+    <h2>Anlık bildirimler <span class="set-badge" id="set-push-badge"></span></h2>
+    <p class="set-note">Her cihazda ayrı açılır: sağ üstteki profil menüsünden “Bildirimleri aç”. Telefonda çalışması için uygulamanın https ile açılması ve ana ekrana eklenmesi gerekir.</p>
+  </section>
+
+  <p class="set-note" id="set-locked-note" hidden></p>
 
 </section>
 
@@ -2888,6 +2996,9 @@ function showTab(tab){
 
   if(tab === 'notes')
     loadSharedNotes();
+
+  if(tab === 'settings')
+    loadSettings();
 
   if(tab === 'shopping')
     loadShopping();
@@ -5593,5 +5704,148 @@ $('wish-title').addEventListener(
 init();
 
 </script>
+<script>
+/* =========================
+   AYARLAR
+========================= */
+let SETTINGS=null;
+
+function setMsg(id,text,ok){
+  const el=$(id); if(!el) return;
+  el.className='set-msg'+(text?(ok?' ok':' err'):'');
+  el.textContent=text||'';
+}
+
+async function settingsCall(method,url,body,btn,msgId,okText){
+  const label=btn?btn.textContent:'';
+  if(btn){btn.disabled=true;btn.textContent='Bekle…';}
+  setMsg(msgId,'');
+  try{
+    const r=await api(method,url,body);
+    if(okText!==null) setMsg(msgId,'✓ '+((r&&r.message)||okText||'Kaydedildi.'),true);
+    return r;
+  }catch(e){
+    if(e===0) return null;
+    let m=e&&e.message; if(!m||m==='[object Object]') m='Bazı alanlar eksik ya da hatalı.';
+    setMsg(msgId,m,false);
+    return null;
+  }finally{
+    if(btn){btn.disabled=false;btn.textContent=label;}
+  }
+}
+
+function badge(id,on,onText,offText){
+  const b=$(id); if(!b) return;
+  b.textContent=on?onText:offText;
+  b.classList.toggle('on',!!on);
+}
+
+async function loadSettings(){
+  let s;
+  try{ s=await api('GET','/api/settings'); }catch(e){ return; }
+  SETTINGS=s;
+  $('set-base-url').value=s.general.base_url||'';
+  $('set-since').value=s.general.relationship_start||'';
+  $('set-im-url').value=s.immich.url||'';
+  $('set-im-key').value='';
+  $('set-im-key').placeholder=s.immich.has_key?'•••••••• (kayıtlı, değiştirmek için yaz)':'';
+  $('set-im-album').value=s.immich.album_name||'';
+  $('set-im-instant').value=s.immich.instant_album_name||'';
+  $('set-im-disable').hidden=!s.immich.enabled;
+  badge('set-immich-badge',s.immich.enabled,'açık','kapalı');
+  $('set-sm-host').value=s.smtp.host||'';
+  $('set-sm-port').value=s.smtp.port||587;
+  $('set-sm-user').value=s.smtp.user||'';
+  $('set-sm-pass').value='';
+  $('set-sm-pass').placeholder=s.smtp.has_password?'•••••••• (kayıtlı, değiştirmek için yaz)':'';
+  $('set-sm-disable').hidden=!s.smtp.enabled;
+  badge('set-smtp-badge',s.smtp.enabled,'açık','kapalı');
+  badge('set-push-badge',s.push.enabled,'hazır','ayarlanmamış');
+  $('set-photo-remove').hidden=!s.me.has_photo;
+  renderSettingsAvatar();
+
+  const locked=new Set(s.locked||[]);
+  document.querySelectorAll('#tab-settings [data-key]').forEach(inp=>{
+    inp.disabled=locked.has(inp.dataset.key);
+  });
+  const pwLocked=locked.has('LOGIN_CREDENTIALS');
+  ['set-pw-current','set-pw-new','set-pw-new2'].forEach(id=>$(id).disabled=pwLocked);
+  const note=$('set-locked-note');
+  note.hidden=!locked.size;
+  note.textContent=locked.size?'Soluk görünen alanlar sunucuda ortam değişkeniyle (.env / Docker) ayarlanmış; onları oradan değiştirebilirsin.':'';
+}
+
+function renderSettingsAvatar(){
+  const box=$('set-avatar'); if(!box) return;
+  const name=String(me||'').trim();
+  box.innerHTML=`<span class="avatar-fallback">${esc((name[0]||'?').toLocaleUpperCase('tr'))}</span>`;
+  const slug=profileImageSlug(name); if(!slug) return;
+  const img=new Image();
+  img.alt='';
+  img.onload=()=>{box.innerHTML='';box.appendChild(img);};
+  img.src=`/profile-images/${slug}.png?v=${Date.now()}`;
+}
+
+function imageToSquarePng(file,size){
+  return new Promise((resolve,reject)=>{
+    const img=new Image();
+    img.onload=()=>{
+      const s=Math.min(img.width,img.height),c=document.createElement('canvas');
+      c.width=c.height=size;
+      c.getContext('2d').drawImage(img,(img.width-s)/2,(img.height-s)/2,s,s,0,0,size,size);
+      URL.revokeObjectURL(img.src);
+      resolve(c.toDataURL('image/png'));
+    };
+    img.onerror=reject;
+    img.src=URL.createObjectURL(file);
+  });
+}
+
+async function uploadProfilePhoto(input){
+  const file=input.files&&input.files[0]; input.value='';
+  if(!file) return;
+  let photo;
+  try{ photo=await imageToSquarePng(file,512); }catch(e){ setMsg('set-msg-photo','Bu fotoğraf okunamadı, başka bir tane dene.'); return; }
+  const r=await settingsCall('POST','/api/settings/photo',{photo},null,'set-msg-photo','Profil fotoğrafın güncellendi.');
+  if(r){ $('set-photo-remove').hidden=false; renderSettingsAvatar(); renderProfileAvatar(me); }
+}
+
+async function removeProfilePhoto(){
+  const r=await settingsCall('DELETE','/api/settings/photo',null,null,'set-msg-photo','Profil fotoğrafın kaldırıldı.');
+  if(r){ $('set-photo-remove').hidden=true; renderSettingsAvatar(); renderProfileAvatar(me); }
+}
+
+async function changePassword(btn){
+  const cur=$('set-pw-current').value,n1=$('set-pw-new').value,n2=$('set-pw-new2').value;
+  if(!cur||!n1){ setMsg('set-msg-password','Mevcut ve yeni şifreyi gir.'); return; }
+  if(n1.length<8){ setMsg('set-msg-password','Yeni şifre en az 8 karakter olmalı.'); return; }
+  if(n1!==n2){ setMsg('set-msg-password','Yeni şifreler eşleşmiyor.'); return; }
+  const r=await settingsCall('POST','/api/settings/password',{current:cur,new:n1},btn,'set-msg-password','Şifren değiştirildi.');
+  if(r){ ['set-pw-current','set-pw-new','set-pw-new2'].forEach(id=>$(id).value=''); }
+}
+
+async function saveGeneral(btn){
+  const since=$('set-since').value;
+  const r=await settingsCall('PUT','/api/settings/general',{base_url:$('set-base-url').value.trim(),relationship_start:since},btn,'set-msg-general');
+  if(r){ LOVE_START=since; renderLoveDuration(); }
+}
+
+const immichBody=()=>({url:$('set-im-url').value.trim(),api_key:$('set-im-key').value.trim(),album_name:$('set-im-album').value.trim(),instant_album_name:$('set-im-instant').value.trim()});
+async function testImmich(btn){ await settingsCall('POST','/api/settings/immich/test',immichBody(),btn,'set-msg-immich'); }
+async function saveImmich(btn){ if(await settingsCall('PUT','/api/settings/immich',immichBody(),btn,'set-msg-immich')) loadSettings().then(()=>setMsg('set-msg-immich','✓ Kaydedildi.',true)); }
+async function disableImmich(btn){
+  if(!confirm('Immich bağlantısı kapatılsın mı? Fotoğraflarınız Immich’te kalır.')) return;
+  if(await settingsCall('PUT','/api/settings/immich',{disable:true},btn,'set-msg-immich')) loadSettings().then(()=>setMsg('set-msg-immich','✓ Immich kapatıldı.',true));
+}
+
+const smtpBody=()=>({host:$('set-sm-host').value.trim(),port:+$('set-sm-port').value||587,user:$('set-sm-user').value.trim(),password:$('set-sm-pass').value});
+async function testSmtp(btn){ await settingsCall('POST','/api/settings/smtp/test',smtpBody(),btn,'set-msg-smtp'); }
+async function saveSmtp(btn){ if(await settingsCall('PUT','/api/settings/smtp',smtpBody(),btn,'set-msg-smtp')) loadSettings().then(()=>setMsg('set-msg-smtp','✓ Kaydedildi.',true)); }
+async function disableSmtp(btn){
+  if(!confirm('E-posta bildirimleri kapatılsın mı?')) return;
+  if(await settingsCall('PUT','/api/settings/smtp',{host:''},btn,'set-msg-smtp')) loadSettings().then(()=>setMsg('set-msg-smtp','✓ E-posta kapatıldı.',true));
+}
+</script>
+
 </body>
 </html>

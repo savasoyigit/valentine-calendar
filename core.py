@@ -227,6 +227,14 @@ def auth(r: Request):
 fails = {}
 
 
+def is_https(r: Request):
+    """Çerez yalnızca https bağlantıda 'Secure' işaretlenir; böylece ev ağında
+    http://192.168.x.x üzerinden de giriş yapılabilir. Ters vekil arkasında
+    X-Forwarded-Proto başlığı dikkate alınır."""
+    forwarded = r.headers.get("x-forwarded-proto", "").split(",")[0].strip().lower()
+    return r.url.scheme == "https" or forwarded == "https"
+
+
 class Login(BaseModel):
     username: str
     password: str
@@ -553,7 +561,7 @@ def login(b: Login, r: Request, resp: Response):
         max_age=31536000,
         httponly=True,
         samesite="lax",
-        secure=True,
+        secure=is_https(r),
     )
     return {"ok": True}
 
@@ -565,8 +573,8 @@ def me(r: Request):
 
 
 @app.post("/api/logout")
-def logout(resp: Response):
-    resp.delete_cookie("t", samesite="lax", secure=True, httponly=True)
+def logout(r: Request, resp: Response):
+    resp.delete_cookie("t", samesite="lax", secure=is_https(r), httponly=True)
     return {"ok": True}
 
 
@@ -2085,8 +2093,8 @@ self.addEventListener("push", event => {
 
     const options = {
         body: data.body || "",
-        icon: "/icon.svg",
-        badge: "/icon.svg",
+        icon: "/icons/icon-192.png",
+        badge: "/icons/icon-192.png",
         data: {
             target: data.target || ""
         },
@@ -2146,15 +2154,27 @@ self.addEventListener("notificationclick", event => {
 def manifest():
     return JSONResponse({
         "name": "Aşkımız", "short_name": "Aşkımız", "start_url": "/", "display": "standalone",
-        "background_color": "#fff5f7", "theme_color": "#ff6b8b",
-        "icons": [{"src": "/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any"}]})
+        "background_color": "#fbf3f1", "theme_color": "#6b2143",
+        "icons": [
+            {"src": "/icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable"},
+            {"src": "/icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable"},
+            {"src": "/icons/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any"},
+        ]})
+
+
+ICON_FILES = {"icon.svg", "icon-192.png", "icon-512.png", "apple-touch-icon.png"}
 
 
 @app.get("/icon.svg")
 def icon():
-    svg = ('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" '
-           'rx="22" fill="#ff6b8b"/><text x="50" y="68" font-size="56" text-anchor="middle">💕</text></svg>')
-    return Response(svg, media_type="image/svg+xml")
+    return FileResponse(HERE / "icons" / "icon.svg", media_type="image/svg+xml")
+
+
+@app.get("/icons/{name}")
+def icons(name: str):
+    if name not in ICON_FILES:
+        raise HTTPException(404)
+    return FileResponse(HERE / "icons" / name, headers={"Cache-Control": "public, max-age=604800"})
 
 
 @app.get("/profile-images/{filename}")
@@ -2179,3 +2199,10 @@ def profile_image(filename: str):
 @app.get("/")
 def index():
     return FileResponse(HERE / "index.html")
+
+
+# ---------- ayarlar ----------
+import sys  # noqa: E402
+import settings_api  # noqa: E402
+
+settings_api.register(app, sys.modules[__name__])
