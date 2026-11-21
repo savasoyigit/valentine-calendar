@@ -204,7 +204,8 @@ def register(app, core):
         })
         line = ",".join(f"{u['username']}:{u['encoded']}" for u in core.LOGIN_USERS)
         config_store.update_config({"LOGIN_CREDENTIALS": line})
-        # Oturum imzası şifreye bağlı: diğer cihazlar çıkış yapar, bu cihaz açık kalır.
+        # Oturumlar şifre parmak izine bağlı: hepsi geçersizleşir, bu cihaza yenisi verilir.
+        core.end_other_sessions(r, index, keep_current=False)
         core.issue_session(resp, r, index)
         return {"ok": True}
 

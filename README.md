@@ -262,6 +262,23 @@ Volume'ün tam adını `docker volume ls` komutuyla görebilirsin. Yedek dosyas�
 
 ---
 
+## Ayarları .env'den uygulamaya taşıma
+
+Ayarların `.env` ile verildiyse Ayarlar sayfasında soluk görünürler ve uygulamadan değiştirilemezler. Bunlara şifre değiştirme de dahil. Uygulamadan düzenlenebilir olmaları için ayarları bir kez `data/config.json` dosyasına taşı:
+
+```bash
+cd ~/valentine-calendar
+mkdir -p data && chmod 700 data
+.venv/bin/python -c "
+from dotenv import dotenv_values
+import config_store
+v = {k: x for k, x in dotenv_values('.env').items() if k in config_store.KNOWN_KEYS and x}
+config_store.save_config(v); print(len(v), 'ayar taşındı')"
+mv .env .env.eski
+```
+
+Ardından servis dosyasından `--env-file .env` ya da `EnvironmentFile=` satırını kaldır ve servisi yeniden başlat. Oturumlar açık kalır.
+
 ## Sihirbaz yerine ortam değişkenleri
 
 Otomatik kurulum gibi durumlarda ayarları `.env` ile de verebilirsin:
@@ -317,8 +334,11 @@ data/              (git'e girmez) config.json, veritabanı, profil fotoğraflar�
   - Aynı IP'den toplam 10 hatalı deneme o IP'yi tamamen 30 dakika kilitler.
   - Tüm IP'lerden bir hesaba toplam 30 hatalı deneme, dağıtık saldırılara karşı o hesabı geçici olarak kilitler.
 
-  Böylece bir yabancı, kullanıcı adınızı bilse bile sizi kendi cihazınızdan kilitleyemez. Ters vekil ya da Tailscale arkasında `--proxy-headers` şarttır, yoksa herkes aynı IP'den geliyor görünür.
-- **Oturumlar:** Giriş çerezi `HttpOnly`, `SameSite=Lax`, https'te `Secure`, en fazla 1 yıl geçerlidir. İmzası şifreye bağlıdır: şifre değişince diğer cihazlardaki oturumlar kendiliğinden kapanır. Ayarlar → Profilim'deki **“Diğer tüm cihazlardan çıkış yap”** kaybolan bir cihazdaki oturumu anında geçersiz kılar.
+  Daha önce başarıyla giriş yapılmış bir cihaz (tanınan cihaz) üçüncü sayaçtan muaftır. Böylece bir yabancı, çok sayıda IP kullansa bile sizi kendi cihazınızdan kilitleyemez. Ters vekil ya da Tailscale arkasında `--proxy-headers` şarttır, yoksa herkes aynı IP'den geliyor görünür.
+- **Oturumlar:** Her giriş sunucuda ayrı bir oturum kaydıdır. Çerezde sadece rastgele bir anahtar durur, veritabanında da yalnızca onun özeti saklanır. Çerez `HttpOnly`, `SameSite=Lax`, https'te `Secure`, en fazla 1 yıl geçerlidir.
+  - **Çıkış yap:** O cihazın oturumunu sunucuda siler. Çerez bir yere kopyalanmış olsa bile artık işe yaramaz. Diğer cihazlar açık kalır.
+  - **Diğer tüm cihazlardan çıkış yap** (Ayarlar → Profilim): Bu cihaz dışındaki tüm oturumları kapatır.
+  - **Şifre değişince:** Uygulamadan da `.env`'den de değişse o kişinin bütün eski oturumları geçersizleşir.
 - **Gizlilik:**
   - Profil fotoğrafları dahil tüm veriler giriş gerektirir.
   - Mektupların içeriği açılma anına kadar alıcıya sunucudan hiç gönderilmez.
