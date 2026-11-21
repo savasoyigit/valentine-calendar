@@ -6037,6 +6037,7 @@ async function loadSettings(){
   });
   const pwLocked=locked.has('LOGIN_CREDENTIALS');
   ['set-pw-current','set-pw-new','set-pw-new2'].forEach(id=>$(id).disabled=pwLocked);
+  setMsg('set-msg-password',pwLocked?'Şifreler sunucudaki .env dosyasında tanımlı, bu yüzden buradan değiştirilemiyor. .env\'deki LOGIN_CREDENTIALS satırını güncelleyip servisi yeniden başlatabilir ya da README\'deki “Ayarları .env\'den uygulamaya taşıma” adımıyla bu alanı açabilirsin.':'',false);
   const note=$('set-locked-note');
   note.hidden=!locked.size;
   note.textContent=locked.size?'Soluk görünen alanlar sunucuda ortam değişkeniyle (.env / Docker) ayarlanmış; onları oradan değiştirebilirsin.':'';

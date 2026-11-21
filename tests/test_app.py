@@ -391,13 +391,42 @@ def test_profile_photos_require_login(env):
 def test_forged_old_and_expired_cookies_rejected(env):
     core = sys.modules["core"]
     anon = client_from(env, "203.0.113.10")
-    old_style = f"0.{core.hmac.new(core.SECRET.encode(), b'x', core.hashlib.sha256).hexdigest()}"
-    for value in ("0.123.deadbeef", old_style, "garbage", "9.1.x"):
+    for value in ("0.123.deadbeef", "garbage", "", "x" * 43):
         anon.cookies.set("t", value)
         assert anon.get("/api/me").status_code == 401
-    expired = int(core.time.time()) - core.SESSION_MAX_AGE - 10
-    anon.cookies.set("t", f"0.{expired}.{core.sig(0, expired)}")
+    # Süresi dolmuş oturum
+    with core.db() as db:
+        db.execute("insert into sessions(token_hash,user_index,pw_fp,created,last_seen) values(?,?,?,?,?)",
+                   (core._hash_token("eski-anahtar"), 0, core.password_fingerprint(0),
+                    int(core.time.time()) - core.SESSION_MAX_AGE - 10, 0))
+    anon.cookies.set("t", "eski-anahtar")
     assert anon.get("/api/me").status_code == 401
+
+
+def test_logout_revokes_copied_cookie_but_keeps_other_devices(env):
+    phone = client_from(env, "198.51.100.11")
+    laptop = client_from(env, "198.51.100.12")
+    login_as(phone, "ada", "yeni-parola-1")
+    login_as(laptop, "ada", "yeni-parola-1")
+    stolen = phone.cookies.get("t")
+    assert phone.post("/api/logout").status_code == 200
+    thief = client_from(env, "192.0.2.99")
+    thief.cookies.set("t", stolen)
+    assert thief.get("/api/me").status_code == 401        # kopyalanmış çerez artık işe yaramaz
+    assert laptop.get("/api/me").status_code == 200       # diğer cihaz açık
+
+
+def test_password_change_via_env_ends_sessions(env):
+    core = sys.modules["core"]
+    c = client_from(env, "198.51.100.13")
+    login_as(c, "deniz", "parola-deniz")
+    user = core.login_user_for(1)
+    saved = user["encoded"]
+    try:
+        user["encoded"] = "pbkdf2_sha256:310000:00:11"   # .env'de şifre değişip servis yeniden başlamış gibi
+        assert c.get("/api/me").status_code == 401
+    finally:
+        user["encoded"] = saved
 
 
 def test_logout_others_and_password_change_end_other_sessions(env):
@@ -436,12 +465,23 @@ def test_stranger_cannot_lock_out_real_user(env):
     assert other.post("/api/login", json={"username": "ada", "password": "y"}).status_code == 429
     assert all(key[0] != "user" or key[1] in ("ada", "deniz") for key in core.fails)  # sözlük şişmez
 
-    # Çok sayıda IP'den dağıtık saldırıda genel sınır devreye girer
+    # Ada'nın kendi telefonu (daha önce giriş yapmış, tanınan cihaz)
+    own_phone = client_from(env, "198.51.100.8")
+    login_as(own_phone, "ada", "yeni-parola-1")
+    own_phone.post("/api/logout")
+
+    # Çok sayıda IP'den dağıtık saldırıda genel sınır devreye girer...
     core.fails.clear()
     for k in range(core.LOGIN_LIMITS["user"]):
         client_from(env, f"10.0.{k // 250}.{k % 250}").post("/api/login", json={"username": "ada", "password": "y"})
-    assert client_from(env, "198.51.100.8").post(
-        "/api/login", json={"username": "ada", "password": "yeni-parola-1"}).status_code == 429
+    new_device = client_from(env, "198.51.100.9")
+    assert new_device.post("/api/login", json={"username": "ada", "password": "yeni-parola-1"}).status_code == 429
+    # ...ama tanınan cihaz kilide takılmaz
+    assert own_phone.post("/api/login", json={"username": "ada", "password": "yeni-parola-1"}).status_code == 200
+    # Sahte cihaz çerezi işe yaramaz
+    forged = client_from(env, "198.51.100.10")
+    forged.cookies.set("d", "0.deadbeef")
+    assert forged.post("/api/login", json={"username": "ada", "password": "yeni-parola-1"}).status_code == 429
     core.fails.clear()
 
 

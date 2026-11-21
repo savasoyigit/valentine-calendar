@@ -213,65 +213,90 @@ with db() as c:
 
 
 SESSION_MAX_AGE = 365 * 24 * 3600
+DEVICE_MAX_AGE = 5 * 365 * 24 * 3600
 
+# Her giriş sunucuda ayrı bir oturum kaydıdır. Çerezde rastgele bir anahtar durur,
+# veritabanında yalnızca onun SHA-256 özeti saklanır. Çıkış o kaydı siler; böylece
+# kopyalanmış bir çerez de anında geçersizleşir.
 with db() as c:
-    c.execute("create table if not exists session_versions(user_index integer primary key, ver integer not null default 0)")
+    c.execute("""create table if not exists sessions(
+        token_hash text primary key,
+        user_index integer not null,
+        pw_fp text not null,
+        created integer not null,
+        last_seen integer not null,
+        user_agent text default ''
+    )""")
+    c.execute("drop table if exists session_versions")
 
 
-def session_version(i):
-    with db() as c:
-        row = c.execute("select ver from session_versions where user_index=?", (i,)).fetchone()
-    return row["ver"] if row else 0
-
-
-def bump_session_version(i):
-    """Bu kişinin tüm mevcut oturumlarını geçersiz kılar."""
-    with db() as c:
-        c.execute("""insert into session_versions(user_index, ver) values(?, 1)
-                     on conflict(user_index) do update set ver = ver + 1""", (i,))
+def _hash_token(token):
+    return hashlib.sha256(token.encode()).hexdigest()
 
 
 def login_user_for(i):
     return next((u for u in LOGIN_USERS if u["site_index"] == i), None)
 
 
-def sig(i, issued):
-    """Oturum imzası; şifre özeti ve oturum sürümüne bağlıdır. Şifre değişince
-    ya da 'diğer cihazlardan çıkış' yapılınca eski çerezler kendiliğinden geçersizleşir."""
+def password_fingerprint(i):
+    """Şifre özetinin parmak izi. Şifre değişince (uygulamadan ya da .env'den)
+    o kişinin tüm eski oturumları geçersizleşir."""
     user = login_user_for(i)
-    secret_part = user["encoded"] if user else ""
-    msg = f"{i}:{issued}:{USERS[i][2]}:{secret_part}:{session_version(i)}"
-    return hmac.new(SECRET.encode(), msg.encode(), hashlib.sha256).hexdigest()
+    return hashlib.sha256(f"{SECRET}:{user['encoded'] if user else ''}".encode()).hexdigest()[:32]
 
 
 def issue_session(resp: Response, r: Request, i: int):
-    issued = int(time.time())
-    resp.set_cookie(
-        "t",
-        f"{i}.{issued}.{sig(i, issued)}",
-        max_age=SESSION_MAX_AGE,
-        httponly=True,
-        samesite="lax",
-        secure=is_https(r),
-    )
+    token = secrets.token_urlsafe(32)
+    now = int(time.time())
+    with db() as c:
+        c.execute("delete from sessions where created < ?", (now - SESSION_MAX_AGE,))
+        c.execute("insert into sessions(token_hash,user_index,pw_fp,created,last_seen,user_agent) values(?,?,?,?,?,?)",
+                  (_hash_token(token), i, password_fingerprint(i), now, now,
+                   r.headers.get("user-agent", "")[:200]))
+    resp.set_cookie("t", token, max_age=SESSION_MAX_AGE, httponly=True, samesite="lax", secure=is_https(r))
+    return token
+
+
+def current_token_hash(r: Request):
+    token = r.cookies.get("t", "")
+    return _hash_token(token) if token else ""
 
 
 def auth_index(r: Request):
     """Geçerli oturumun kişi sırasını döndürür, geçersizse 401."""
-    try:
-        i, issued, s = r.cookies.get("t", "").split(".", 2)
-        i, issued = int(i), int(issued)
-        if 0 <= i < len(USERS) and 0 <= time.time() - issued < SESSION_MAX_AGE \
-                and hmac.compare_digest(s, sig(i, issued)):
-            return i
-    except Exception:
-        pass
+    token_hash = current_token_hash(r)
+    if token_hash:
+        now = int(time.time())
+        with db() as c:
+            row = c.execute("select * from sessions where token_hash=?", (token_hash,)).fetchone()
+            if row and now - row["created"] < SESSION_MAX_AGE and 0 <= row["user_index"] < len(USERS) \
+                    and hmac.compare_digest(row["pw_fp"], password_fingerprint(row["user_index"])):
+                if now - row["last_seen"] > 3600:
+                    c.execute("update sessions set last_seen=? where token_hash=?", (now, token_hash))
+                return row["user_index"]
     raise HTTPException(401)
 
 
 def auth(r: Request):
     """Çerezden kullanıcı adını döndürür, geçersizse 401."""
     return USERS[auth_index(r)][0]
+
+
+def end_other_sessions(r: Request, i: int, keep_current=True):
+    with db() as c:
+        if keep_current:
+            c.execute("delete from sessions where user_index=? and token_hash!=?", (i, current_token_hash(r)))
+        else:
+            c.execute("delete from sessions where user_index=?", (i,))
+
+
+def device_value(i):
+    return f"{i}.{hmac.new(SECRET.encode(), f'device:{i}'.encode(), hashlib.sha256).hexdigest()}"
+
+
+def is_known_device(r: Request, i: int):
+    """Bu tarayıcıdan daha önce bu kişi olarak başarıyla giriş yapıldı mı?"""
+    return hmac.compare_digest(r.cookies.get("d", ""), device_value(i))
 
 
 fails = {}
@@ -578,14 +603,17 @@ def login(b: Login, r: Request, resp: Response):
     now = time.time()
     ip = r.client.host if r.client else "unknown"
     username = b.username.strip().lower()
+    user = next((u for u in LOGIN_USERS if u["username"] == username), None)
     keys = _login_keys(ip, username)
+    # Daha önce bu kişi olarak giriş yapılmış bir cihaz, dağıtık saldırı sayacından
+    # muaftır: saldırı sürerken bile kendi telefonundan girebilirsin.
+    if user and is_known_device(r, user["site_index"]):
+        keys = [k for k in keys if k[0] != "user"]
 
     for kind, key in keys:
         n, started, blocked_until = fails.get((kind, key), (0, 0, 0))
         if now < blocked_until:
             raise HTTPException(429, "Çok fazla hatalı deneme. Biraz sonra tekrar deneyin.")
-
-    user = next((u for u in LOGIN_USERS if u["username"] == username), None)
 
     # Kullanıcı bulunmasa da benzer parola hesaplama maliyeti uygula
     if user is None:
@@ -612,6 +640,8 @@ def login(b: Login, r: Request, resp: Response):
             fails.pop((kind, key), None)
 
     issue_session(resp, r, user["site_index"])
+    resp.set_cookie("d", device_value(user["site_index"]), max_age=DEVICE_MAX_AGE,
+                    httponly=True, samesite="lax", secure=is_https(r))
     return {"ok": True}
 
 
@@ -622,16 +652,20 @@ def me(r: Request):
 
 @app.post("/api/logout")
 def logout(r: Request, resp: Response):
+    """Bu cihazın oturumunu sunucuda da siler; diğer cihazlar açık kalır."""
+    token_hash = current_token_hash(r)
+    if token_hash:
+        with db() as c:
+            c.execute("delete from sessions where token_hash=?", (token_hash,))
     resp.delete_cookie("t", samesite="lax", secure=is_https(r), httponly=True)
     return {"ok": True}
 
 
 @app.post("/api/logout-others")
-def logout_others(r: Request, resp: Response):
+def logout_others(r: Request):
     """Bu cihaz açık kalır, diğer tüm cihazlardaki oturumlar kapanır."""
     i = auth_index(r)
-    bump_session_version(i)
-    issue_session(resp, r, i)
+    end_other_sessions(r, i)
     return {"ok": True}
 
 
