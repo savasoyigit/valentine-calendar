@@ -2726,6 +2726,10 @@ const esc=s=>
     "'":'&#39;'
   }[c]));
 
+// Yalnızca http(s) adresleri bağlantı/görsel olarak kullanılır; eski kayıtlarda
+// kalmış javascript: gibi değerler etkisiz hale gelir.
+const safeUrl=u=>/^https?:\/\//i.test(String(u||'').trim())?String(u).trim():'';
+
 const long=ds=>
   new Date(ds+'T00:00').toLocaleDateString(
     'tr-TR',
@@ -4192,7 +4196,7 @@ function renderWishlist(){
                 ? `
                   <a
                     class="wish-link"
-                    href="${esc(x.url)}"
+                    href="${esc(safeUrl(x.url))}"
                     target="_blank"
                     rel="noopener"
                   >
@@ -4552,7 +4556,7 @@ function renderWatchlist(){
               item.poster_url
                 ?`
                   <img
-                    src="${esc(item.poster_url)}"
+                    src="${esc(safeUrl(item.poster_url))}"
                     alt="${esc(item.title)}"
                     loading="lazy"
                   >
