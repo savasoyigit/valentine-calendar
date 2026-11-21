@@ -2626,6 +2626,11 @@ a.pl-line:hover{color:var(--rose)}
     <label class="set-label">Yeni şifre tekrar<input type="password" id="set-pw-new2" autocomplete="new-password"></label>
     <div class="set-actions"><button class="btn" type="button" onclick="changePassword(this)">Şifreyi değiştir</button></div>
     <div class="set-msg" id="set-msg-password"></div>
+
+    <h3>Oturumlar</h3>
+    <p class="set-note">Kaybolan ya da başkasına verdiğin bir cihaz varsa, oradaki oturumu kapatır. Bu cihaz açık kalır. Şifreni değiştirdiğinde de diğer cihazlar otomatik çıkış yapar.</p>
+    <div class="set-actions"><button class="btn compact set-soft" type="button" onclick="logoutOthers(this)">Diğer tüm cihazlardan çıkış yap</button></div>
+    <div class="set-msg" id="set-msg-sessions"></div>
   </section>
 
   <section class="card set-card">
@@ -6084,6 +6089,11 @@ async function changePassword(btn){
   if(n1!==n2){ setMsg('set-msg-password','Yeni şifreler eşleşmiyor.'); return; }
   const r=await settingsCall('POST','/api/settings/password',{current:cur,new:n1},btn,'set-msg-password','Şifren değiştirildi.');
   if(r){ ['set-pw-current','set-pw-new','set-pw-new2'].forEach(id=>$(id).value=''); }
+}
+
+async function logoutOthers(btn){
+  if(!confirm('Diğer tüm cihazlardaki oturumların kapatılsın mı? Bu cihaz açık kalacak.')) return;
+  await settingsCall('POST','/api/logout-others',null,btn,'set-msg-sessions','Diğer cihazlardan çıkış yapıldı.');
 }
 
 async function saveGeneral(btn){

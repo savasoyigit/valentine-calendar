@@ -105,7 +105,11 @@ SMTP_USER = os.getenv("SMTP_USER", "")
 SMTP_PASS = os.getenv("SMTP_PASS", "")
 esc = html.escape
 
-app = FastAPI(docs_url=None, redoc_url=None)
+app = FastAPI(docs_url=None, redoc_url=None, openapi_url=None)
+
+import security  # noqa: E402
+
+security.add_security_headers(app)
 
 
 def db():
@@ -208,20 +212,66 @@ with db() as c:
     """)
 
 
-def sig(i):
-    return hmac.new(SECRET.encode(), f"{i}:{USERS[i][2]}".encode(), hashlib.sha256).hexdigest()
+SESSION_MAX_AGE = 365 * 24 * 3600
+
+with db() as c:
+    c.execute("create table if not exists session_versions(user_index integer primary key, ver integer not null default 0)")
+
+
+def session_version(i):
+    with db() as c:
+        row = c.execute("select ver from session_versions where user_index=?", (i,)).fetchone()
+    return row["ver"] if row else 0
+
+
+def bump_session_version(i):
+    """Bu kişinin tüm mevcut oturumlarını geçersiz kılar."""
+    with db() as c:
+        c.execute("""insert into session_versions(user_index, ver) values(?, 1)
+                     on conflict(user_index) do update set ver = ver + 1""", (i,))
+
+
+def login_user_for(i):
+    return next((u for u in LOGIN_USERS if u["site_index"] == i), None)
+
+
+def sig(i, issued):
+    """Oturum imzası; şifre özeti ve oturum sürümüne bağlıdır. Şifre değişince
+    ya da 'diğer cihazlardan çıkış' yapılınca eski çerezler kendiliğinden geçersizleşir."""
+    user = login_user_for(i)
+    secret_part = user["encoded"] if user else ""
+    msg = f"{i}:{issued}:{USERS[i][2]}:{secret_part}:{session_version(i)}"
+    return hmac.new(SECRET.encode(), msg.encode(), hashlib.sha256).hexdigest()
+
+
+def issue_session(resp: Response, r: Request, i: int):
+    issued = int(time.time())
+    resp.set_cookie(
+        "t",
+        f"{i}.{issued}.{sig(i, issued)}",
+        max_age=SESSION_MAX_AGE,
+        httponly=True,
+        samesite="lax",
+        secure=is_https(r),
+    )
+
+
+def auth_index(r: Request):
+    """Geçerli oturumun kişi sırasını döndürür, geçersizse 401."""
+    try:
+        i, issued, s = r.cookies.get("t", "").split(".", 2)
+        i, issued = int(i), int(issued)
+        if 0 <= i < len(USERS) and 0 <= time.time() - issued < SESSION_MAX_AGE \
+                and hmac.compare_digest(s, sig(i, issued)):
+            return i
+    except Exception:
+        pass
+    raise HTTPException(401)
 
 
 def auth(r: Request):
     """Çerezden kullanıcı adını döndürür, geçersizse 401."""
-    try:
-        i, s = r.cookies.get("t", "").split(".", 1)
-        i = int(i)
-        if hmac.compare_digest(s, sig(i)):
-            return USERS[i][0]
-    except Exception:
-        pass
-    raise HTTPException(401)
+    return USERS[auth_index(r)][0]
 
 
 fails = {}
@@ -499,72 +549,70 @@ def push_unsubscribe(sub: PushSubscription, r: Request):
 
 
 
+LOGIN_WINDOW = 1800          # 30 dakika
+LOGIN_LIMITS = {
+    "ipuser": 3,    # aynı IP'den aynı kullanıcı adına
+    "ip": 10,       # aynı IP'den toplam
+    "user": 30,     # tüm IP'lerden aynı (gerçek) kullanıcı adına; dağıtık saldırıya karşı yedek
+}
+
+
+def _login_keys(ip, username):
+    keys = [("ipuser", f"{ip}|{username}"), ("ip", ip)]
+    # Sadece gerçek kullanıcı adları için genel sayaç tut: hem sözlüğün sınırsız
+    # büyümesini önler hem de bir yabancının tek başına sizi kilitlemesini zorlaştırır.
+    if any(u["username"] == username for u in LOGIN_USERS):
+        keys.append(("user", username))
+    return keys
+
+
+def _prune_fails(now):
+    if len(fails) > 5000:
+        for k in [k for k, (_, started, until) in fails.items()
+                  if now - started >= LOGIN_WINDOW and now >= until]:
+            fails.pop(k, None)
+
+
 @app.post("/api/login")
 def login(b: Login, r: Request, resp: Response):
     now = time.time()
     ip = r.client.host if r.client else "unknown"
     username = b.username.strip().lower()
+    keys = _login_keys(ip, username)
 
-    # Hem IP hem kullanıcı adı için ayrı sayaç
-    keys = (f"ip:{ip}", f"user:{username}")
-
-    for key in keys:
-        n, started, blocked_until = fails.get(key, (0, 0, 0))
+    for kind, key in keys:
+        n, started, blocked_until = fails.get((kind, key), (0, 0, 0))
         if now < blocked_until:
-            raise HTTPException(
-                429,
-                "Çok fazla hatalı deneme. 30 dakika sonra tekrar deneyin."
-            )
+            raise HTTPException(429, "Çok fazla hatalı deneme. Biraz sonra tekrar deneyin.")
 
-    user = next(
-        (u for u in LOGIN_USERS if u["username"] == username),
-        None
-    )
+    user = next((u for u in LOGIN_USERS if u["username"] == username), None)
 
     # Kullanıcı bulunmasa da benzer parola hesaplama maliyeti uygula
     if user is None:
-        dummy_salt = bytes(16)
-        hashlib.pbkdf2_hmac(
-            "sha256", b"invalid-password", dummy_salt, 310000
-        )
+        hashlib.pbkdf2_hmac("sha256", b"invalid-password", bytes(16), 310000)
         valid = False
     else:
-        candidate = hashlib.pbkdf2_hmac(
-            "sha256",
-            b.password.encode("utf-8"),
-            user["salt"],
-            user["iterations"],
-        )
+        candidate = hashlib.pbkdf2_hmac("sha256", b.password.encode("utf-8"), user["salt"], user["iterations"])
         valid = hmac.compare_digest(candidate, user["digest"])
 
     if not valid:
-        for key in keys:
-            n, started, blocked_until = fails.get(key, (0, 0, 0))
-            if now - started >= 1800:
+        _prune_fails(now)
+        for kind, key in keys:
+            n, started, _ = fails.get((kind, key), (0, now, 0))
+            if now - started >= LOGIN_WINDOW:
                 n, started = 0, now
             n += 1
-            if n >= 3:
-                fails[key] = (n, started, now + 1800)
-            else:
-                fails[key] = (n, started, 0)
-
+            fails[(kind, key)] = (n, started, now + LOGIN_WINDOW if n >= LOGIN_LIMITS[kind] else 0)
         raise HTTPException(401, "Kullanıcı adı veya parola hatalı")
 
-    # Başarılı girişte sayaçları temizle
-    for key in keys:
-        fails.pop(key, None)
+    # Başarılı girişte bu IP'nin sayaçlarını temizle; genel kullanıcı sayacı
+    # saldırı sürüyorsa korumaya devam etsin diye sadece süresi dolunca sıfırlanır.
+    for kind, key in keys:
+        if kind != "user":
+            fails.pop((kind, key), None)
 
-    index = user["site_index"]
-    resp.set_cookie(
-        "t",
-        f"{index}.{sig(index)}",
-        max_age=31536000,
-        httponly=True,
-        samesite="lax",
-        secure=is_https(r),
-    )
+    issue_session(resp, r, user["site_index"])
     return {"ok": True}
-
 
 
 @app.get("/api/me")
@@ -575,6 +623,15 @@ def me(r: Request):
 @app.post("/api/logout")
 def logout(r: Request, resp: Response):
     resp.delete_cookie("t", samesite="lax", secure=is_https(r), httponly=True)
+    return {"ok": True}
+
+
+@app.post("/api/logout-others")
+def logout_others(r: Request, resp: Response):
+    """Bu cihaz açık kalır, diğer tüm cihazlardaki oturumlar kapanır."""
+    i = auth_index(r)
+    bump_session_version(i)
+    issue_session(resp, r, i)
     return {"ok": True}
 
 
@@ -2229,7 +2286,8 @@ def icons(name: str):
 
 
 @app.get("/profile-images/{filename}")
-def profile_image(filename: str):
+def profile_image(filename: str, r: Request):
+    auth(r)
     # Only serve user-supplied PNGs from the dedicated profile-images directory.
     # The filename is deliberately restricted to avoid path traversal and other files.
     if not filename.endswith(".png"):

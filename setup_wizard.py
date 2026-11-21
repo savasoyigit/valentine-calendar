@@ -32,6 +32,10 @@ MAX_PHOTO_BYTES = 3 * 1024 * 1024
 
 app = FastAPI(docs_url=None, redoc_url=None, openapi_url=None)
 
+import security  # noqa: E402
+
+security.add_security_headers(app)
+
 _fails = {}
 
 

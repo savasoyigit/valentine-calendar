@@ -301,6 +301,7 @@ capsules_api.py    Mektuplar (zaman kapsülü) ve açılma zamanlayıcısı
 space_api.py       Kendi alanım modu ve bildirim susturma
 setup_wizard.py    İlk açılış kurulum sihirbazı (setup.html ile birlikte)
 config_store.py    Ayarların okunması ve yazılması
+security.py        Tüm yanıtlara eklenen güvenlik başlıkları
 icons/             Uygulama ikonları
 tests/             Uçtan uca testler
 data/              (git'e girmez) config.json, veritabanı, profil fotoğrafları
@@ -310,8 +311,19 @@ data/              (git'e girmez) config.json, veritabanı, profil fotoğraflar�
 
 - **Gizli dosyalar:** `data/` ve `.env` asla commit edilmemeli, `.gitignore` bunları zaten dışarıda bırakıyor.
 - **Kurulum ekranı:** Kurulum bitince kurulum kodu silinir ve sihirbazın uç noktaları tamamen kapanır.
-- **Giriş denemeleri:** Aynı IP ya da kullanıcı adıyla 3 hatalı denemede giriş 30 dakika kilitlenir.
-- **Çerez:** Giriş çerezi `HttpOnly` ve `SameSite=Lax`. https bağlantıda `Secure` olarak da işaretlenir.
+- **Şifreler:** PBKDF2-SHA256 (310.000 tur) ile özetlenerek saklanır. Kullanıcı yoksa bile aynı hesaplama yapılır, böylece cevap süresinden kullanıcı adı tahmin edilemez.
+- **Hatalı giriş kilidi:** Üç ayrı sayaç var:
+  - Aynı IP'den aynı kullanıcı adına 3 hatalı deneme o IP'yi o hesap için 30 dakika kilitler.
+  - Aynı IP'den toplam 10 hatalı deneme o IP'yi tamamen 30 dakika kilitler.
+  - Tüm IP'lerden bir hesaba toplam 30 hatalı deneme, dağıtık saldırılara karşı o hesabı geçici olarak kilitler.
+
+  Böylece bir yabancı, kullanıcı adınızı bilse bile sizi kendi cihazınızdan kilitleyemez. Ters vekil ya da Tailscale arkasında `--proxy-headers` şarttır, yoksa herkes aynı IP'den geliyor görünür.
+- **Oturumlar:** Giriş çerezi `HttpOnly`, `SameSite=Lax`, https'te `Secure`, en fazla 1 yıl geçerlidir. İmzası şifreye bağlıdır: şifre değişince diğer cihazlardaki oturumlar kendiliğinden kapanır. Ayarlar → Profilim'deki **“Diğer tüm cihazlardan çıkış yap”** kaybolan bir cihazdaki oturumu anında geçersiz kılar.
+- **Gizlilik:**
+  - Profil fotoğrafları dahil tüm veriler giriş gerektirir.
+  - Mektupların içeriği açılma anına kadar alıcıya sunucudan hiç gönderilmez.
+  - API şeması (`/openapi.json`) ve dokümantasyon sayfaları kapalıdır.
+- **Tarayıcı başlıkları:** Uygulama başka sitelerin içine gömülemez (`frame-ancestors 'none'`, `X-Frame-Options`). Ayrıca `nosniff` açıktır, `Referrer-Policy: same-origin` e-postadaki tek kullanımlık linklerin dışarı sızmasını önler, https'te HSTS devreye girer.
 - **Docker:** Container root olmayan bir kullanıcıyla çalışır.
 
 ## Lisans

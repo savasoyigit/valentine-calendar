@@ -360,3 +360,93 @@ def test_time_capsule_stays_sealed(env):
     login_as(c, "ada", "yeni-parola-1")
     assert any("okudu" in n["title"] for n in c.get("/api/notifications").json())
     assert c.delete(f"/api/capsules/{i}").status_code == 409  # açılmış mektup silinmez
+
+
+# ---------------------------------------------------------------- güvenlik
+
+def client_from(env, ip):
+    return TestClient(env["app"].app, client=(ip, 40000))
+
+
+def test_security_headers_and_hidden_api_schema(env):
+    c = env["client"]
+    r = c.get("/")
+    assert r.headers["x-frame-options"] == "DENY"
+    assert "frame-ancestors 'none'" in r.headers["content-security-policy"]
+    assert r.headers["x-content-type-options"] == "nosniff"
+    assert r.headers["referrer-policy"] == "same-origin"
+    assert c.get("/openapi.json").status_code == 404
+    assert c.get("/docs").status_code == 404
+    https = c.get("/", headers={"x-forwarded-proto": "https"})
+    assert "max-age" in https.headers["strict-transport-security"]
+
+
+def test_profile_photos_require_login(env):
+    anon = client_from(env, "203.0.113.9")
+    assert anon.get("/profile-images/ada.png").status_code == 401
+    login_as(env["client"], "ada", "yeni-parola-1")
+    assert env["client"].get("/profile-images/ada.png").status_code == 200
+
+
+def test_forged_old_and_expired_cookies_rejected(env):
+    core = sys.modules["core"]
+    anon = client_from(env, "203.0.113.10")
+    old_style = f"0.{core.hmac.new(core.SECRET.encode(), b'x', core.hashlib.sha256).hexdigest()}"
+    for value in ("0.123.deadbeef", old_style, "garbage", "9.1.x"):
+        anon.cookies.set("t", value)
+        assert anon.get("/api/me").status_code == 401
+    expired = int(core.time.time()) - core.SESSION_MAX_AGE - 10
+    anon.cookies.set("t", f"0.{expired}.{core.sig(0, expired)}")
+    assert anon.get("/api/me").status_code == 401
+
+
+def test_logout_others_and_password_change_end_other_sessions(env):
+    phone = client_from(env, "198.51.100.1")
+    laptop = client_from(env, "198.51.100.2")
+    login_as(phone, "ada", "yeni-parola-1")
+    login_as(laptop, "ada", "yeni-parola-1")
+    assert phone.get("/api/me").status_code == 200 and laptop.get("/api/me").status_code == 200
+
+    assert phone.post("/api/logout-others").status_code == 200
+    assert phone.get("/api/me").status_code == 200      # bu cihaz açık kaldı
+    assert laptop.get("/api/me").status_code == 401     # diğeri düştü
+
+    login_as(laptop, "ada", "yeni-parola-1")
+    assert laptop.post("/api/settings/password", json={"current": "yeni-parola-1", "new": "yeni-parola-2"}).status_code == 200
+    assert laptop.get("/api/me").status_code == 200     # şifreyi değiştiren cihaz açık
+    assert phone.get("/api/me").status_code == 401      # eski şifreyle açılmış oturum düştü
+    # Testlerin geri kalanı için şifreyi geri al
+    assert laptop.post("/api/settings/password", json={"current": "yeni-parola-2", "new": "yeni-parola-1"}).status_code == 200
+
+
+def test_stranger_cannot_lock_out_real_user(env):
+    core = sys.modules["core"]
+    core.fails.clear()
+    attacker = client_from(env, "192.0.2.66")
+    for _ in range(3):
+        assert attacker.post("/api/login", json={"username": "deniz", "password": "yanlis"}).status_code == 401
+    assert attacker.post("/api/login", json={"username": "deniz", "password": "yanlis"}).status_code == 429
+    # Deniz kendi cihazından girebiliyor
+    login_as(client_from(env, "198.51.100.7"), "deniz", "parola-deniz")
+
+    # Saldırgan IP'si farklı kullanıcı adlarıyla da sınırsız deneyemez
+    other = client_from(env, "192.0.2.67")
+    for k in range(10):
+        other.post("/api/login", json={"username": f"x{k}", "password": "y"})
+    assert other.post("/api/login", json={"username": "ada", "password": "y"}).status_code == 429
+    assert all(key[0] != "user" or key[1] in ("ada", "deniz") for key in core.fails)  # sözlük şişmez
+
+    # Çok sayıda IP'den dağıtık saldırıda genel sınır devreye girer
+    core.fails.clear()
+    for k in range(core.LOGIN_LIMITS["user"]):
+        client_from(env, f"10.0.{k // 250}.{k % 250}").post("/api/login", json={"username": "ada", "password": "y"})
+    assert client_from(env, "198.51.100.8").post(
+        "/api/login", json={"username": "ada", "password": "yeni-parola-1"}).status_code == 429
+    core.fails.clear()
+
+
+def test_setup_wizard_also_sends_security_headers(tmp_path):
+    sys.path.insert(0, str(ROOT))
+    import setup_wizard
+    r = TestClient(setup_wizard.app).get("/")
+    assert r.headers["x-frame-options"] == "DENY"

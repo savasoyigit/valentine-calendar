@@ -9,7 +9,7 @@ import hashlib
 import hmac
 from datetime import date
 
-from fastapi import HTTPException, Request
+from fastapi import HTTPException, Request, Response
 from pydantic import BaseModel
 
 import config_store
@@ -181,7 +181,7 @@ def register(app, core):
         return {"ok": True, "message": f"Test e-postası gönderildi ({to})."}
 
     @app.post("/api/settings/password")
-    def change_password(b: PasswordChange, r: Request):
+    def change_password(b: PasswordChange, r: Request, resp: Response):
         who = core.auth(r)
         ensure_unlocked("LOGIN_CREDENTIALS")
         index = next((i for i, person in enumerate(core.USERS) if person[0] == who), None)
@@ -204,6 +204,8 @@ def register(app, core):
         })
         line = ",".join(f"{u['username']}:{u['encoded']}" for u in core.LOGIN_USERS)
         config_store.update_config({"LOGIN_CREDENTIALS": line})
+        # Oturum imzası şifreye bağlı: diğer cihazlar çıkış yapar, bu cihaz açık kalır.
+        core.issue_session(resp, r, index)
         return {"ok": True}
 
     @app.post("/api/settings/photo")
