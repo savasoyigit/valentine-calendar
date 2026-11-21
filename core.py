@@ -7,9 +7,13 @@ from urllib.request import Request as UrlRequest, urlopen
 from urllib.error import HTTPError, URLError
 from fastapi import FastAPI, Request, Response, HTTPException
 from fastapi.responses import FileResponse, JSONResponse, HTMLResponse
-from pydantic import BaseModel
+from pydantic import BaseModel, field_validator
+from fastapi.exceptions import RequestValidationError
+
+import validation
 from pywebpush import webpush, WebPushException
 import json
+import re
 
 import config_store
 
@@ -110,6 +114,13 @@ app = FastAPI(docs_url=None, redoc_url=None, openapi_url=None)
 import security  # noqa: E402
 
 security.add_security_headers(app)
+
+
+@app.exception_handler(RequestValidationError)
+async def validation_error(request, exc):
+    first = (exc.errors() or [{}])[0]
+    msg = str(first.get("msg", "Geçersiz istek.")).removeprefix("Value error, ")
+    return JSONResponse({"detail": msg}, status_code=422)
 
 
 def db():
@@ -304,10 +315,9 @@ fails = {}
 
 def is_https(r: Request):
     """Çerez yalnızca https bağlantıda 'Secure' işaretlenir; böylece ev ağında
-    http://192.168.x.x üzerinden de giriş yapılabilir. Ters vekil arkasında
-    X-Forwarded-Proto başlığı dikkate alınır."""
-    forwarded = r.headers.get("x-forwarded-proto", "").split(",")[0].strip().lower()
-    return r.url.scheme == "https" or forwarded == "https"
+    http://192.168.x.x üzerinden de giriş yapılabilir. Ters vekil arkasında şema,
+    uvicorn --proxy-headers ile yalnızca güvenilir vekilden gelen başlıktan çözülür."""
+    return r.url.scheme == "https"
 
 
 class Login(BaseModel):
@@ -348,6 +358,8 @@ class WishlistItem(BaseModel):
     currency: str = "TRY"
     priority: str = "normal"
 
+    _check_url = field_validator("url")(lambda cls, v: validation.clean_http_url(v))
+
 class SpecialDay(BaseModel):
     title: str
     date: str
@@ -365,6 +377,8 @@ class WatchlistItem(BaseModel):
     rating: float | None = None
     note: str = ""
 
+    _check_poster = field_validator("poster_url")(lambda cls, v: validation.clean_http_url(v, 1000))
+
 
 class Memory(BaseModel):
     title: str
@@ -375,7 +389,14 @@ class Memory(BaseModel):
 
 class MemoryPhoto(BaseModel):
     asset_id: str
-    sort_order: int = 0    
+    sort_order: int = 0
+
+    @field_validator("asset_id")
+    @classmethod
+    def _check_asset(cls, v):
+        if not validation.is_uuid(v):
+            raise ValueError("Geçersiz fotoğraf kimliği.")
+        return v
 
 class PushSubscription(BaseModel):
     endpoint: str
@@ -538,8 +559,10 @@ def push_subscribe(sub: PushSubscription, r: Request):
     p256dh = sub.keys.get("p256dh")
     auth_key = sub.keys.get("auth")
 
-    if not p256dh or not auth_key:
+    if not p256dh or not auth_key or len(str(p256dh)) > 200 or len(str(auth_key)) > 100:
         raise HTTPException(400, "Geçersiz push subscription")
+    if not validation.is_push_endpoint(sub.endpoint) or len(sub.endpoint) > 1000:
+        raise HTTPException(400, "Desteklenmeyen bildirim servisi")
 
     with db() as c:
         c.execute("""
@@ -905,25 +928,6 @@ def get_immich_album():
 
     return None
 
-@app.get("/api/immich/albums")
-def immich_albums(r: Request):
-    auth(r)
-
-    albums = immich_request("albums")
-
-    if isinstance(albums, dict):
-        albums = albums.get("items", [])
-
-    return [
-        {
-            "id": album.get("id"),
-            "name": album.get("albumName"),
-            "asset_count": album.get("assetCount", 0),
-        }
-        for album in albums
-    ]
-
-
 @app.get("/api/immich/photos")
 def immich_photos(r: Request):
     auth(r)
@@ -978,9 +982,45 @@ def immich_photos(r: Request):
     }
 
 
+_album_cache = {"at": 0.0, "ids": frozenset()}
+
+
+def album_asset_ids():
+    """Yapılandırılmış albümdeki fotoğraf kimlikleri (60 sn önbellekli)."""
+    if time.time() - _album_cache["at"] < 60:
+        return _album_cache["ids"]
+    ids = frozenset()
+    album = get_immich_album()
+    if album:
+        result = immich_request("search/metadata", method="POST", body={"albumIds": [album.get("id")], "size": 1000})
+        assets = result.get("assets", {})
+        if isinstance(assets, dict):
+            assets = assets.get("items", [])
+        ids = frozenset(a.get("id") for a in assets if a.get("id"))
+    _album_cache.update(at=time.time(), ids=ids)
+    return ids
+
+
+def require_allowed_asset(asset_id):
+    """Sadece paylaşılan albümdeki ya da bir anıya/anlık fotoğrafa eklenmiş
+    fotoğraflara erişime izin verir; Immich kütüphanesinin geri kalanı kapalıdır."""
+    if not validation.is_uuid(asset_id):
+        raise HTTPException(404, "Fotoğraf bulunamadı")
+    with db() as c:
+        known = c.execute("select 1 from memory_photos where asset_id=? union "
+                          "select 1 from instant_photo_messages where asset_id=?", (asset_id, asset_id)).fetchone()
+    if known or asset_id in album_asset_ids():
+        return asset_id
+    _album_cache["at"] = 0.0  # albüme yeni eklenmiş olabilir; bir kez tazele
+    if asset_id in album_asset_ids():
+        return asset_id
+    raise HTTPException(404, "Fotoğraf bulunamadı")
+
+
 @app.get("/api/immich/photos/{asset_id}/thumbnail")
 def immich_thumbnail(asset_id: str, r: Request):
     auth(r)
+    asset_id = require_allowed_asset(asset_id)
 
     if not IMMICH_API_KEY:
         raise HTTPException(500, "Immich API anahtarı yapılandırılmamış")
@@ -1701,6 +1741,10 @@ def add_memory_photo(
     r: Request
 ):
     auth(r)
+    if photo.asset_id not in album_asset_ids():
+        _album_cache["at"] = 0.0
+        if photo.asset_id not in album_asset_ids():
+            raise HTTPException(400, "Bu fotoğraf paylaşılan Immich albümünde değil.")
 
     with db() as c:
         row = c.execute(
@@ -2120,10 +2164,12 @@ def page(body):
 
 
 def pending(tok):
-    if not tok:
+    """Cevap bekleyen öneri; tarihi geçmiş önerilerin bağlantıları artık çalışmaz."""
+    if not tok or len(tok) > 64:
         return None
     with db() as c:
-        return c.execute("select * from events where token=? and status='pending'", (tok,)).fetchone()
+        return c.execute("select * from events where token=? and status='pending' and date>=?",
+                         (tok, date.today().isoformat())).fetchone()
 
 
 @app.get("/r/{tok}")
@@ -2197,13 +2243,26 @@ def respond_link(i: int, r: Request):
 
 @app.post("/r/{tok}/decline")
 async def decline(tok: str, r: Request):
-    f = {k: v[0] for k, v in parse_qs((await r.body()).decode()).items()}
     e = pending(tok)
     if not e:
         return page(INVALID)
-    reason, d, tm = f.get("reason", "").strip(), f.get("date", "").strip(), f.get("time", "").strip()
-    if not reason or not d:
-        return page("<div class=c><h1>Neden ve yeni tarih gerekli 🙈</h1>Geri dönüp doldurabilirsin.</div>")
+    if int(r.headers.get("content-length") or 0) > 8192:
+        raise HTTPException(413, "İstek çok büyük")
+    body = b""
+    async for chunk in r.stream():
+        body += chunk
+        if len(body) > 8192:
+            raise HTTPException(413, "İstek çok büyük")
+    f = {k: v[0] for k, v in parse_qs(body.decode("utf-8", "replace")).items()}
+    reason, d, tm = f.get("reason", "").strip()[:500], f.get("date", "").strip(), f.get("time", "").strip()
+    try:
+        valid_date = date.fromisoformat(d) >= date.today()
+    except ValueError:
+        valid_date = False
+    if tm and not re.fullmatch(r"([01]\d|2[0-3]):[0-5]\d", tm):
+        tm = ""
+    if not reason or not valid_date:
+        return page("<div class=c><h1>Neden ve ileri bir tarih gerekli 🙈</h1>Geri dönüp doldurabilirsin.</div>")
     who = other(e["proposed_by"])
     old = dt_txt(e["date"], e["time"])
     with db() as c:

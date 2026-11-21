@@ -16,8 +16,9 @@ HEADERS = {
 
 
 def _is_https(request):
-    forwarded = request.headers.get("x-forwarded-proto", "").split(",")[0].strip().lower()
-    return request.url.scheme == "https" or forwarded == "https"
+    # X-Forwarded-Proto'yu yalnızca uvicorn --proxy-headers güvenilir vekilden
+    # gelirse şemaya yansıtır; başlığa doğrudan güvenmiyoruz.
+    return request.url.scheme == "https"
 
 
 def add_security_headers(app):

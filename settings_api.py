@@ -125,6 +125,11 @@ def register(app, core):
             apply(changes)
         return {"ok": True}
 
+    def stored_immich_key_for(url):
+        """Kayıtlı anahtar yalnızca kayıtlı adrese gönderilir. Adres değiştiyse
+        anahtarın yeniden yazılması gerekir; böylece anahtar başka bir sunucuya sızdırılamaz."""
+        return core.IMMICH_API_KEY if core.IMMICH_API_KEY and url == core.IMMICH_URL else ""
+
     @app.put("/api/settings/immich")
     def put_immich(b: ImmichSettings, r: Request):
         core.auth(r)
@@ -134,9 +139,9 @@ def register(app, core):
             apply({k: "" for k in ("IMMICH_URL", "IMMICH_API_KEY")})
             return {"ok": True}
         url = setup_wizard.clean_url(b.url, "Immich adresi")
-        api_key = b.api_key.strip() or core.IMMICH_API_KEY
+        api_key = b.api_key.strip() or stored_immich_key_for(url)
         if not api_key:
-            raise HTTPException(400, "Immich API anahtarı gerekli.")
+            raise HTTPException(400, "Immich adresi değiştiyse API anahtarını yeniden yazmalısın.")
         apply({
             "IMMICH_URL": url,
             "IMMICH_API_KEY": api_key,
@@ -148,13 +153,20 @@ def register(app, core):
     @app.post("/api/settings/immich/test")
     def test_immich(b: ImmichSettings, r: Request):
         core.auth(r)
-        who = setup_wizard.immich_check(b.url, b.api_key.strip() or core.IMMICH_API_KEY)
+        url = setup_wizard.clean_url(b.url, "Immich adresi")
+        api_key = b.api_key.strip() or stored_immich_key_for(url)
+        if not api_key:
+            raise HTTPException(400, "Bu adresi test etmek için API anahtarını yazmalısın.")
+        who = setup_wizard.immich_check(url, api_key)
         return {"ok": True, "message": f"Bağlantı başarılı: {who}"}
 
     def smtp_values(b: SmtpSettings):
         return setup_wizard.SmtpSettings(
             host=b.host.strip(), port=b.port or 587, user=b.user.strip(),
-            password=b.password or core.SMTP_PASS,
+            # Kayıtlı şifre yalnızca kayıtlı sunucu ve kullanıcı adıyla kullanılır.
+            password=b.password or (core.SMTP_PASS if b.host.strip() == core.SMTP_HOST
+                                    and b.user.strip() == core.SMTP_USER
+                                    and int(b.port or 587) == int(core.SMTP_PORT) else ""),
         )
 
     @app.put("/api/settings/smtp")

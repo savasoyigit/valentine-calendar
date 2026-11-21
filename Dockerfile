@@ -10,7 +10,7 @@ COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
 COPY app.py core.py config_store.py setup_wizard.py settings_api.py places_api.py \
-     space_api.py capsules_api.py security.py \
+     space_api.py capsules_api.py security.py validation.py \
      create_login_credentials.py index.html setup.html ./
 COPY icons ./icons
 

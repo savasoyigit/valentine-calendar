@@ -377,7 +377,9 @@ def test_security_headers_and_hidden_api_schema(env):
     assert r.headers["referrer-policy"] == "same-origin"
     assert c.get("/openapi.json").status_code == 404
     assert c.get("/docs").status_code == 404
-    https = c.get("/", headers={"x-forwarded-proto": "https"})
+    # Başlığa doğrudan güvenilmez; şemayı uvicorn --proxy-headers çözer
+    assert "strict-transport-security" not in c.get("/", headers={"x-forwarded-proto": "https"}).headers
+    https = TestClient(env["app"].app, base_url="https://testserver").get("/")
     assert "max-age" in https.headers["strict-transport-security"]
 
 
@@ -490,3 +492,109 @@ def test_setup_wizard_also_sends_security_headers(tmp_path):
     import setup_wizard
     r = TestClient(setup_wizard.app).get("/")
     assert r.headers["x-frame-options"] == "DENY"
+
+
+ASSET = "6f1c2d3e-4a5b-4c6d-8e7f-0a1b2c3d4e5f"
+OTHER_ASSET = "11111111-2222-4333-8444-555555555555"
+
+
+def test_urls_are_validated_against_stored_xss(env):
+    c = env["client"]
+    login_as(c, "ada", "yeni-parola-1")
+    for bad in ("javascript:alert(1)", " JavaScript:alert(1)", "data:text/html,x", "vbscript:x"):
+        r = c.post("/api/wishlist", json={"title": "x", "url": bad})
+        assert r.status_code == 422 and "http" in r.json()["detail"]
+        assert c.post("/api/watchlist", json={"title": "x", "poster_url": bad}).status_code == 422
+    assert c.post("/api/wishlist", json={"title": "Kitap", "url": "example.com/kitap"}).status_code == 200
+    assert any(w["url"] == "https://example.com/kitap" for w in c.get("/api/wishlist").json())
+    wid = c.get("/api/wishlist").json()[0]["id"]
+    assert c.put(f"/api/wishlist/{wid}", json={"title": "x", "url": "javascript:alert(1)"}).status_code == 422
+
+
+def test_immich_access_limited_to_shared_album(env):
+    core = sys.modules["core"]
+    c = env["client"]
+    login_as(c, "ada", "yeni-parola-1")
+    assert c.get("/api/immich/albums").status_code in (404, 405)
+    original = core.album_asset_ids
+    core.album_asset_ids = lambda: frozenset({ASSET})
+    try:
+        mid = c.post("/api/memories", json={"title": "Test", "date": "2024-01-01"}).json()["id"]
+        assert c.post(f"/api/memories/{mid}/photos", json={"asset_id": "../users/me"}).status_code == 422
+        assert c.post(f"/api/memories/{mid}/photos", json={"asset_id": OTHER_ASSET}).status_code == 400
+        assert c.post(f"/api/memories/{mid}/photos", json={"asset_id": ASSET}).status_code == 200
+        for bad in ("..%2F..%2Fusers%2Fme", "not-a-uuid", OTHER_ASSET):
+            assert c.get(f"/api/immich/photos/{bad}/thumbnail").status_code == 404
+    finally:
+        core.album_asset_ids = original
+
+
+def test_push_subscription_only_to_known_services(env):
+    c = env["client"]
+    login_as(c, "ada", "yeni-parola-1")
+    keys = {"p256dh": "k", "auth": "a"}
+    for bad in ("http://fcm.googleapis.com/x", "https://evil.example/collect", "https://fcm.googleapis.com.evil.example/x",
+                "https://127.0.0.1/x"):
+        assert c.post("/api/push/subscribe", json={"endpoint": bad, "keys": keys}).status_code == 400
+    for good in ("https://fcm.googleapis.com/fcm/send/abc", "https://web.push.apple.com/abc",
+                 "https://updates.push.services.mozilla.com/wpush/v2/abc"):
+        assert c.post("/api/push/subscribe", json={"endpoint": good, "keys": keys}).status_code == 200
+
+
+def test_settings_never_send_stored_secrets_to_new_address(env):
+    core = sys.modules["core"]
+    c = env["client"]
+    login_as(c, "ada", "yeni-parola-1")
+    assert c.put("/api/settings/immich", json={"url": "http://immich.local:2283", "api_key": "gizli-anahtar"}).status_code == 200
+    calls = []
+    original = sys.modules["setup_wizard"].immich_check
+    sys.modules["setup_wizard"].immich_check = lambda url, key: calls.append((url, key)) or "ok"
+    try:
+        # Yeni adres + boş anahtar: kayıtlı anahtar gönderilmez
+        assert c.post("/api/settings/immich/test", json={"url": "https://evil.example"}).status_code == 400
+        assert c.put("/api/settings/immich", json={"url": "https://evil.example"}).status_code == 400
+        assert core.IMMICH_URL == "http://immich.local:2283"
+        # Kayıtlı adres + boş anahtar: kayıtlı anahtar kullanılabilir
+        assert c.post("/api/settings/immich/test", json={"url": "http://immich.local:2283"}).status_code == 200
+        assert calls == [("http://immich.local:2283", "gizli-anahtar")]
+    finally:
+        sys.modules["setup_wizard"].immich_check = original
+        c.put("/api/settings/immich", json={"disable": True})
+
+    assert c.put("/api/settings/smtp", json={"host": "smtp.example.com", "user": "a@example.com", "password": "smtp-sifre"}).status_code == 200
+    sent = []
+    original = sys.modules["setup_wizard"].smtp_check
+    sys.modules["setup_wizard"].smtp_check = lambda s, to="": sent.append(s.password)
+    try:
+        assert c.post("/api/settings/smtp/test", json={"host": "evil.example", "user": "a@example.com"}).status_code == 400
+        assert c.post("/api/settings/smtp/test", json={"host": "smtp.example.com", "user": "x@evil.example"}).status_code == 400
+        assert c.put("/api/settings/smtp", json={"host": "evil.example", "user": "a@example.com"}).status_code == 400
+        assert sent == []
+        assert c.post("/api/settings/smtp/test", json={"host": "smtp.example.com", "user": "a@example.com"}).status_code == 200
+        assert sent == ["smtp-sifre"]
+    finally:
+        sys.modules["setup_wizard"].smtp_check = original
+        c.put("/api/settings/smtp", json={"host": ""})
+
+
+def test_decline_link_is_bounded_and_validated(env):
+    core = sys.modules["core"]
+    c = env["client"]
+    login_as(c, "ada", "yeni-parola-1")
+    eid = c.post("/api/events", json={"title": "Konser", "date": "2031-03-01", "proposed_by": "Ada"}).json()["id"]
+    tok = core.get_ev(eid)["token"]
+    anon = client_from(env, "203.0.113.50")
+    # Geçersiz bağlantıda gövde hiç okunmaz
+    assert "geçerli değil" in anon.post("/r/yok/decline", content=b"x" * 100000).text
+    assert anon.post(f"/r/{tok}/decline", content=b"reason=" + b"x" * 20000,
+                     headers={"content-type": "application/x-www-form-urlencoded"}).status_code == 413
+    past = anon.post(f"/r/{tok}/decline", data={"reason": "olmaz", "date": "2001-01-01"})
+    assert "ileri bir tarih" in past.text and core.get_ev(eid)["date"] == "2031-03-01"
+    ok = anon.post(f"/r/{tok}/decline", data={"reason": "o gün işim var", "date": "2031-03-08", "time": "25:99"})
+    assert "iletildi" in ok.text
+    e = core.get_ev(eid)
+    assert e["date"] == "2031-03-08" and e["time"] == ""
+    # Tarihi geçmiş önerinin bağlantısı çalışmaz
+    with core.db() as db:
+        db.execute("update events set date='2001-01-01' where id=?", (eid,))
+    assert "geçerli değil" in anon.get(f"/r/{e['token']}").text
