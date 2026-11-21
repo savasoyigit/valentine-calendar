@@ -7,6 +7,7 @@ gerek kalmadan asıl uygulamaya geçer.
 import threading
 
 import config_store
+import security
 
 
 class _Dispatcher:
@@ -48,4 +49,5 @@ class _Dispatcher:
         await target(scope, receive, send)
 
 
-app = _Dispatcher()
+# İstek boyutu sınırı en dışta: kurulum sihirbazı dahil her isteğe uygulanır.
+app = security.BodySizeLimit(_Dispatcher())

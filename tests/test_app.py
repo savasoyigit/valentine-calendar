@@ -598,3 +598,26 @@ def test_decline_link_is_bounded_and_validated(env):
     with core.db() as db:
         db.execute("update events set date='2001-01-01' where id=?", (eid,))
     assert "geçerli değil" in anon.get(f"/r/{e['token']}").text
+
+
+def test_request_body_size_is_limited(env):
+    c = env["client"]
+    anon = client_from(env, "203.0.113.60")
+    big = b'{"username":"ada","password":"' + b"x" * (25 * 1024 * 1024) + b'"}'
+    r = anon.post("/api/login", content=big, headers={"content-type": "application/json"})
+    assert r.status_code == 413
+
+    def chunks():  # Content-Length olmadan, parça parça
+        yield b'{"username":"ada","password":"'
+        for _ in range(64):
+            yield b"x" * 16384
+        yield b'"}'
+    r = anon.post("/api/login", content=chunks(), headers={"content-type": "application/json"})
+    assert r.status_code == 413
+
+    login_as(c, "ada", "yeni-parola-1")
+    assert c.post("/api/shared-notes", json={"title": "Büyük", "text": "x" * (5 * 1024 * 1024)}).status_code == 413
+    assert c.post("/api/shared-notes", json={"title": "Normal", "text": "x" * 20000}).status_code == 200
+    assert c.post("/api/capsules", json={"body": "ş" * 20000, "open_at": "2099-01-01T00:00:00Z"}).status_code == 200
+    # Büyük gövde bekleyen uçlar daha yüksek sınıra sahip
+    assert c.post("/api/settings/photo", json={"photo": tiny_png()}).status_code == 200
