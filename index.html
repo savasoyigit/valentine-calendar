@@ -33,7 +33,7 @@ button{cursor:pointer}
 .brand{display:flex;align-items:center;gap:10px}
 .brand-heart{font-size:30px}
 .bn{display:block;font:800 1.55rem/1 var(--sans);font-style:normal;letter-spacing:-.045em;color:#fff1ec}
-.bs{display:block;color:var(--mute);font-size:.72rem;margin-top:4px}
+.bs{display:block;color:var(--mute);font-size:.75rem;margin-top:4px}
 
 .menu{position:relative;display:flex;align-items:center;gap:10px}
 
@@ -59,7 +59,7 @@ button{cursor:pointer}
   cursor:pointer;transition:transform .18s ease,box-shadow .18s ease,border-color .18s ease,filter .18s ease;
 }
 
-.notification-btn:hover{transform:translateY(-1px);border-color:rgba(255,179,138,.58);box-shadow:0 8px 18px rgba(58,23,43,.2);filter:brightness(1.08)}
+@media (hover:hover){.notification-btn:hover{transform:translateY(-1px);border-color:rgba(255,179,138,.58);box-shadow:0 8px 18px rgba(58,23,43,.2);filter:brightness(1.08)}}
 .notification-btn:active{transform:scale(.97)}
 
 .notification-badge{
@@ -159,7 +159,7 @@ button{cursor:pointer}
   display:block;
   font-style:normal;
   color:var(--mute);
-  font-size:.68rem;
+  font-size:.75rem;
   margin-top:3px;
 }
 
@@ -215,7 +215,7 @@ button{cursor:pointer}
 .quick-grid button{border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:16px;padding:12px 6px;text-align:center}
 .quick-grid b{display:block;font-size:21px}
 .quick-grid span{display:block;font-weight:650;margin-top:4px}
-.quick-grid small{display:block;color:var(--mute);font-size:.68rem;margin-top:2px}
+.quick-grid small{display:block;color:var(--mute);font-size:.75rem;margin-top:2px}
 
 .card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:16px;margin-bottom:14px;box-shadow:var(--shadow)}
 
@@ -288,19 +288,19 @@ input:not([type=checkbox]),textarea,select{width:100%;border:1px solid var(--lin
 .bubbles{display:flex;flex-direction:column;gap:6px;margin:10px 0}
 .b{max-width:85%;background:var(--tint);border-radius:16px 16px 16px 4px;padding:8px 12px}
 .b.me{align-self:flex-end;border-radius:16px 16px 4px 16px;background:var(--wine);color:#fff1ec}
-.b small{display:block;opacity:.7;font-size:.73rem}
-.b .link{color:inherit;opacity:.8;padding:0 0 0 6px;font-size:.72rem}
+.b small{display:block;opacity:.7;font-size:.75rem}
+.b .link{color:inherit;opacity:.8;padding:0 0 0 6px;font-size:.75rem}
 
 .summary{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
 .stat{background:var(--bg);border-radius:13px;padding:11px 8px;text-align:center}
 .stat b{display:block;font-size:1rem}
-.stat span{display:block;color:var(--mute);font-size:.68rem;margin-top:3px}
+.stat span{display:block;color:var(--mute);font-size:.75rem;margin-top:3px}
 
 .mini-note{padding:10px 0;border-top:1px solid var(--line)}
 .mini-note:first-child{border-top:0}
 .mini-note b{display:block}
 .mini-note span{display:block;margin-top:2px}
-.mini-note small,.note-card small,.list-row small,.wish-body small{display:block;color:var(--mute);font-size:.73rem;margin-top:4px}
+.mini-note small,.note-card small,.list-row small,.wish-body small{display:block;color:var(--mute);font-size:.75rem;margin-top:4px}
 
 .note-card,.wish-card{display:flex;gap:10px;align-items:flex-start;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:13px;margin-bottom:9px}
 .note-card>div{display:flex;gap:10px;flex:1;min-width:0}
@@ -316,7 +316,7 @@ input:not([type=checkbox]),textarea,select{width:100%;border:1px solid var(--lin
 .wish-card>input{margin-top:2px}
 .wish-body{flex:1;min-width:0}
 .wish-top{display:flex;gap:8px;align-items:center;justify-content:space-between}
-.priority{font-size:.68rem;padding:3px 7px;border-radius:99px;background:var(--tint);color:var(--mute);white-space:nowrap}
+.priority{font-size:.75rem;padding:3px 7px;border-radius:99px;background:var(--tint);color:var(--mute);white-space:nowrap}
 .priority.high{color:var(--rose)}
 .price{display:block;margin-top:6px}
 .wish-link{display:inline-block;color:var(--rose);font-size:.8rem;margin-top:6px;text-decoration:none}
@@ -329,7 +329,7 @@ input:not([type=checkbox]),textarea,select{width:100%;border:1px solid var(--lin
 .notif span{flex:1;min-width:0}
 .notif b,.notif small,.notif em{display:block}
 .notif small{color:var(--mute);margin-top:2px}
-.notif em{font-style:normal;color:var(--mute);font-size:.7rem;margin-top:4px}
+.notif em{font-style:normal;color:var(--mute);font-size:.75rem;margin-top:4px}
 .notif.read{opacity:.58}
 .unread-dot{width:7px;height:7px;background:var(--rose);border-radius:50%;margin-top:7px;flex:none}
 
@@ -522,7 +522,7 @@ input:not([type=checkbox]),textarea,select{width:100%;border:1px solid var(--lin
   border-radius:99px;
   background:var(--tint);
   color:var(--rose);
-  font-size:.7rem;
+  font-size:.75rem;
 }
 
 .watch-rating{
@@ -1156,7 +1156,7 @@ body > .photo-lightbox.open {
 .love-counter:after{content:"";position:absolute;width:190px;height:190px;right:30px;top:-105px;border-radius:50%;background:rgba(255,179,138,.08);pointer-events:none}.love-counter .love-copy{min-width:0;position:relative;z-index:1}.love-counter .love-kicker{font-size:.78rem;letter-spacing:.09em;text-transform:uppercase;color:#ffcfb7;font-weight:750}.love-counter h2{font:600 1.45rem var(--serif);margin:5px 0 0;color:#fff1ec}
 .love-counter .love-heart{font-size:2.4rem;position:relative;z-index:1;filter:drop-shadow(0 4px 8px rgba(0,0,0,.2));animation:heartFloat 3s ease-in-out infinite}
 .love-duration{display:flex;flex-wrap:wrap;gap:8px;margin-top:13px}.love-duration span{padding:8px 11px;border-radius:12px;background:rgba(255,241,236,.09);border:1px solid rgba(255,207,183,.25);font-size:.88rem;color:#fff1ec;white-space:nowrap}.love-duration b{color:#ffb38a;font-size:1.12rem;margin-right:3px}
-.shopping-list-tools{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:9px;align-items:center}.shopping-list-picker{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:14px 0 4px}.shopping-list-chip{border:1px solid var(--line);background:#fff;color:var(--ink);border-radius:999px;padding:9px 13px;cursor:pointer;transition:transform .18s,background .18s,border-color .18s}.shopping-list-chip:hover{transform:translateY(-1px)}.shopping-list-chip.active{background:var(--wine);color:#fff;border-color:var(--wine)}.shopping-list-chip small{opacity:.8;margin-left:5px}.shopping-list-heading{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:8px}.shopping-list-heading h2{font:600 1.35rem var(--serif);margin:0}.shopping-list-heading .link{font-size:.85rem}.shopping-list-empty{padding:24px 10px;text-align:center;color:var(--muted)}
+.shopping-list-tools{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:9px;align-items:center}.shopping-list-picker{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:14px 0 4px}.shopping-list-chip{border:1px solid var(--line);background:#fff;color:var(--ink);border-radius:999px;padding:9px 13px;cursor:pointer;transition:transform .18s,background .18s,border-color .18s}@media (hover:hover){.shopping-list-chip:hover{transform:translateY(-1px)}}.shopping-list-chip.active{background:var(--wine);color:#fff;border-color:var(--wine)}.shopping-list-chip small{opacity:.8;margin-left:5px}.shopping-list-heading{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:8px}.shopping-list-heading h2{font:600 1.35rem var(--serif);margin:0}.shopping-list-heading .link{font-size:.85rem}.shopping-list-empty{padding:24px 10px;text-align:center;color:var(--muted)}
 @keyframes heartFloat{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-3px) scale(1.04)}}
 @media(max-width:560px){.love-counter{padding:17px}.love-counter h2{font-size:1.2rem}.love-counter .love-heart{font-size:1.8rem}.love-duration{gap:6px}.love-duration span{font-size:.8rem;padding:7px 8px}.shopping-list-tools{grid-template-columns:1fr}.shopping-list-tools button{width:100%}}
 
@@ -1273,13 +1273,13 @@ button[onclick*="showTab("] {
   transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease, filter .18s ease;
 }
 
-.tabs button:hover,
+@media (hover:hover){.tabs button:hover,
 button[onclick*="showTab("]:hover {
   transform: translateY(-1px);
   border-color: rgba(255, 179, 138, .58);
   box-shadow: 0 8px 18px rgba(58, 23, 43, .2);
   filter: brightness(1.08);
-}
+}}
 
 .tabs button.active,
 button[onclick*="showTab("].active {
@@ -1391,7 +1391,7 @@ input[type="file"]::file-selector-button {
 .shopping-list-heading{display:flex;align-items:center;justify-content:space-between;gap:12px}
 .shopping-delete-list{flex-shrink:0;display:inline-flex;align-items:center;gap:7px;padding:8px 12px;border:1px solid rgba(255,179,138,.32);border-radius:12px;background:linear-gradient(135deg,rgba(105,31,59,.92),rgba(48,20,37,.96));color:#ffd9d0;font:inherit;font-size:.82rem;font-weight:650;cursor:pointer;transition:transform .2s ease,box-shadow .2s ease,border-color .2s ease}
 .shopping-delete-list span{font-size:1.15rem;line-height:1}
-.shopping-delete-list:hover:not(:disabled){transform:translateY(-1px);border-color:rgba(255,179,138,.65);box-shadow:0 6px 16px rgba(20,5,14,.2)}
+@media (hover:hover){.shopping-delete-list:hover:not(:disabled){transform:translateY(-1px);border-color:rgba(255,179,138,.65);box-shadow:0 6px 16px rgba(20,5,14,.2)}}
 .shopping-delete-list:disabled{opacity:.42;cursor:not-allowed;filter:saturate(.55)}
 @media(max-width:420px){.shopping-list-heading{align-items:flex-start}.shopping-delete-list{padding:7px 9px;font-size:.76rem}}
 
@@ -1554,8 +1554,8 @@ body,button,input,textarea,select{font-family:var(--sans)}
 .tabs button{font-family:var(--sans);font-weight:600;letter-spacing:-.01em}
 #summary .stat{position:relative;min-width:0;border:1px solid rgba(255,179,138,.36)!important;border-radius:14px;padding:12px 9px;background:linear-gradient(135deg,#6b2143 0%,#511a36 58%,#3a172b 100%)!important;box-shadow:inset 0 1px 0 rgba(255,241,236,.08),0 7px 18px rgba(58,23,43,.12)!important;outline:1px solid rgba(255,241,236,.035);outline-offset:-4px}
 #summary .stat b{font-size:1.05rem;color:#fff1ec!important;font-weight:750}
-#summary .stat span{color:rgba(255,241,236,.78)!important;font-size:.68rem;line-height:1.35}
-@media(max-width:560px){.top{padding:13px 12px;border-radius:17px;margin-top:8px}.top .brand{gap:7px}.top .brand-heart{font-size:24px}.bn{font-size:1.32rem}.top .bs{font-size:.65rem}.top .menu{gap:7px}.top .notification-btn{width:40px;min-width:40px;padding:8px}.top .notification-btn .notification-label{display:none}.avatar{width:38px;height:38px;flex-basis:38px}}
+#summary .stat span{color:rgba(255,241,236,.78)!important;font-size:.75rem;line-height:1.35}
+@media(max-width:560px){.top{padding:13px 12px;border-radius:17px;margin-top:8px}.top .brand{gap:7px}.top .brand-heart{font-size:24px}.bn{font-size:1.32rem}.top .bs{font-size:.75rem}.top .menu{gap:7px}.top .notification-btn{width:40px;min-width:40px;padding:8px}.top .notification-btn .notification-label{display:none}.avatar{width:38px;height:38px;flex-basis:38px}}
 
 
 /* Aşkımız: mevcut arka plan rengini koruyan, çok hafif ripple */
@@ -1598,11 +1598,11 @@ body::before {
   box-shadow: inset 0 1px 0 rgba(255, 241, 236, .07);
   transition: transform .16s ease, filter .16s ease, box-shadow .16s ease;
 }
-#tab-watchlist .watch-actions button:hover {
+@media (hover:hover){#tab-watchlist .watch-actions button:hover {
   background: linear-gradient(135deg, #7a294e 0%, #60203f 58%, #451a32 100%);
   filter: brightness(1.06);
   box-shadow: 0 4px 12px rgba(58, 23, 43, .2);
-}
+}}
 #tab-watchlist .watch-actions button:active { transform: scale(.97); }
 #tab-watchlist .watch-actions button:focus-visible {
   outline: 2px solid var(--apricot);
@@ -1645,7 +1645,7 @@ body::before {
 .sidebar-nav button.active{background:var(--tint)!important;color:var(--wine)!important;border-color:rgba(217,70,111,.18)!important}
 .sidebar-nav button::after{display:none!important}
 body.sidebar-open{overflow:hidden}
-@media(max-width:560px){.top{gap:8px}.brand-group{gap:9px}.sidebar-toggle{width:39px;height:39px;flex-basis:39px}.brand-heart{font-size:26px}.bn{font-size:1.32rem}.bs{font-size:.65rem}.menu{gap:7px}.sidebar-nav{width:min(280px,86vw)!important}}
+@media(max-width:560px){.top{gap:8px}.brand-group{gap:9px}.sidebar-toggle{width:39px;height:39px;flex-basis:39px}.brand-heart{font-size:26px}.bn{font-size:1.32rem}.bs{font-size:.75rem}.menu{gap:7px}.sidebar-nav{width:min(280px,86vw)!important}}
 /* Seçili öğelerde metin/arka plan kontrastını koru */
 .sidebar-nav button.active,
 .tabs button.active,
@@ -1741,7 +1741,7 @@ button[onclick*="showTab("].active,
 .set-msg.ok{display:block;background:rgba(63,143,104,.12);color:var(--ok)}
 .set-msg.err{display:block;background:rgba(192,57,43,.1);color:#c0392b}
 .set-msg.err{color:#ff8a7a}
-.set-badge{font-size:.7rem;font-weight:700;padding:3px 8px;border-radius:999px;background:var(--line);color:var(--mute)}
+.set-badge{font-size:.75rem;font-weight:700;padding:3px 8px;border-radius:999px;background:var(--line);color:var(--mute)}
 .set-badge.on{background:rgba(63,143,104,.15);color:var(--ok)}
 .set-photo{display:flex;align-items:center;gap:14px;margin-top:6px}
 .set-avatar{width:72px;height:72px;flex:0 0 72px;font-size:1.5rem;cursor:default}
@@ -1780,7 +1780,7 @@ input:disabled{opacity:.6;cursor:not-allowed}
 @keyframes plFlash{0%,100%{box-shadow:var(--shadow)}30%{box-shadow:0 0 0 3px var(--rose)}}
 .pl-head{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
 .pl-head h3{margin:0;font:650 1.02rem/1.3 var(--sans);word-break:break-word}
-.pl-pill{flex:none;font-size:.7rem;font-weight:700;padding:4px 9px;border-radius:999px;background:var(--tint);color:var(--rose)}
+.pl-pill{flex:none;font-size:.75rem;font-weight:700;padding:4px 9px;border-radius:999px;background:var(--tint);color:var(--rose)}
 .pl-pill.visited{background:rgba(63,143,104,.15);color:var(--ok)}
 .pl-ratings{display:flex;flex-direction:column;gap:4px;padding:8px 10px;border-radius:12px;background:var(--bg)}
 .pl-rate-row{display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:.84rem}
@@ -1790,12 +1790,12 @@ input:disabled{opacity:.6;cursor:not-allowed}
 .pl-line{display:flex;align-items:flex-start;gap:6px;font-size:.84rem;color:var(--ink);text-decoration:none;word-break:break-word}
 a.pl-line:hover{color:var(--rose)}
 .pl-note{font-size:.84rem;color:var(--mute);white-space:pre-wrap;word-break:break-word}
-.pl-meta{font-size:.72rem;color:var(--mute)}
+.pl-meta{font-size:.75rem;color:var(--mute)}
 .pl-actions{display:flex;gap:6px;flex-wrap:wrap;margin-top:2px}
 .pl-actions button{border:1px solid var(--line);background:none;color:var(--ink);border-radius:9px;padding:7px 10px;font-size:.8rem}
 .pl-actions .grow{flex:1}
 .pl-pick{background:linear-gradient(135deg,#843054,#3a172b);color:#fff1ec;border-radius:20px;padding:18px;margin-bottom:14px;box-shadow:var(--shadow)}
-.pl-pick small{display:block;color:var(--apricot);font-weight:700;letter-spacing:.06em;text-transform:uppercase;font-size:.7rem}
+.pl-pick small{display:block;color:var(--apricot);font-weight:700;letter-spacing:.06em;text-transform:uppercase;font-size:.75rem}
 .pl-pick h2{margin:6px 0 4px;font-size:1.35rem;word-break:break-word}
 .pl-pick p{margin:0;color:#f3d9d6;font-size:.86rem}
 .pl-pick .pl-actions button{border-color:rgba(255,207,183,.35);color:#fff1ec}
@@ -1805,7 +1805,7 @@ a.pl-line:hover{color:var(--rose)}
 /* Bekleyen planlar */
 .pending-plans{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:16px;margin:0 0 14px;box-shadow:var(--shadow)}
 .pending-plans h2{margin:0 0 10px;font-size:1rem;display:flex;align-items:center;gap:8px}
-.pending-plans h2 .n{background:var(--rose);color:#fff;border-radius:999px;font-size:.72rem;padding:2px 8px}
+.pending-plans h2 .n{background:var(--rose);color:#fff;border-radius:999px;font-size:.75rem;padding:2px 8px}
 .pp-item{padding:12px;border-radius:14px;background:var(--bg);border:1px solid var(--line)}
 .pp-item+.pp-item{margin-top:8px}
 .pp-kicker{font-size:.76rem;color:var(--apricot);font-weight:700}
@@ -1875,6 +1875,16 @@ a.pl-line:hover{color:var(--rose)}
 .lt-label{font-size:.86rem;color:var(--mute)}
 .lt-presets{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0 2px}
 @media(prefers-reduced-motion:reduce){.lt-paper.reveal{animation:none}}
+
+/* Arayüz elden geçirme (2026-11): bildirim satırı, mobil dokunma ve okunabilirlik */
+.notif .notif-icon{flex:none;width:26px;text-align:center}
+button,[role="button"],.tabs button{touch-action:manipulation;-webkit-user-select:none;user-select:none}
+@media (pointer:coarse){
+  /* iOS 16px altındaki alana odaklanınca sayfayı büyütüp geri küçültmüyor */
+  :where(input:not([type=checkbox]):not([type=radio]),textarea,select){font-size:16px}
+  .lt-compose textarea{font-size:1rem}
+}
+.special-actions button,.watch-actions button,.x,.edit-wish{min-width:36px;min-height:36px}
 </style>
 
 
@@ -2126,11 +2136,11 @@ a.pl-line:hover{color:var(--rose)}
     <details>
       <summary>Buluşma öner</summary>
 
-      <input id="et" placeholder="Ne yapıyoruz? (ör. Yeni kahveciyi deneyelim)">
+      <input id="et" aria-label="Buluşma planı" placeholder="Ne yapıyoruz? (ör. Yeni kahveciyi deneyelim)">
 
       <div class="row">
         <input id="etm" type="time" aria-label="Saat">
-        <input id="epl" placeholder="Mekan">
+        <input id="epl" aria-label="Mekan" placeholder="Mekan">
       </div>
 
       <button class="btn" onclick="addEv()">Öneriyi gönder</button>
@@ -2141,7 +2151,7 @@ a.pl-line:hover{color:var(--rose)}
     <h2>Bu günün notları</h2>
     <div class="bubbles" id="nts"></div>
 
-    <textarea id="nt" rows="2" placeholder="Bir not bırak..."></textarea>
+    <textarea id="nt" aria-label="Not" rows="2" placeholder="Bir not bırak..."></textarea>
 
     <button class="btn" onclick="addNote()">Notu bırak</button>
   </section>
@@ -2159,8 +2169,8 @@ a.pl-line:hover{color:var(--rose)}
   </section>
 
   <section class="card">
-    <input id="snt-title" placeholder="Başlık (isteğe bağlı)">
-    <textarea id="snt-text" rows="4" placeholder="Bir fikir, plan, hatırlatma..."></textarea>
+    <input id="snt-title" aria-label="Not başlığı" placeholder="Başlık (isteğe bağlı)">
+    <textarea id="snt-text" aria-label="Not" rows="4" placeholder="Bir fikir, plan, hatırlatma..."></textarea>
     <button class="btn" onclick="addSharedNote()">Notu kaydet</button>
   </section>
 
@@ -2181,7 +2191,7 @@ a.pl-line:hover{color:var(--rose)}
 
   <section class="card">
     <div class="shopping-list-tools">
-      <input id="shop-list-title" maxlength="80" placeholder="Yeni liste adı (örn. Haftalık market)">
+      <input id="shop-list-title" aria-label="Yeni liste adı" maxlength="80" placeholder="Yeni liste adı (örn. Haftalık market)">
       <button class="btn compact" onclick="createShoppingList()">＋ Liste oluştur</button>
     </div>
     <div id="shopping-list-picker" class="shopping-list-picker" aria-label="Alışveriş listeleri"></div>
@@ -2193,7 +2203,7 @@ a.pl-line:hover{color:var(--rose)}
       <button id="shopping-delete-list" class="shopping-delete-list" type="button" onclick="deleteShoppingList()" aria-label="Seçili alışveriş listesini sil">Listeyi sil <span aria-hidden="true">×</span></button>
     </div>
     <div class="row">
-      <input id="shop-text" placeholder="Seçili listeye ürün ekle (örn. filtre kahve)" onkeydown="if(event.key==='Enter')addShopping()">
+      <input id="shop-text" aria-label="Ürün" placeholder="Seçili listeye ürün ekle (örn. filtre kahve)" onkeydown="if(event.key==='Enter')addShopping()">
       <button class="btn compact" onclick="addShopping()">Ekle</button>
     </div>
     <div id="shopping-list"></div>
@@ -2213,12 +2223,12 @@ a.pl-line:hover{color:var(--rose)}
 
   <section class="card">
 
-    <input id="wish-title" placeholder="Ne istiyoruz?">
+    <input id="wish-title" aria-label="İstek" placeholder="Ne istiyoruz?">
 
     <div class="row">
 
       <input
-        id="wish-price"
+        id="wish-price" aria-label="Fiyat"
         type="number"
         inputmode="decimal"
         min="0"
@@ -2226,7 +2236,7 @@ a.pl-line:hover{color:var(--rose)}
         placeholder="Fiyat (isteğe bağlı)"
       >
 
-      <select id="wish-currency">
+      <select id="wish-currency" aria-label="Para birimi">
         <option value="TRY">₺ Türk Lirası</option>
         <option value="EUR">€ Euro</option>
         <option value="USD">$ Dolar</option>
@@ -2237,7 +2247,7 @@ a.pl-line:hover{color:var(--rose)}
 
     <div class="row">
 
-      <select id="wish-priority">
+      <select id="wish-priority" aria-label="Öncelik">
         <option value="normal">Normal öncelik</option>
         <option value="high">Yüksek öncelik</option>
         <option value="low">Düşük öncelik</option>
@@ -2246,7 +2256,7 @@ a.pl-line:hover{color:var(--rose)}
     </div>
 
     <input
-      id="wish-url"
+      id="wish-url" aria-label="Bağlantı"
       placeholder="Link (isteğe bağlı)"
     >
 
@@ -2274,13 +2284,13 @@ a.pl-line:hover{color:var(--rose)}
 
   <section class="card">
 
-    <input id="special-title" placeholder="Örn. Yıl dönümümüz">
+    <input id="special-title" aria-label="Özel günün adı" placeholder="Örn. Yıl dönümümüz">
 
     <div class="row">
-      <input id="special-date" type="date">
+      <input id="special-date" aria-label="Tarih" type="date">
 
       <input
-        id="special-icon"
+        id="special-icon" aria-label="Simge"
         value="❤️"
         maxlength="4"
         placeholder="Emoji"
@@ -2298,7 +2308,7 @@ a.pl-line:hover{color:var(--rose)}
     </label>
 
     <textarea
-      id="special-note"
+      id="special-note" aria-label="Not"
       rows="2"
       placeholder="Küçük bir not (isteğe bağlı)"
     ></textarea>
@@ -2326,18 +2336,18 @@ a.pl-line:hover{color:var(--rose)}
   <section class="card">
 
     <input
-      id="watch-title"
+      id="watch-title" aria-label="Film veya dizi adı"
       placeholder="Film veya dizi adı"
     >
 
     <div class="row">
 
-      <select id="watch-type">
+      <select id="watch-type" aria-label="Film mi dizi mi">
         <option value="movie">🎬 Film</option>
         <option value="series">📺 Dizi</option>
       </select>
 
-      <select id="watch-status">
+      <select id="watch-status" aria-label="Durum">
         <option value="planned">İzlenecek</option>
         <option value="watching">İzleniyor</option>
         <option value="watched">İzlendi</option>
@@ -2348,12 +2358,12 @@ a.pl-line:hover{color:var(--rose)}
     <div class="row">
 
       <input
-        id="watch-genre"
+        id="watch-genre" aria-label="Tür"
         placeholder="Tür"
       >
 
       <input
-        id="watch-rating"
+        id="watch-rating" aria-label="Puan"
         type="number"
         min="0"
         max="10"
@@ -2364,12 +2374,12 @@ a.pl-line:hover{color:var(--rose)}
     </div>
 
     <input
-      id="watch-poster"
+      id="watch-poster" aria-label="Poster bağlantısı"
       placeholder="Poster URL (isteğe bağlı)"
     >
 
     <textarea
-      id="watch-note"
+      id="watch-note" aria-label="Not"
       rows="2"
       placeholder="Not (isteğe bağlı)"
     ></textarea>
@@ -2461,8 +2471,8 @@ a.pl-line:hover{color:var(--rose)}
   <section class="card lt-compose">
     <h2>Yeni mektup</h2>
     <p class="lt-hint" id="lt-for"></p>
-    <input id="lt-title" placeholder="Başlık (isteğe bağlı)" maxlength="120" autocomplete="off">
-    <textarea id="lt-body" rows="8" placeholder="Sevgili…" maxlength="20000"></textarea>
+    <input id="lt-title" aria-label="Mektup başlığı" placeholder="Başlık (isteğe bağlı)" maxlength="120" autocomplete="off">
+    <textarea id="lt-body" aria-label="Mektup" rows="8" placeholder="Sevgili…" maxlength="20000"></textarea>
     <div class="lt-when">
       <span class="lt-label">Ne zaman açılsın?</span>
       <div class="lt-presets" id="lt-presets"></div>
@@ -2516,26 +2526,26 @@ a.pl-line:hover{color:var(--rose)}
   <section class="card">
 
     <input
-      id="memory-title"
+      id="memory-title" aria-label="Anının adı"
       placeholder="Anının adı"
     >
 
     <div class="row">
 
       <input
-        id="memory-date"
+        id="memory-date" aria-label="Tarih"
         type="date"
       >
 
       <input
-        id="memory-location"
+        id="memory-location" aria-label="Yer"
         placeholder="📍 Nerede?"
       >
 
     </div>
 
     <textarea
-      id="memory-description"
+      id="memory-description" aria-label="Anının açıklaması"
       rows="4"
       placeholder="Bu anıyı özel yapan neydi?"
     ></textarea>
@@ -3912,9 +3922,7 @@ function renderSharedNotes(){
                 <button
                   class="x"
                   onclick="delSharedNote(${n.id})"
-                >
-                  ✕
-                </button>
+                 aria-label="Sil">✕</button>
               `
               :''
           }
@@ -4218,17 +4226,13 @@ function renderWishlist(){
               class="edit-wish"
               onclick="editWishlist(${x.id})"
               title="Düzenle"
-            >
-              ✏️
-            </button>
+             aria-label="Düzenle">✏️</button>
 
             <button
               class="x"
               onclick="delWishlist(${x.id})"
               title="Sil"
-            >
-              ✕
-            </button>
+             aria-label="Sil">✕</button>
 
           </div>
 
@@ -4338,16 +4342,12 @@ function renderSpecialDays(){
               <button
                 onclick="editSpecialDay(${item.id})"
                 title="Düzenle"
-              >
-                ✏️
-              </button>
+               aria-label="Düzenle">✏️</button>
 
               <button
                 onclick="deleteSpecialDay(${item.id})"
                 title="Sil"
-              >
-                ✕
-              </button>
+               aria-label="Sil">✕</button>
 
             </div>
 
@@ -4626,15 +4626,11 @@ function renderWatchlist(){
 
               <button
                 onclick="editWatchlist(${item.id})"
-              >
-                ✏️
-              </button>
+               aria-label="Düzenle">✏️</button>
 
               <button
                 onclick="deleteWatchlist(${item.id})"
-              >
-                ✕
-              </button>
+               aria-label="Sil">✕</button>
 
             </div>
 
@@ -4865,9 +4861,7 @@ function renderMemories(){
           <button
             class="x"
             onclick="deleteMemory(${item.id})"
-          >
-            ✕
-          </button>
+           aria-label="Sil">✕</button>
 
         </div>
 
@@ -4951,7 +4945,11 @@ async function loadMemoryPhotos(){
 
           <div
             class="memory-photo"
+            role="button"
+            tabindex="0"
+            aria-label="Fotoğrafı büyüt"
             onclick="openPhoto('${esc(photo.thumbnail)}')"
+            onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click()}"
           >
             <img
               src="${esc(photo.thumbnail)}"
@@ -5233,9 +5231,7 @@ async function chooseMemoryPhotos(memoryId) {
         <button
           type="button"
           class="x"
-          id="close-memory-photo-modal">
-          ✕
-        </button>
+          id="close-memory-photo-modal" aria-label="Kapat">✕</button>
       </div>
 
       <p class="meta">
