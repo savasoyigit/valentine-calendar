@@ -2400,7 +2400,8 @@ def profile_image(filename: str, r: Request):
 
 @app.get("/")
 def index():
-    return FileResponse(HERE / "index.html")
+    # Her açılışta ETag ile yeniden doğrulansın: arayüz güncellemesi telefonlara gecikmeden ulaşır
+    return FileResponse(HERE / "index.html", headers={"Cache-Control": "no-cache"})
 
 
 # ---------- ayarlar ----------
